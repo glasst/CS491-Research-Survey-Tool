@@ -1,0 +1,10 @@
+{% block content %}
+
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+<h2>Logged in as {{ user.username }}</h2>
+<a href="{% url 'logout' %}?next={% url 'index' %}">Logout</a>
+
+{% endblock %}

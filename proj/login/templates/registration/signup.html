@@ -1,0 +1,27 @@
+{% block content %}
+
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+  <h2>Sign up</h2>
+  <form method="post">
+    {% csrf_token %}
+    {% autoescape off %}
+    {% for field in form %}
+      <p>
+        {{ field.label_tag }}<br />
+        {{ field }}
+        {% if field.help_text %}
+        <br />{{ field.help_text }}
+        {% endif %}
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+    {% endfor %}
+    {% endautoescape %}
+    <button type="submit">Sign up</button>
+  </form>
+
+{% endblock %}
