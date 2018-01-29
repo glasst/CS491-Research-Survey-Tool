@@ -1,12 +1,5 @@
-{# Load the tag library #}
-{% load bootstrap3 %}
-
-{# Load CSS and JavaScript #}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
+{% extends "base.html" %}
+{% block content %}
 
 {% if user.is_authenticated %}
 <a href="{% url 'logout' %}?next={% url 'index' %}">Logout</a><br />
@@ -14,3 +7,5 @@
 <a href="{% url 'login' %}">Login</a><br />
 <a href="{% url 'signup' %}">Create an account</a>
 {% endif %}
+
+{% endblock %}

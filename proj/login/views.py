@@ -29,3 +29,13 @@ def profile(request):
     template = loader.get_template('registration/profile.html')
     context = {}
     return HttpResponse(template.render(context, request));
+
+@login_required
+def create(request):
+    # add new survey to database
+    return redirect('edit')
+
+@login_required
+def edit(request):
+    survey = 'existing survey'
+    return render(request, 'edit.html', {'survey': survey})

@@ -1,13 +1,8 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
 {% block content %}
 
-{% load bootstrap3 %}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
-
+<div align="center" class="container">
 {% if next %}
     {% if user.is_authenticated %}
     <p>Your account doesn't have access to this page. To proceed,
@@ -16,22 +11,15 @@
     <p>Please login to see this page.</p>
     {% endif %}
 {% endif %}
+</div>
 
+<div class="container">
 <form method="post" action="{% url 'login' %}">
 {% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
-
-<input type="submit" value="Login" />
+{% bootstrap_form form %}
+{% bootstrap_button "Login" button_type="submit" button_class="btn-primary" %}
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
+</div>
 
 {% endblock %}
