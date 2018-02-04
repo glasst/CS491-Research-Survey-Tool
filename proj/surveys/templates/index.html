@@ -25,48 +25,9 @@
 <p>there are this many users: {{num_users}}</p>
 <p>there are this many surveys: {{num_surveys}}</p>
 
-<!-- TEXTAREA -->
-<p>Here is some long answer question text. Write something.</p>
-<div class="form-group">
-  <label for="comment">Comment:</label>
-  <textarea class="form-control" rows="5" id="comment"></textarea>
-</div>
+<h1>here is the survey creation form:</h1>
 
-<!-- CHECKBOXES -->
-<p>Here is some checkbox question text. Pick some things.</p>
-<div class="checkbox">
-  <label><input type="checkbox" value="">Option 1</label>
-</div>
-<div class="checkbox">
-  <label><input type="checkbox" value="">Option 2</label>
-</div>
-<div class="checkbox disabled">
-  <label><input type="checkbox" value="" disabled>Option 3</label>
-</div>
-
-<!-- MULTIPLE CHOICE -->
-<p>Here is some multiple choice question text. Pick a thing.</p>
-<div class="radio">
-  <label><input type="radio" name="optradio">Option 1</label>
-</div>
-<div class="radio">
-  <label><input type="radio" name="optradio">Option 2</label>
-</div>
-<div class="radio disabled">
-  <label><input type="radio" name="optradio" disabled>Option 3</label>
-</div>
-
-<!-- DROPDOWN -->
-<p>Here is some dropdown question text. Pick a thing.</p>
-<div class="form-group">
-  <label for="sel1">Select list:</label>
-  <select class="form-control" id="sel1">
-    <option>1</option>
-    <option>2</option>
-    <option>3</option>
-    <option>4</option>
-  </select>
-</div>
+<button onclick="location.href = 'multiplechoice/'" type="button">Create Survey</button> 
 
 {% endblock %}
 
