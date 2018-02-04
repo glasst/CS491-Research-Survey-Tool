@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% block title %}<title>Multiple Choice Page</title>{% endblock %}
+	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+{% block content %}
+
+<h3>things sent from views.py:</h3>
+<p>question type: {{question_type}}</p>
+<p>question text: {{question_text}}</p>
+<p>question options: {{question_options}}</p>
+
+<!-- MULTIPLE CHOICE -->
+<!--
+<p>Here is some multiple choice question text. Pick a thing.</p>
+<div class="radio">
+  <label><input type="radio" name="optradio">Option 1</label>
+</div>
+<div class="radio">
+  <label><input type="radio" name="optradio">Option 2</label>
+</div>
+<div class="radio disabled">
+  <label><input type="radio" name="optradio">Option 3</label>
+</div>
+-->
+
+<form action="" method="POST">
+	<!-- csrf token increases security for POST -->		
+	{%csrf_token %}
+	{{ form }}
+	<input type="submit" value="Submit"/>
+</form>
+
+{% endblock %}
+
+</body>
+</html>

@@ -1,4 +1,5 @@
 from django.db import models
+from django import forms
 import uuid
 
 
@@ -29,3 +30,16 @@ class Response(models.Model):
 	response_survey_Id 	= models.ForeignKey(Survey, on_delete=models.PROTECT)
 	response_user_Id = models.ForeignKey(User, on_delete=models.PROTECT)
 	response_text = models.CharField(max_length=400)
+
+
+#create a form class for Questions model
+class QuestionForm(forms.ModelForm):
+	class Meta:
+		model = Question
+		exclude = ['question_Id', 'question_survey_Id']
+		CHOICES = (('MC', 'multiple choice'), ('TE', 'text entry'), ('CB', 'checkboxes'),)
+		widgets = {
+			'question_type': forms.Select(choices = CHOICES),
+			'question_text': forms.Textarea(attrs={'cols':50, 'rows': 30}),
+		}
+
