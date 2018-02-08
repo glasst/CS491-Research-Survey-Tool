@@ -13,11 +13,20 @@ def index(request):
 	
 	if request.method == 'POST':
 		form = SurveyForm(request.POST)
+		#creator = request.user
+		#form.fields['creator_Id'] = creator
+
 		if form.is_valid():
-			creator = request.user
-			form.set_creator_foreign_key(creator)
+			#creator = request.user
+			#form.set_creator_foreign_key(creator)
 			
-			form.save()
+			form.save()	
+
+			#f = form.save(commit=False)
+			#f.creator_Id = request.user
+			#SurveyForm.objects.create(creator_Id=request.user)
+			#f.save()
+
 			return HttpResponseRedirect('newquestion/')
 	else:
 		form = SurveyForm()

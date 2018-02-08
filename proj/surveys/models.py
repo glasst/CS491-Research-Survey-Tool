@@ -57,6 +57,10 @@ class SurveyForm(forms.ModelForm):
 	class Meta:
 		model = Survey
 		fields = '__all__'
+		widgets = {
+			'survey_Id': forms.HiddenInput(),
+			'creator_Id': forms.HiddenInput(),
+		}
 	def set_creator_foreign_key(self, arg):
 		creator_Id=arg
 
