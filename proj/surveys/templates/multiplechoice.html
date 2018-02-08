@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	{% block title %}<title>Multiple Choice Page</title>{% endblock %}
+	{% block title %}<title>Multiple Choice Creation</title>{% endblock %}
 	<meta charset="utf-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- Latest compiled and minified CSS -->
@@ -16,25 +16,7 @@
 
 <body>
 {% block content %}
-
-<h3>things sent from views.py:</h3>
-<p>question type: {{question_type}}</p>
-<p>question text: {{question_text}}</p>
-<p>question options: {{question_options}}</p>
-
-<!-- MULTIPLE CHOICE -->
-<!--
-<p>Here is some multiple choice question text. Pick a thing.</p>
-<div class="radio">
-  <label><input type="radio" name="optradio">Option 1</label>
-</div>
-<div class="radio">
-  <label><input type="radio" name="optradio">Option 2</label>
-</div>
-<div class="radio disabled">
-  <label><input type="radio" name="optradio">Option 3</label>
-</div>
--->
+<h1>Multiple Choice</h1>
 
 <form action="" method="POST">
 	<!-- csrf token increases security for POST -->		
