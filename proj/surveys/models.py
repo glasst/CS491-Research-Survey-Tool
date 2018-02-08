@@ -15,7 +15,7 @@ class User(models.Model):
 
 class Survey(models.Model):
 	survey_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-	creator_Id = models.ForeignKey(User, on_delete=models.PROTECT)
+	creator_Id = models.ForeignKey(User, on_delete=models.PROTECT) #default=, SET_DEFAULT=True
 
 class Question(models.Model):
 	question_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
@@ -52,20 +52,29 @@ class Response(models.Model):
 	response_text = models.CharField(max_length=400)
 
 
-#create a form class for Questions model
+#form class for Survey model
+class SurveyForm(forms.ModelForm):
+	class Meta:
+		model = Survey
+		fields = '__all__'
+	def set_creator_foreign_key(self, arg):
+		creator_Id=arg
+
+#form class for Question model
 class QuestionForm(forms.ModelForm):
 	class Meta:
 		model = Question
-		#exclude = ['question_Id', 'question_survey_Id']
 		fields = '__all__'
 		CHOICES = (('MC', 'multiplechoice'), ('TE', 'textentry'), ('CB', 'checkbox'),)
 		widgets = {
 			'question_type': forms.Select(choices = CHOICES),
 			'question_text': forms.Textarea(attrs={'cols':50, 'rows': 5}),
 		}
-		def clean_question_type(self):
-		    data = self.cleaned_data['question_type']
-		    return data
+		#def clean_question_type(self):
+		#    data = self.cleaned_data['question_type']
+		#    return data
+		#def set_survey_foreign_key(self, arg):
+		#	question_survey_Id=arg
 
 
 class MCQuestionForm(forms.ModelForm):

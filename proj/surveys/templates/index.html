@@ -16,18 +16,22 @@
 
 <body>
 {% block content %}
-<h1>Polls</h1>
+<h1>Research Survey Tool</h1>
+<p> welcome to the Research Survey Tool's survey creation page</p>
 
-<p> welcome to the <em>polls</em> site</p>
-
-<h2>Dynamic content...</h2>
-
+<h4>Dynamic content...</h4>
 <p>there are this many users: {{num_users}}</p>
 <p>there are this many surveys: {{num_surveys}}</p>
 
 <h1>here is the survey creation form:</h1>
 
-<button onclick="location.href = 'newquestion/'" type="button">Create Survey</button> 
+<!-- <button onclick="location.href = 'newquestion/'" type="button">Create Survey</button> -->
+
+<form action="" method="POST">	
+	{% csrf_token %}
+	{{ form }}
+	<input type="submit" value="Submit"/>
+</form>
 
 {% endblock %}
 
