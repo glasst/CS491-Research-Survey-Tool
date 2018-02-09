@@ -5,6 +5,9 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
+#experimental
+from surveys.models import UserForm
+
 def index(request):
     template = loader.get_template('login/index.html')
     context = {}
@@ -12,12 +15,16 @@ def index(request):
 
 def signup(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+       	form = UserCreationForm(request.POST)
+
+        form2 = UserForm(request.POST) ###
+
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
+            form2.fields['user_Id'] = request.user ### this gives username, not UUID
             login(request, user)
             return redirect('profile')
     else:

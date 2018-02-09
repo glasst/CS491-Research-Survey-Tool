@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from .models import User, Survey, Question, Response, SurveyForm, QuestionForm
+from .models import User, Survey, Question, Response, SurveyForm, QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm
 
 #experimental
 #from django.contrib.formtools.wizard.views import SessionWizardView
@@ -10,22 +10,26 @@ from .models import User, Survey, Question, Response, SurveyForm, QuestionForm
 def index(request):
 	num_users = User.objects.all().count()
 	num_surveys = Survey.objects.all().count()
+
+	creator = request.user
 	
 	if request.method == 'POST':
+		#form = SurveyForm(request.POST or None, initial={'creator_Id':creator,})
 		form = SurveyForm(request.POST)
-		#creator = request.user
 		#form.fields['creator_Id'] = creator
+
+		#usr = form.set_creator_foreign_key(creator)
 
 		if form.is_valid():
 			#creator = request.user
 			#form.set_creator_foreign_key(creator)
 			
+			#form.cleaned_data['creator_Id'] = creator
 			form.save()	
 
-			#f = form.save(commit=False)
-			#f.creator_Id = request.user
-			#SurveyForm.objects.create(creator_Id=request.user)
-			#f.save()
+			#bbb = form.save(commit=False)
+			#bbb.creator_Id = creator
+			#bbb.save()
 
 			return HttpResponseRedirect('newquestion/')
 	else:
@@ -35,7 +39,7 @@ def index(request):
 	return render(
 		request,
 		'index.html',
-		context={'form':form, 'num_users':num_users, 'num_surveys':num_surveys},
+		context={'form':form, 'num_users':num_users, 'num_surveys':num_surveys, 'userID':creator},
 	)
 
 
@@ -82,7 +86,7 @@ def multiplechoice(request):
 			form.save() #save to DB
 			return HttpResponseRedirect('/surveys/newquestion')
 	else:
-		form = QuestionForm()
+		form = MCQuestionForm()
 
 	return render(
 		request,
@@ -99,7 +103,7 @@ def textentry(request):
 			form.save() #save to DB
 			return HttpResponseRedirect('/surveys/newquestion')
 	else:
-		form = QuestionForm()
+		form = TEQuestionForm()
 
 	return render(
 		request,
@@ -116,7 +120,7 @@ def checkbox(request):
 			form.save() #save to DB
 			return HttpResponseRedirect('/surveys/newquestion')
 	else:
-		form = QuestionForm()
+		form = CBQuestionForm()
 
 	return render(
 		request,

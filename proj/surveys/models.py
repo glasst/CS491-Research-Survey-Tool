@@ -4,24 +4,25 @@ import uuid
 
 
 class User(models.Model):
-        user_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-        username = models.CharField(max_length=45)
-        email = models.CharField(max_length=255)
-        password = models.CharField(max_length=32)
-        create_time = models.DateTimeField(auto_now=True)
-        first_name = models.CharField(max_length=45)
-        last_name = models.CharField(max_length=45)
-        role = models.CharField(max_length=1)
+		user_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+		username = models.CharField(max_length=45)
+		#username = models.CharField(primary_key=True, max_length=45)
+		email = models.CharField(max_length=255)
+		password = models.CharField(max_length=32)
+		create_time = models.DateTimeField(auto_now=True)
+		first_name = models.CharField(max_length=45)
+		last_name = models.CharField(max_length=45)
+		role = models.CharField(max_length=1)
 
 class Survey(models.Model):
 	survey_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-	creator_Id = models.ForeignKey(User, on_delete=models.PROTECT) #default=, SET_DEFAULT=True
+	creator_Id = models.ForeignKey(User, on_delete=models.PROTECT)
 
 class Question(models.Model):
 	question_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
 	question_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT)
 	question_type = models.CharField(max_length=20)
-	question_text = models.CharField(max_length=400)
+	#question_text = models.CharField(max_length=400)
 
 class MCQuestion(models.Model):
 	question_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
@@ -52,17 +53,26 @@ class Response(models.Model):
 	response_text = models.CharField(max_length=400)
 
 
+class UserForm(forms.ModelForm):
+	class Meta: 
+		model = User
+		fields = ['username',]
+
 #form class for Survey model
 class SurveyForm(forms.ModelForm):
 	class Meta:
 		model = Survey
 		fields = '__all__'
+		#fields = ['survey_Id',]
 		widgets = {
 			'survey_Id': forms.HiddenInput(),
-			'creator_Id': forms.HiddenInput(),
+			#'creator_Id': forms.HiddenInput(),
 		}
 	def set_creator_foreign_key(self, arg):
-		creator_Id=arg
+		#creator_Id=arg
+		usr = User.objects.get(username=arg)
+		creator_Id = usr
+
 
 #form class for Question model
 class QuestionForm(forms.ModelForm):
@@ -71,8 +81,9 @@ class QuestionForm(forms.ModelForm):
 		fields = '__all__'
 		CHOICES = (('MC', 'multiplechoice'), ('TE', 'textentry'), ('CB', 'checkbox'),)
 		widgets = {
+			'question_Id': forms.HiddenInput(),
 			'question_type': forms.Select(choices = CHOICES),
-			'question_text': forms.Textarea(attrs={'cols':50, 'rows': 5}),
+			#'question_text': forms.Textarea(attrs={'cols':50, 'rows': 5,}),
 		}
 		#def clean_question_type(self):
 		#    data = self.cleaned_data['question_type']
@@ -86,6 +97,7 @@ class MCQuestionForm(forms.ModelForm):
 		model = MCQuestion
 		fields= '__all__'
 		widgets = {
+			'question_Id': forms.HiddenInput(),
 			'question_text': forms.Textarea(attrs={'cols':50, 'rows': 5}),
 			'option_1': forms.Textarea(attrs={'cols':10, 'rows': 2}),
 			'option_2': forms.Textarea(attrs={'cols':10, 'rows': 2}),
@@ -98,6 +110,7 @@ class TEQuestionForm(forms.ModelForm):
 		model = TEQuestion
 		fields= '__all__'
 		widgets = {
+			'question_Id': forms.HiddenInput(),
 			'question_text': forms.Textarea(attrs={'cols':50, 'rows': 5}),
 		}
 class CBQuestionForm(forms.ModelForm):
@@ -105,6 +118,7 @@ class CBQuestionForm(forms.ModelForm):
 		model = CBQuestion
 		fields= '__all__'
 		widgets = {
+			'question_Id': forms.HiddenInput(),
 			'question_text': forms.Textarea(attrs={'cols':50, 'rows': 5}),
 			'option_1': forms.Textarea(attrs={'cols':10, 'rows': 2}),
 			'option_2': forms.Textarea(attrs={'cols':10, 'rows': 2}),
