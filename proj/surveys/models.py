@@ -131,5 +131,8 @@ class CBQuestionForm(forms.ModelForm):
 
 class TakeSurveyForm(forms.Form):
 	survey_to_take = forms.ModelChoiceField(queryset=Survey.objects.all())
+
+#class TakeSurveyQuestionForm(forms.Form):
+#	questions = forms.ModelChoiceField(queryset=Survey.objects.all())
 			
 

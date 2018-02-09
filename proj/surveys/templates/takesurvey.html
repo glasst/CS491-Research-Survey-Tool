@@ -21,18 +21,6 @@
 
 <p>link on info for querying: https://docs.djangoproject.com/en/2.0/topics/db/queries/ </p>
 
-<!--
-<h3>Select a survey to take:</h3>
-<form method="POST" action="/survey-completion/">
-<select>
-	{% for s in surveys %}	
-	<option value={{s}}>{{s}}</option>
-	{% endfor %}
-</select>
-<input type="submit" value="Choose">
-</form>
--->
-
 <h3>Select a survey to take:</h3>
 <form action="" method="POST">	
 	{% csrf_token %}

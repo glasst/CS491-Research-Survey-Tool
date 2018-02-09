@@ -151,6 +151,8 @@ def takesurvey(request):
 	if request.method == 'POST':
 		form = TakeSurveyForm(request.POST)
 		if form.is_valid():
+			request.session['survey_to_take'] = form.cleaned_data.get('survey_to_take')
+			#return HttpResponseRedirect('/surveys/survey-completion', surveyid=request.POST['survey_to_take'])
 			return HttpResponseRedirect('/surveys/survey-completion')
 	else:
 		form = TakeSurveyForm()
@@ -161,9 +163,15 @@ def takesurvey(request):
 	)
 
 
+#def surveycompletion(request, surveyid):
 def surveycompletion(request):
+	#NEED SURVEY ID
+	surveyid = request.session.get('survey_to_take')
+	questions = Question.objects.filter(question_survey_Id = surveyid)
+
 	return render (
 		request,
 		'survey-completion.html',
+		{'surveyid':surveyid, 'questions':questions}
 	)
 
