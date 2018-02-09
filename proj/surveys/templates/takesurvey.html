@@ -18,11 +18,20 @@
 {% block content %}
 
 <h1>Select a survey to take:</h1>
+
+<p>link on info for querying: https://docs.djangoproject.com/en/2.0/topics/db/queries/ </p>
+<!--
 <form action="" method="POST">	
 	{% csrf_token %}
 	{{ form }}
 	<input type="submit" value="Create Survey"/>
 </form>
+-->
+
+<h3>here are all the surveys:</h3>
+{% for s in surveys %}
+	<p>{{ s }}</p>
+{% endfor %}
 
 {% endblock %}
 

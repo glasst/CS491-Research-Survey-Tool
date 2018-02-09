@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from .models import User, Survey, Question, Response, SurveyForm, QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm
+from django.db.models import Q
 
 #experimental
 #from django.contrib.formtools.wizard.views import SessionWizardView
@@ -133,9 +134,16 @@ def checkbox(request):
 
 ### VIEWS FOR SURVEY TAKING ###
 def takesurvey(request):
+	surveyslist = []
+	surveys = Survey.objects.all()
+
+	for s in surveys:
+		surveyslist.append(s)
+
 	return render(
 		request,
-		'takesurvey.html'
+		'takesurvey.html',
+		context={'surveys':surveyslist},
 	)
 
 
