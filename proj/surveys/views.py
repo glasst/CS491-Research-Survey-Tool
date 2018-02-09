@@ -135,6 +135,16 @@ def checkbox(request):
 ### VIEWS FOR SURVEY TAKING ###
 def takesurvey(request):
 	surveyslist = []
+	creator = request.user
+	#usrs = User.objects.all()
+	#usr = NULL
+	#for u in usrs:
+	#	if usr.fields['username'] == creator:
+	#		usr = u
+	#surveys = Survey.objects.filter(creator_Id = u)
+
+	#usr = User.objects.filter(username = creator)
+
 	surveys = Survey.objects.all()
 
 	for s in surveys:
