@@ -127,5 +127,9 @@ class CBQuestionForm(forms.ModelForm):
 			'option_4': forms.Textarea(attrs={'cols':10, 'rows': 2}),
 			'option_5': forms.Textarea(attrs={'cols':10, 'rows': 2}),
 		}
+
+
+class TakeSurveyForm(forms.Form):
+	survey_to_take = forms.ModelChoiceField(queryset=Survey.objects.all())
 			
 

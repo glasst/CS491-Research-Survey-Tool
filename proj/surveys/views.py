@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from .models import User, Survey, Question, Response, SurveyForm, QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm
+from .models import User, Survey, Question, Response, SurveyForm, QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, TakeSurveyForm
 from django.db.models import Q
 
 #experimental
@@ -144,17 +144,26 @@ def takesurvey(request):
 	#surveys = Survey.objects.filter(creator_Id = u)
 
 	#usr = User.objects.filter(username = creator)
+	#surveys = Survey.objects.all()
+	#for s in surveys:
+	#	surveyslist.append(s)
 
-	surveys = Survey.objects.all()
-
-	for s in surveys:
-		surveyslist.append(s)
-
+	if request.method == 'POST':
+		form = TakeSurveyForm(request.POST)
+		if form.is_valid():
+			return HttpResponseRedirect('/surveys/survey-completion')
+	else:
+		form = TakeSurveyForm()
 	return render(
 		request,
 		'takesurvey.html',
-		context={'surveys':surveyslist},
+		{'form':form}
 	)
 
 
+def surveycompletion(request):
+	return render (
+		request,
+		'survey-completion.html',
+	)
 
