@@ -7,6 +7,7 @@ urlpatterns = [
 
 	# ex: /surveys/newquestion/
 	path('newquestion/', views.newquestion, name='newquestion'),
+	path('takesurvey/', views.takesurvey, name='takesurvey'),
 
 	# ex: /surveys/multiplechoice.html
 	path('multiplechoice.html', views.multiplechoice, name='multiplechoice'),

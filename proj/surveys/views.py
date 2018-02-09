@@ -8,6 +8,7 @@ from .models import User, Survey, Question, Response, SurveyForm, QuestionForm, 
 # Create your views here.
 
 def index(request):
+
 	num_users = User.objects.all().count()
 	num_surveys = Survey.objects.all().count()
 
@@ -42,7 +43,7 @@ def index(request):
 		context={'form':form, 'num_users':num_users, 'num_surveys':num_surveys, 'userID':creator},
 	)
 
-
+### VIEWS FOR SURVEY MAKING ###
 def newquestion(request):
 	QUESTIONPAGES = {
 		'MC': 'multiplechoice.html', 
@@ -127,4 +128,15 @@ def checkbox(request):
 		'checkbox.html',
 		context={'form':form},
 	)
+
+
+
+### VIEWS FOR SURVEY TAKING ###
+def takesurvey(request):
+	return render(
+		request,
+		'takesurvey.html'
+	)
+
+
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	{% block title %}<title>Polls Site</title>{% endblock %}
+	{% block title %}<title>Take a Survey</title>{% endblock %}
 	<meta charset="utf-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- Latest compiled and minified CSS -->
@@ -16,23 +16,13 @@
 
 <body>
 {% block content %}
-<h1>Research Survey Tool</h1>
-<p> welcome to the Research Survey Tool's survey creation page</p>
 
-<h4>Dynamic content...</h4>
-<p>there are this many users: {{num_users}}</p>
-<p>user ID: {{ userID }} </p>
-<p>there are this many surveys: {{num_surveys}}</p>
-
-<h1>Here is the survey creation form:</h1>
+<h1>Select a survey to take:</h1>
 <form action="" method="POST">	
 	{% csrf_token %}
 	{{ form }}
 	<input type="submit" value="Create Survey"/>
 </form>
-
-<h1>Here is the survey taking link:</h1>
-<button onclick="location.href = 'takesurvey'" type="button">Take Survey</button>
 
 {% endblock %}
 

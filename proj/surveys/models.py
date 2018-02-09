@@ -69,7 +69,8 @@ class SurveyForm(forms.ModelForm):
 			#'creator_Id': forms.HiddenInput(),
 		}
 	def set_creator_foreign_key(self, arg):
-		#creator_Id=arg
+		# https://docs.djangoproject.com/en/2.0/topics/db/queries/
+		#srvy = Survey.objects.get(pk=1)
 		usr = User.objects.get(username=arg)
 		creator_Id = usr
 
