@@ -1,10 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from .models import User, Survey, Question, Response, SurveyForm, QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, TakeSurveyForm
-from django.db.models import Q
-
-#experimental
-#from django.contrib.formtools.wizard.views import SessionWizardView
 
 # Create your views here.
 
@@ -37,7 +33,6 @@ def index(request):
 	else:
 		form = SurveyForm()
 
-	#create and return an html page as a response
 	return render(
 		request,
 		'index.html',
@@ -72,12 +67,6 @@ def newquestion(request):
 		'newquestion.html',
 		context={'form':form},
 	)
-
-#class SurveyWizard(SessionWizardView):
-#	def done(self, form_list, form_dict, **kwargs):
-#		surveystep = form_list['SurveyForm']
-#		survey_data = self.get_cleaned_data_for_step(surveystep)
-
 
 
 def multiplechoice(request):
@@ -135,23 +124,11 @@ def checkbox(request):
 ### VIEWS FOR SURVEY TAKING ###
 def takesurvey(request):
 	creator = request.user
-	#usrs = User.objects.all()
-	#usr = NULL
-	#for u in usrs:
-	#	if usr.fields['username'] == creator:
-	#		usr = u
-	#surveys = Survey.objects.filter(creator_Id = u)
-
-	#usr = User.objects.filter(username = creator)
-	#surveys = Survey.objects.all()
-	#for s in surveys:
-	#	surveyslist.append(s)
 
 	if request.method == 'POST':
 		form = TakeSurveyForm(request.POST, user=request.user)
 		if form.is_valid():
 			request.session['survey_to_take'] = form.cleaned_data.get('survey_to_take')
-			#return HttpResponseRedirect('/surveys/survey-completion', surveyid=request.POST['survey_to_take'])
 			return HttpResponseRedirect('/surveys/survey-completion')
 	else:
 		form = TakeSurveyForm(user=request.user)
@@ -162,9 +139,7 @@ def takesurvey(request):
 	)
 
 
-#def surveycompletion(request, surveyid):
 def surveycompletion(request):
-	#NEED SURVEY ID
 	surveyid = request.session.get('survey_to_take')
 	questions = Question.objects.filter(question_survey_Id = surveyid)
 

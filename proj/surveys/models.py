@@ -15,20 +15,6 @@ class User(models.Model):
 		last_name = models.CharField(max_length=45)
 		role = models.CharField(max_length=1)
 
-#class Profile(models.Model):
-#	user = models.OneToOneField(User, on_delete=models.CASCADE)
-#	username = models.CharField(max_length=45)
-
-#@receiver(post_save, sender=User)
-#def create_user_profile(sender, instance, created, **kwargs):
-#    if created:
-#        Profile.objects.create(user=instance)
-
-#@receiver(post_save, sender=User)
-#def save_user_profile(sender, instance, **kwargs):
-#    instance.profile.save()
-
-
 class Survey(models.Model):
 	survey_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
 	creator_Id = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -148,9 +134,5 @@ class TakeSurveyForm(forms.Form):
 	def __init__(self, *args, **kwargs):
 		self.user = kwargs.pop('user')
 		super(TakeSurveyForm, self).__init__(*args, **kwargs)
-		self.fields['survey_to_take'] = forms.ModelChoiceField(queryset=Survey.objects.filter(creator_Id__username=self.user))
-
-#class TakeSurveyQuestionForm(forms.Form):
-#	questions = forms.ModelChoiceField(queryset=Survey.objects.all())
-			
+		self.fields['survey_to_take'] = forms.ModelChoiceField(queryset=Survey.objects.filter(creator_Id__username=self.user))		
 
