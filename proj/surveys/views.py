@@ -134,7 +134,6 @@ def checkbox(request):
 
 ### VIEWS FOR SURVEY TAKING ###
 def takesurvey(request):
-	surveyslist = []
 	creator = request.user
 	#usrs = User.objects.all()
 	#usr = NULL
@@ -149,13 +148,13 @@ def takesurvey(request):
 	#	surveyslist.append(s)
 
 	if request.method == 'POST':
-		form = TakeSurveyForm(request.POST)
+		form = TakeSurveyForm(request.POST, user=request.user)
 		if form.is_valid():
 			request.session['survey_to_take'] = form.cleaned_data.get('survey_to_take')
 			#return HttpResponseRedirect('/surveys/survey-completion', surveyid=request.POST['survey_to_take'])
 			return HttpResponseRedirect('/surveys/survey-completion')
 	else:
-		form = TakeSurveyForm()
+		form = TakeSurveyForm(user=request.user)
 	return render(
 		request,
 		'takesurvey.html',

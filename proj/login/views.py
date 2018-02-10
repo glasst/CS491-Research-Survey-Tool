@@ -17,14 +17,14 @@ def signup(request):
     if request.method == 'POST':
        	form = UserCreationForm(request.POST)
 
-        form2 = UserForm(request.POST) ###
+        #form2 = UserForm(request.POST) ###
 
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
-            form2.fields['user_Id'] = request.user ### this gives username, not UUID
+            #form2.fields['user_Id'] = request.user ### this gives username, not UUID
             login(request, user)
             return redirect('profile')
     else:
