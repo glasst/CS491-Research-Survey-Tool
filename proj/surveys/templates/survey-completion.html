@@ -21,11 +21,15 @@
 <p>link for multiple forms on one page: https://rock-it.pl/multiple-forms-on-one-page-in-django/</p>
 
 
-<p>survey id: {{str(surveyid)}}</p>
+<p>survey id: {{surveyid}}</p>
 
 <p>questions:</p>
 {% for q in questions %}
-<p>{{ q }}</p>
+<p> {{ q }} </p>
+<p> question_ID: {{ q.get_Id }}</p>
+<p> question_survey_ID: {{ q.get_survey_Id }}</p>
+<p> question_type: {{ q.question_type  }}</p>
+<br />
 {% endfor %}
 
 

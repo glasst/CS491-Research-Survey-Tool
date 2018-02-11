@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from .models import User, Survey, Question, Response, SurveyForm, QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, TakeSurveyForm
+from django.contrib.auth.models import User
+from .models import Survey, Question, Response, SurveyForm, QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, TakeSurveyForm
 
 # Create your views here.
 
@@ -149,3 +150,6 @@ def surveycompletion(request):
 		{'surveyid':surveyid, 'questions':questions}
 	)
 
+
+def questiondetail(request):
+        surveyid = request.session.get('survey_to_take')
