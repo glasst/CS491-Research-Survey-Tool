@@ -3,9 +3,20 @@ from django.contrib.auth.models import User
 from django import forms
 import uuid
 
+import json
+from uuid import UUID
+from json import JSONEncoder
+
+class UUIDEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, UUID):
+            # if the obj is uuid, we simply return the value of uuid
+            return obj.hex
+        return json.JSONEncoder.default(self, obj)
+
 
 class User(models.Model):
-		user_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+		user_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
 		username = models.CharField(max_length=45)
 		#username = models.CharField(primary_key=True, max_length=45)
 		email = models.CharField(max_length=255)
@@ -16,17 +27,17 @@ class User(models.Model):
 		role = models.CharField(max_length=1)
 
 class Survey(models.Model):
-	survey_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+	survey_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
 	creator_Id = models.ForeignKey(User, on_delete=models.PROTECT)
 
 class Question(models.Model):
-	question_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+	question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
 	question_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT)
 	question_type = models.CharField(max_length=20)
 	#question_text = models.CharField(max_length=400)
 
 class MCQuestion(models.Model):
-	question_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+	question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
 	question_text = models.CharField(max_length=400)
 	option_1 = models.CharField(max_length=100)
 	option_2 = models.CharField(max_length=100)
@@ -34,10 +45,10 @@ class MCQuestion(models.Model):
 	option_4 = models.CharField(max_length=100)
 	option_5 = models.CharField(max_length=100)
 class TEQuestion(models.Model):
-	question_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+	question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
 	question_text = models.CharField(max_length=400)
 class CBQuestion(models.Model):
-	question_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+	question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
 	question_text = models.CharField(max_length=400)
 	option_1 = models.CharField(max_length=100)
 	option_2 = models.CharField(max_length=100)
@@ -46,7 +57,7 @@ class CBQuestion(models.Model):
 	option_5 = models.CharField(max_length=100)
 
 class Response(models.Model):
-	response_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+	response_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
 	response_question_Id = models.ForeignKey(Question, on_delete=models.PROTECT)
 	#response_question_type = models.ForeignKey(Questions, on_delete=models.PROTECT)
 	response_survey_Id 	= models.ForeignKey(Survey, on_delete=models.PROTECT)
@@ -134,5 +145,12 @@ class TakeSurveyForm(forms.Form):
 	def __init__(self, *args, **kwargs):
 		self.user = kwargs.pop('user')
 		super(TakeSurveyForm, self).__init__(*args, **kwargs)
-		self.fields['survey_to_take'] = forms.ModelChoiceField(queryset=Survey.objects.filter(creator_Id__username=self.user))		
+		#survlist = Survey.objects.filter(creator_Id__username=self.user)
+		#newlist = []
+		#for surv in survlist:
+		#	newlist.append(json.dumps(getattr(surv, 'survey_Id'), cls=UUIDEncoder))
+		#self.fields['survey_to_take'] = forms.ModelChoiceField(queryset=newlist)
+
+		#self.fields['survey_to_take'] = forms.ModelChoiceField(queryset=json.dumps(Survey.objects.filter(creator_Id__username=self.user), cls=UUIDEncoder))	
+		self.fields['survey_to_take'] = forms.ModelChoiceField(queryset=Survey.objects.filter(creator_Id__username=self.user))
 
