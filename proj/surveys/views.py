@@ -17,12 +17,11 @@ class UUIDEncoder(json.JSONEncoder):
 # Create your views here.
 
 def index(request):
-
 	num_users = User.objects.all().count()
 	num_surveys = Survey.objects.all().count()
+	creator = User.objects.get(username=request.user.username)
+	survey_list = Survey.objects.filter(creator_Id=creator)
 
-	creator = request.user
-	
 	if request.method == 'POST':
 		#form = SurveyForm(request.POST or None, initial={'creator_Id':creator,})
 		form = SurveyForm(request.POST)
@@ -33,9 +32,9 @@ def index(request):
 		if form.is_valid():
 			#creator = request.user
 			#form.set_creator_foreign_key(creator)
-			
+
 			#form.cleaned_data['creator_Id'] = creator
-			form.save()	
+			form.save()
 
 			#bbb = form.save(commit=False)
 			#bbb.creator_Id = creator
@@ -52,10 +51,40 @@ def index(request):
 	)
 
 ### VIEWS FOR SURVEY MAKING ###
+
+def editsurvey(request):
+	s = None
+	if 'id' in request.GET: request.session['survey'] = request.GET['id']
+	if 'survey' in request.session:
+		try:
+			sid = UUID(request.session['survey'], version=4)
+			s = Survey.objects.get(survey_Id=sid)
+		except: return HttpResponseRedirect('/surveys')
+
+	if not s: return HttpResponseRedirect('/surveys')
+
+	if request.method == 'POST':
+		if 'add' in request.POST and request.POST['add']:
+			typ = request.POST['type']
+			try: s = Survey.objects.get(survey_Id=request.session['survey'])
+			except: return HttpResponseRedirect('/surveys')
+			if typ == 'MC':
+				q = MCQuestion(question_survey_Id=s, question_text=request.POST['add'], option_1=request.POST['op1'], option_2=request.POST['op2'])
+				q.save()
+		elif 'remove' in request.POST:
+			MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
+
+	return render(
+		request,
+		'edit.html',
+		context={'survey':request.session['survey'], 'mcquestions':MCQuestion.objects.filter(question_survey_Id=s.survey_Id)},
+	)
+
+
 def newquestion(request):
 	QUESTIONPAGES = {
-		'MC': 'multiplechoice.html', 
-		'TE': 'textentry.html', 
+		'MC': 'multiplechoice.html',
+		'TE': 'textentry.html',
 		'CB': 'checkbox.html',
 	}
 	nextpage = '/surveys/'
@@ -73,7 +102,7 @@ def newquestion(request):
 			return HttpResponseRedirect(nextpage)
 	else:
 		form = QuestionForm()
-	
+
 	return render(
 		request,
 		'newquestion.html',
@@ -85,7 +114,7 @@ def multiplechoice(request):
 	if request.method == 'POST':
 		form = MCQuestionForm(request.POST)
 		if form.is_valid():
-			
+
 			form.save() #save to DB
 			return HttpResponseRedirect('/surveys/newquestion')
 	else:
@@ -102,7 +131,7 @@ def textentry(request):
 	if request.method == 'POST':
 		form = TEQuestionForm(request.POST)
 		if form.is_valid():
-			
+
 			form.save() #save to DB
 			return HttpResponseRedirect('/surveys/newquestion')
 	else:
@@ -119,7 +148,7 @@ def checkbox(request):
 	if request.method == 'POST':
 		form = CBQuestionForm(request.POST)
 		if form.is_valid():
-			
+
 			form.save() #save to DB
 			return HttpResponseRedirect('/surveys/newquestion')
 	else:
@@ -135,7 +164,6 @@ def checkbox(request):
 
 ### VIEWS FOR SURVEY TAKING ###
 def takesurvey(request):
-	creator = request.user
 
 	if request.method == 'POST':
 		form = TakeSurveyForm(request.POST, user=request.user)
@@ -178,8 +206,3 @@ def surveycompletion(request):
 		'survey-completion.html',
 		{'surveyid':surveyid, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
 	)
-
-'''
-def questiondetail(request):
-        surveyid = request.session.get('survey_to_take')
-'''

@@ -30,6 +30,7 @@ class User(models.Model):
 class Survey(models.Model):
 	survey_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
 	creator_Id = models.ForeignKey(User, on_delete=models.CASCADE)
+	title = models.CharField(max_length=100, null=True)
 
 class Question(models.Model):
 	question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
@@ -38,6 +39,8 @@ class Question(models.Model):
 	#question_text = models.CharField(max_length=400)
 
 class MCQuestion(models.Model):
+	question_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+	question_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT, null=True)
 	question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
 	question_text = models.CharField(max_length=400)
 	option_1 = models.CharField(max_length=100)
@@ -65,9 +68,8 @@ class Response(models.Model):
 	response_user_Id = models.ForeignKey(User, on_delete=models.PROTECT)
 	response_text = models.CharField(max_length=400)
 
-
 class UserForm(forms.ModelForm):
-	class Meta: 
+	class Meta:
 		model = User
 		fields = ['username',]
 
@@ -145,6 +147,5 @@ class CBQuestionForm(forms.ModelForm):
 class TakeSurveyForm(forms.Form):
 	def __init__(self, *args, **kwargs):
 		self.user = kwargs.pop('user')
-		super(TakeSurveyForm, self).__init__(*args, **kwargs)	
+		super(TakeSurveyForm, self).__init__(*args, **kwargs)
 		self.fields['survey_to_take'] = forms.ModelChoiceField(queryset=Survey.objects.filter(creator_Id__username=self.user))
-
