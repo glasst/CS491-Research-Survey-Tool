@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from .models import User, Survey, Question, Response, SurveyForm, QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, TakeSurveyForm
+from .models import User, Survey, Question, MCQuestion, TEQuestion, CBQuestion, Response, SurveyForm, QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, TakeSurveyForm
 
 import json
 from uuid import UUID
@@ -140,7 +140,6 @@ def takesurvey(request):
 	if request.method == 'POST':
 		form = TakeSurveyForm(request.POST, user=request.user)
 		if form.is_valid():
-			#request.session['survey_to_take'] = json.dumps(getattr(form.cleaned_data.get('survey_to_take'), 'survey_Id'), cls=UUIDEncoder)
 			request.session['survey_to_take'] = getattr(form.cleaned_data.get('survey_to_take'), 'survey_Id').hex
 			return HttpResponseRedirect('/surveys/survey-completion')
 	else:
@@ -156,9 +155,27 @@ def surveycompletion(request):
 	surveyid = request.session.get('survey_to_take')
 	questions = Question.objects.filter(question_survey_Id=surveyid)
 
+	mclist = []
+	telist = []
+	cblist = []
+
+	# Still need to get cross-Question table querying
+	for q in questions:
+		if q.question_type == 'MC':
+			qq = MCQuestion.objects.filter(question_Id=q.question_Id)
+			mclist.append(qq)
+
+		if q.question_type == 'TE':
+			qq = MCQuestion.objects.filter(question_Id=q.question_Id)
+			telist.append(qq)
+
+		if q.question_type == 'CB':
+			qq = MCQuestion.objects.filter(question_Id=q.question_Id)
+			cblist.append(qq)
+
 	return render (
 		request,
 		'survey-completion.html',
-		{'surveyid':surveyid, 'questions':questions}
+		{'surveyid':surveyid, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
 	)
 

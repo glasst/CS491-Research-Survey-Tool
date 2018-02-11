@@ -144,13 +144,6 @@ class CBQuestionForm(forms.ModelForm):
 class TakeSurveyForm(forms.Form):
 	def __init__(self, *args, **kwargs):
 		self.user = kwargs.pop('user')
-		super(TakeSurveyForm, self).__init__(*args, **kwargs)
-		#survlist = Survey.objects.filter(creator_Id__username=self.user)
-		#newlist = []
-		#for surv in survlist:
-		#	newlist.append(json.dumps(getattr(surv, 'survey_Id'), cls=UUIDEncoder))
-		#self.fields['survey_to_take'] = forms.ModelChoiceField(queryset=newlist)
-
-		#self.fields['survey_to_take'] = forms.ModelChoiceField(queryset=json.dumps(Survey.objects.filter(creator_Id__username=self.user), cls=UUIDEncoder))	
+		super(TakeSurveyForm, self).__init__(*args, **kwargs)	
 		self.fields['survey_to_take'] = forms.ModelChoiceField(queryset=Survey.objects.filter(creator_Id__username=self.user))
 
