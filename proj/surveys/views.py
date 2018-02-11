@@ -1,7 +1,18 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from .models import Survey, Question, Response, SurveyForm, QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, TakeSurveyForm
+from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, Response, SurveyForm, QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, TakeSurveyForm
+
+import json
+from uuid import UUID
+from json import JSONEncoder
+
+class UUIDEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, UUID):
+            # if the obj is uuid, we simply return the value of uuid
+            return obj.hex
+        return json.JSONEncoder.default(self, obj)
 
 # Create your views here.
 
@@ -129,7 +140,7 @@ def takesurvey(request):
 	if request.method == 'POST':
 		form = TakeSurveyForm(request.POST, user=request.user)
 		if form.is_valid():
-			request.session['survey_to_take'] = form.cleaned_data.get('survey_to_take')
+			request.session['survey_to_take'] = getattr(form.cleaned_data.get('survey_to_take'), 'survey_Id').hex
 			return HttpResponseRedirect('/surveys/survey-completion')
 	else:
 		form = TakeSurveyForm(user=request.user)
@@ -142,14 +153,33 @@ def takesurvey(request):
 
 def surveycompletion(request):
 	surveyid = request.session.get('survey_to_take')
-	questions = Question.objects.filter(question_survey_Id = surveyid)
+	questions = Question.objects.filter(question_survey_Id=surveyid)
+
+	mclist = []
+	telist = []
+	cblist = []
+
+	# Still need to get cross-Question table querying
+	for q in questions:
+		if q.question_type == 'MC':
+			qq = MCQuestion.objects.filter(question_Id=q.question_Id)
+			mclist.append(qq)
+
+		if q.question_type == 'TE':
+			qq = MCQuestion.objects.filter(question_Id=q.question_Id)
+			telist.append(qq)
+
+		if q.question_type == 'CB':
+			qq = MCQuestion.objects.filter(question_Id=q.question_Id)
+			cblist.append(qq)
 
 	return render (
 		request,
 		'survey-completion.html',
-		{'surveyid':surveyid, 'questions':questions}
+		{'surveyid':surveyid, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
 	)
 
-
+'''
 def questiondetail(request):
         surveyid = request.session.get('survey_to_take')
+'''

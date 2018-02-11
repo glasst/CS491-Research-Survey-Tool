@@ -20,18 +20,54 @@
 <h1>You're taking the survey</h1>
 <p>link for multiple forms on one page: https://rock-it.pl/multiple-forms-on-one-page-in-django/</p>
 
+<p>survey id: {{ surveyid.toString }}</p>
 
-<p>survey id: {{surveyid}}</p>
 
+{% for q in mclist %}
+<p>{{ q.question_type }}</p>
+<p>{{ q.question_text }}</p>
+{% endfor %}
+
+{% for q in telist %}
+<p>{{ q.question_type }}</p>
+<p>{{ q.question_text }}</p>
+{% endfor %}
+
+{% for q in cblist %}
+<p>{{ q.question_type }}</p>
+<p>{{ q.question_text }}</p>
+{% endfor %}
+
+<!--
 <p>questions:</p>
 {% for q in questions %}
+
+
 <p> {{ q }} </p>
 <p> question_ID: {{ q.get_Id }}</p>
 <p> question_survey_ID: {{ q.get_survey_Id }}</p>
 <p> question_type: {{ q.question_type  }}</p>
 <br />
-{% endfor %}
 
+
+{% if q.question_type == 'MC' %}
+<p>{{ q.question_type }}</p>
+<p>{{ q.question_text }}</p>
+
+{% elif q.question_type == 'TE' %}
+<p>{{ q.question_type }}</p>
+<p>{{ q.question_text }}</p>
+
+{% elif q.question_type == 'CB' %}
+<p>{{ q.question_type }}</p>
+<p>{{ q.question_text }}</p>
+
+{% else %}
+<p></p>
+
+{% endif %}
+{% endfor %}
+-->
 
 {% endblock %}
 
