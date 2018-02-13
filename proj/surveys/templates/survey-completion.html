@@ -23,25 +23,14 @@
 
 <p>survey id: {{ surveyid.toString }}</p>
 
-
-{% for q in mclist %}
-<p>{{ q.question_type }}</p>
-<p>{{ q.question_text }}</p>
-{% endfor %}
-
-{% for q in telist %}
-<p>{{ q.question_type }}</p>
-<p>{{ q.question_text }}</p>
-{% endfor %}
-
-{% for q in cblist %}
-<p>{{ q.question_type }}</p>
-<p>{{ q.question_text }}</p>
-{% endfor %}
+<!--
+survey: 	8a1993449c7143b098b47fac60e86ff4
+questions:	
+-->
 
 <!--
 <p>questions:</p>
-{% for q in questions %}
+{% for q in allQ %}
 
 {% if q.question_type == 'MC' %}
 <p>{{ q.question_type }}</p>
@@ -61,6 +50,29 @@
 {% endif %}
 {% endfor %}
 -->
+
+<p>-----</p>
+
+{% for q in mclist %}
+<p>MC{{ q.question_type }}</p>
+<p>{{ q.question_Id }}</p>
+<p>{{ q.question_text|stringformat:"s" }}</p>
+{% endfor %}
+
+<!--
+{% for q in telist %}
+<p>TE{{ q.question_type }}</p>
+<p>{{ q.question_Id }}</p>
+<p>{{ q.question_text }}</p>
+{% endfor %}
+
+{% for q in cblist %}
+<p>CB{{ q.question_type }}</p>
+<p>{{ q.question_Id }}</p>
+<p>{{ q.question_text }}</p>
+{% endfor %}
+-->
+
 
 {% endblock %}
 

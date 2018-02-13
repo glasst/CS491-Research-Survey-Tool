@@ -34,7 +34,12 @@ class Question(models.Model):
 	question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
 	question_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT)
 	question_type = models.CharField(max_length=20)
-	#question_text = models.CharField(max_length=400)
+	#question_text = models.CharField(max_length=400, default="Add question text")
+	#option_1 = models.CharField(max_length=100, default=None, blank=True, null=True)
+	#option_2 = models.CharField(max_length=100, default=None, blank=True, null=True)
+	#option_3 = models.CharField(max_length=100, default=None, blank=True, null=True)
+	#option_4 = models.CharField(max_length=100, default=None, blank=True, null=True)
+	#option_5 = models.CharField(max_length=100, default=None, blank=True, null=True)
 
 class MCQuestion(models.Model):
 	question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))

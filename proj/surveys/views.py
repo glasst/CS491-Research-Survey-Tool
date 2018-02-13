@@ -161,21 +161,23 @@ def surveycompletion(request):
 
 	# Still need to get cross-Question table querying
 	for q in questions:
+		qid = q.question_Id
+		
 		if q.question_type == 'MC':
-			qq = MCQuestion.objects.filter(question_Id=q.question_Id)
+			qq = MCQuestion.objects.filter(question_Id=qid)
 			mclist.append(qq)
 
 		if q.question_type == 'TE':
-			qq = MCQuestion.objects.filter(question_Id=q.question_Id)
+			qq = MCQuestion.objects.filter(question_Id=qid)
 			telist.append(qq)
 
 		if q.question_type == 'CB':
-			qq = MCQuestion.objects.filter(question_Id=q.question_Id)
+			qq = MCQuestion.objects.filter(question_Id=qid)
 			cblist.append(qq)
 
 	return render (
 		request,
 		'survey-completion.html',
-		{'surveyid':surveyid, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
+		{'surveyid':surveyid, 'allQ':questions, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
 	)
 
