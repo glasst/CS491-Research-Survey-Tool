@@ -1,0 +1,12 @@
+{% if all_surveys %}
+
+<ul>
+    <p> List of all surveys: </p>
+    {% for survey in all_surveys %}
+    <li><a href="{% url 'survey' survey.survey_Id %}">{{ survey.title }}</a></li>
+    {% endfor %}
+</ul>
+
+{% else %}
+<h3> You don't have any surveys </h3>
+{% endif %}
