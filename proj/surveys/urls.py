@@ -23,5 +23,9 @@ urlpatterns = [
     path('index', views.survey_index, name='survey_index'),
 
     #/surveys/e06f103b-d6e3-4e77-9442-ef938b621276/
-    path('<uuid:survey_Id>/', views.survey_detail, name='survey')
+    path('<uuid:survey_Id>/', views.survey_detail, name='survey'),
+
+    #delete question
+    #/surveys/e06f103b-d6e3-4e77-9442-ef938b621276/
+    path('<uuid:survey_Id>/deleteq/', views.deleteq, name='deleteq')
 ]

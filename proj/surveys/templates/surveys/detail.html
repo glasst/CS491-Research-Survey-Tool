@@ -1,8 +1,17 @@
 <h1> {{ survey }} </h1>
 
-<ul>
-  {% for question in survey.question_set.all %}
-  <li> {{ question.question_Id }} </li>
-  {% endfor %}
+{% if error_message %}
+<p><strong> {{ error_message }} </strong></p>
+{% endif %}
 
-</ul>
+<form action="{% url 'deleteq' survey.survey_Id %}" method="post">
+  {% csrf_token %}
+
+  {% for question in survey.question_set.all %}
+  <input type="radio" id="question{{ forloop.counter }}" name="question" value="{{ question.question_Id }}">
+  <label for="question{{ forloop.counter }}">
+    {{ question.question_Id }}    
+    </label><br>
+  {% endfor %}
+  <input type="submit" value="delete">
+</form>

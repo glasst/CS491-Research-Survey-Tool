@@ -230,3 +230,17 @@ def survey_detail(request, survey_Id):
     survey = get_object_or_404(Survey, survey_Id=survey_Id)
         
     return render(request, 'surveys/detail.html', {'survey': survey})
+
+
+def deleteq(request, survey_Id):
+    survey = get_object_or_404(Survey, survey_Id=survey_Id)
+    try:
+        selected_question = survey.question_set.get(question_Id=request.POST['question'])
+    except (KeyError, Question.DoesNotExist):
+        return render(request, 'surveys/detail.html', {
+            'question': question,
+            'error_message': "You did not select a valid question",
+            })
+    else:
+        selected_question.delete()
+        return render(request, 'surveys/detail.html', {'survey': survey})
