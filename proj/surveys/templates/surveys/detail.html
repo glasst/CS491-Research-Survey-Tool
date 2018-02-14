@@ -1,0 +1,8 @@
+<h1> {{ survey }} </h1>
+
+<ul>
+  {% for question in survey.question_set.all %}
+  <li> {{ question.question_Id }} </li>
+  {% endfor %}
+
+</ul>
