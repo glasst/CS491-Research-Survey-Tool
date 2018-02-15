@@ -20,7 +20,7 @@ urlpatterns = [
     path('textentry.html', views.textentry, name='textentry'),
     path('checkbox.html', views.checkbox, name='checkbox'),
 
-
+    path('index', views.index, name='index'),
     path('index/add_survey/', views.add_survey, name='add_survey'),
 
     # Ex: /surveys/e06f103b-d6e3-4e77-9442-ef938b621276/

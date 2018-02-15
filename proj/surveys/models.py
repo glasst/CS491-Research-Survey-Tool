@@ -133,18 +133,12 @@ class SurveyForm(forms.ModelForm):
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
-
         exclude = ['question_Id']
         CHOICES = (('MC', 'multiplechoice'), ('TE', 'textentry'), ('CB', 'checkbox'),)
         widgets = {
             'question_survey_Id': forms.HiddenInput(),
             'question_type': forms.Select(choices=CHOICES),
         }
-# def clean_question_type(self):
-#    data = self.cleaned_data['question_type']
-#    return data
-# def set_survey_foreign_key(self, arg):
-#	question_survey_Id=arg
 
 
 class MCQuestionForm(forms.ModelForm):

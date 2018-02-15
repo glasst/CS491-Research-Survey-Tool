@@ -23,10 +23,11 @@
 <p>question options: {{question_options}}</p>
 
 
-<form action="" method="POST">	
+<form action="" method="POST">
 	{%csrf_token %}
 	{{ form }}
 	<input type="submit" value="Submit"/>
+    <input type="hidden" name="question_survey_Id" value={{ surveyID }}>
 </form>
 	
 

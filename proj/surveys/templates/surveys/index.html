@@ -1,12 +1,46 @@
-{% if all_surveys %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block title %}<title>Polls Site</title>{% endblock %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-<ul>
-    <p> List of all surveys: </p>
-    {% for survey in all_surveys %}
-    <li><a href="{% url 'survey' survey.survey_Id %}">{{ survey.title }}</a></li>
-    {% endfor %}
-</ul>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-{% else %}
-<h3> You don't have any surveys </h3>
-{% endif %}
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+{% block content %}
+
+    {% if all_surveys %}
+
+        <ul>
+            <h3><p> List of all surveys: </p></h3>
+            {% for survey in all_surveys %}
+                <li><a href="{% url 'survey' survey.survey_Id %}">{{ survey.title }}</a></li>
+            {% endfor %}
+
+            <h3>Here is the survey creation form:</h3>
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{ form }}
+                <input type="text" name="title">
+                <input type="submit" value="Create Survey"/>
+                <input type="hidden" name="creator_Id" value={{ request.user.profile.pk }}>
+            </form>
+        </ul>
+
+    {% else %}
+        <h3> You don't have any surveys </h3>
+    {% endif %}
+
+
+{% endblock %}
+
+</body>
+</html>
