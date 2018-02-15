@@ -136,10 +136,10 @@ class SurveyForm(forms.ModelForm):
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
-        fields = '__all__'
+        exclude = ['question_Id']
         CHOICES = (('MC', 'multiplechoice'), ('TE', 'textentry'), ('CB', 'checkbox'),)
         widgets = {
-            'question_Id': forms.HiddenInput(),
+            'question_survey_Id': forms.HiddenInput(),
             'question_type': forms.Select(choices=CHOICES),
             # 'question_text': forms.Textarea(attrs={'cols':50, 'rows': 5,}),
         }

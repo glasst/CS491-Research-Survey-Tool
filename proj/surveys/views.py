@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, Response, SurveyForm, QuestionForm, \
@@ -43,6 +43,8 @@ def index(request):
             # bbb.creator_Id = creator
             # bbb.save()
 
+            #return render(request, 'newquestion.html', {'surveyID': survey.survey_Id})
+            #return render(request, 'newquestion.html', {'newquestion': })
             return HttpResponseRedirect('newquestion/')
     else:
         form = SurveyForm()
@@ -215,6 +217,15 @@ def surveycompletion(request):
 # prints list of all survey objects
 def survey_index(request):
     all_surveys = Survey.objects.all()
+
+
+    if request.method == 'POST':
+        form = SurveyForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            #return HttpResponseRedirect('surveys/index.html')
+
     return render(request, 'surveys/index.html', {'all_surveys': all_surveys})
 
 
@@ -249,5 +260,20 @@ def deleteq(request, survey_Id):
     else:
         selected_question.delete()
 
+    return render(request, 'surveys/detail.html', {'survey': survey})
+
+'''
+def delete_survey(request, survey_Id):
+    survey = get_object_or_404(Survey, survey_Id=survey_Id)
+    try:
+        selected_question = survey.question_set.get(question_Id=request.POST['question'])
+    except (KeyError, Question.DoesNotExist):
+        return render(request, 'surveys/detail.html', {
+            'question': question,
+            'error_message': "You did not select a valid question",
+        })
+    else:
+        selected_question.delete()
 
     return render(request, 'surveys/detail.html', {'survey': survey})
+'''
