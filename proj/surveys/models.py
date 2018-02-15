@@ -118,11 +118,11 @@ class UserForm(forms.ModelForm):
 class SurveyForm(forms.ModelForm):
     class Meta:
         model = Survey
-        fields = '__all__'
+        exclude = ['survey_Id']
+        #fields = '__all__'
         # fields = ['survey_Id',]
         widgets = {
-            'survey_Id': forms.HiddenInput(),
-            # 'creator_Id': forms.HiddenInput(),
+            'creator_Id': forms.HiddenInput(),
         }
 
     def set_creator_foreign_key(self, arg):
