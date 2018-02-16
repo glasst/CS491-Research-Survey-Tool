@@ -281,24 +281,6 @@ def delete_question(request, survey_Id):
         question.delete()
     return render(request, 'surveys/detail.html', {'survey': survey})
 
-'''
-def add_survey(request, survey_Id):
-    survey = get_object_or_404(Survey, survey_Id=survey_Id)
-    try:
-        selected_question = survey.question_set.get(question_Id=request.POST['question'])
-    except (KeyError, Question.DoesNotExist):
-        return render(request, 'surveys/detail.html', {
-            'question': question,
-            'error_message': "You did not select a valid question",
-        })
-    else:
-        selected_question.delete()
-
-    return render(request, 'surveys/detail.html', {'survey': survey})
-<<<<<<< 06664015178586f9158209dd1bfd216f3a3d5eab
-=======
-
-'''
 def delete_survey(request, survey_Id):
     survey = get_object_or_404(Survey, survey_Id=survey_Id)
     try:
@@ -312,5 +294,3 @@ def delete_survey(request, survey_Id):
         selected_question.delete()
 
     return render(request, 'surveys/detail.html', {'survey': survey})
->>>>>>> can create surveys in index
-'''
