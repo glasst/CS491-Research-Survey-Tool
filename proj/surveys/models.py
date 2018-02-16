@@ -58,8 +58,8 @@ class Survey(models.Model):
     title = models.CharField(max_length=100, null=True)
 
     def __str__(self):
-        return 'Survey ID: %s, Title: %s, %s' % (self.survey_Id, self.title, self.creator_Id.profile)
-
+        #return 'Survey ID: %s, Title: %s, %s' % (self.survey_Id, self.title, self.creator_Id.profile)
+        return 'Title: %s, %s' % (self.title, self.creator_Id.profile)
 
 class Question(models.Model):
     question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))

@@ -18,6 +18,7 @@ class UUIDEncoder(json.JSONEncoder):
 
 
 # Create your views here.
+'''
 
 def index(request):
     num_users = User.objects.all().count()
@@ -54,7 +55,7 @@ def index(request):
         'index.html',
         context={'form': form, 'num_users': num_users, 'num_surveys': num_surveys, 'userID': creator},
     )
-
+'''
 
 ### VIEWS FOR SURVEY MAKING ###
 
@@ -215,19 +216,33 @@ def surveycompletion(request):
 
 
 # prints list of all survey objects
-def survey_index(request):
+def index(request):
     all_surveys = Survey.objects.all()
 
     if request.method == 'POST':
         form = SurveyForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            return render(request, 'surveys/index.html', {'all_surveys': all_surveys})
+            survey = form.save()
+            #return HttpResponseRedirect('newquestion/')
+            #add_survey(request, survey.survey_Id)
+            return HttpResponseRedirect('index')
+            #return render(request, 'surveys/index.html')
+            #return render(request, 'surveys/add_survey.html', {'survey': survey})
+    else:
+        form = SurveyForm()
 
     return render(request, 'surveys/index.html', {'all_surveys': all_surveys})
 
 
+# prints list of all survey objects
+def add_survey(request, survey_Id):
+    if request.method == 'POST':
+        form = SurveyForm(request.POST)
+        if form.is_valid():
+            survey = form.save()
+            return render(request, 'surveys/detail.html', {'survey': survey})
+    return HttpResponseRedirect('surveys/index.html')
 '''
     html = ''
     for survey in all_surveys:
@@ -238,7 +253,7 @@ def survey_index(request):
 
 
 # prints survey id of specific survey
-def survey_detail(request, survey_Id):
+def detail(request, survey_Id):
     # return HttpResponse("<h2>Survey ID: %s </h2>" % str(survey_Id))
     # survey = Survey.objects.filter(survey_Id=survey_Id).get()
 
@@ -247,7 +262,7 @@ def survey_detail(request, survey_Id):
     return render(request, 'surveys/detail.html', {'survey': survey})
 
 
-def deleteq(request, survey_Id):
+def delete_question(request, survey_Id):
     survey = get_object_or_404(Survey, survey_Id=survey_Id)
     try:
         selected_question = survey.question_set.get(question_Id=request.POST['question'])
@@ -262,7 +277,7 @@ def deleteq(request, survey_Id):
     return render(request, 'surveys/detail.html', {'survey': survey})
 
 '''
-def delete_survey(request, survey_Id):
+def add_survey(request, survey_Id):
     survey = get_object_or_404(Survey, survey_Id=survey_Id)
     try:
         selected_question = survey.question_set.get(question_Id=request.POST['question'])

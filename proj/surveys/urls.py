@@ -1,11 +1,11 @@
 from django.urls import path
 from . import views
 
-#app_name = 'surveys'
+app_name = 'surveys'
 
 urlpatterns = [
     # ex: /surveys/
-    path('', views.index, name='index'),
+    #path('', views.index, name='index'),
 
     # ex: /surveys/newquestion/
     path('newquestion/', views.newquestion, name='newquestion'),
@@ -20,12 +20,14 @@ urlpatterns = [
     path('checkbox.html', views.checkbox, name='checkbox'),
 
     #/surveys/index
-    path('index', views.survey_index, name='survey_index'),
+    path('index', views.index, name='index'),
+
+    path('index/add_survey/', views.add_survey, name='add_survey'),
 
     #/surveys/e06f103b-d6e3-4e77-9442-ef938b621276/
-    path('<uuid:survey_Id>/', views.survey_detail, name='survey'),
+    path('<uuid:survey_Id>/', views.detail, name='detail'),
 
     #delete question
     #/surveys/e06f103b-d6e3-4e77-9442-ef938b621276/
-    path('<uuid:survey_Id>/deleteq/', views.deleteq, name='deleteq')
+    path('<uuid:survey_Id>/delete_question/', views.delete_question, name='delete_question')
 ]
