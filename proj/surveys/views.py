@@ -19,9 +19,9 @@ class UUIDEncoder(json.JSONEncoder):
 
 
 # Create your views here.
-'''
 
-def index(request):
+
+def home(request):
     num_users = User.objects.all().count()
     num_surveys = Survey.objects.all().count()
     creator = User.objects.get(username=request.user.username)
@@ -53,10 +53,10 @@ def index(request):
 
     return render(
         request,
-        'index.html',
+        'home.html',
         context={'form': form, 'num_users': num_users, 'num_surveys': num_surveys, 'userID': creator},
     )
-'''
+
 
 ### VIEWS FOR SURVEY MAKING ###
 
@@ -245,7 +245,7 @@ def add_survey(request, survey_Id):
         if form.is_valid():
             survey = form.save()
             return render(request, 'surveys/detail.html', {'survey': survey})
-    return HttpResponseRedirect('surveys/index.html')
+    return HttpResponseRedirect('surveys/home.html')
 '''
     html = ''
     for survey in all_surveys:

@@ -5,7 +5,7 @@ app_name = 'surveys'
 
 urlpatterns = [
     # ex: /surveys/
-    #path('', views.index, name='index'),
+    path('', views.home, name='home'),
 
     # ex: /surveys/newquestion/
     path('newquestion/', views.newquestion, name='newquestion'),
