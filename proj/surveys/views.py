@@ -218,13 +218,12 @@ def surveycompletion(request):
 def survey_index(request):
     all_surveys = Survey.objects.all()
 
-
     if request.method == 'POST':
         form = SurveyForm(request.POST)
 
         if form.is_valid():
             form.save()
-            #return HttpResponseRedirect('surveys/index.html')
+            return render(request, 'surveys/index.html', {'all_surveys': all_surveys})
 
     return render(request, 'surveys/index.html', {'all_surveys': all_surveys})
 
