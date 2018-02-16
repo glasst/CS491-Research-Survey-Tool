@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, Response, SurveyForm, QuestionForm, \
     MCQuestionForm, TEQuestionForm, CBQuestionForm, TakeSurveyForm
+from django.urls import reverse
 
 import json
 from uuid import UUID
@@ -226,9 +227,11 @@ def index(request):
             survey = form.save()
             #return HttpResponseRedirect('newquestion/')
             #add_survey(request, survey.survey_Id)
-            return HttpResponseRedirect('index')
-            #return render(request, 'surveys/index.html')
+            #return HttpResponseRedirect(detail, survey_Id=survey.pk)
+            #all_surveys = Survey.objects.all()
+            return redirect(reverse('surveys:detail', args=(survey.survey_Id,)))
             #return render(request, 'surveys/add_survey.html', {'survey': survey})
+
     else:
         form = SurveyForm()
 
