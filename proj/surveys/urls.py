@@ -24,10 +24,8 @@ urlpatterns = [
 
     path('index/add_survey/', views.add_survey, name='add_survey'),
 
-    #/surveys/e06f103b-d6e3-4e77-9442-ef938b621276/
+    #Ex: /surveys/e06f103b-d6e3-4e77-9442-ef938b621276/
     path('<uuid:survey_Id>/', views.detail, name='detail'),
 
-    #delete question
-    #/surveys/e06f103b-d6e3-4e77-9442-ef938b621276/
     path('<uuid:survey_Id>/delete_question/', views.delete_question, name='delete_question')
 ]

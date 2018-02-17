@@ -17,7 +17,6 @@
 <body>
 {% block content %}
 
-     Bar at top -->
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <!-- HOME -->
@@ -28,11 +27,11 @@
     </nav>
 
 
-    {% if all_surveys %}
+    {% if user_surveys %}
 
         <ul>
-            <h3><p> List of all surveys: </p></h3>
-            {% for survey in all_surveys %}
+            <h3><p> List of your surveys: </p></h3>
+            {% for survey in user_surveys %}
                 <li><a href="{% url 'surveys:detail' survey.survey_Id %}">{{ survey.title }}</a></li>
             {% endfor %}
 

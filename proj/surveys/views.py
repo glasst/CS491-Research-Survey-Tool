@@ -218,27 +218,22 @@ def surveycompletion(request):
 
 # prints list of all survey objects
 def index(request):
-    all_surveys = Survey.objects.all()
+    user_surveys = Survey.objects.filter(creator_Id=request.user)
 
     if request.method == 'POST':
         form = SurveyForm(request.POST)
 
         if form.is_valid():
             survey = form.save()
-            #return HttpResponseRedirect('newquestion/')
-            #add_survey(request, survey.survey_Id)
-            #return HttpResponseRedirect(detail, survey_Id=survey.pk)
-            #all_surveys = Survey.objects.all()
             return redirect(reverse('surveys:detail', args=(survey.survey_Id,)))
-            #return render(request, 'surveys/add_survey.html', {'survey': survey})
 
     else:
         form = SurveyForm()
 
-    return render(request, 'surveys/index.html', {'all_surveys': all_surveys})
+    return render(request, 'surveys/index.html', {'user_surveys': user_surveys})
 
 
-# prints list of all survey objects
+# add survey and go to its detail page
 def add_survey(request, survey_Id):
     if request.method == 'POST':
         form = SurveyForm(request.POST)
@@ -246,22 +241,11 @@ def add_survey(request, survey_Id):
             survey = form.save()
             return render(request, 'surveys/detail.html', {'survey': survey})
     return HttpResponseRedirect('surveys/home.html')
-'''
-    html = ''
-    for survey in all_surveys:
-        url = str(survey.survey_Id) + '/'
-        html += '<a href="' + url + '">' + str(survey.survey_Id) + '</a><br>'
-    return HttpResponse(html)
-'''
 
 
-# prints survey id of specific survey
+# page of specific survey listing its questions
 def detail(request, survey_Id):
-    # return HttpResponse("<h2>Survey ID: %s </h2>" % str(survey_Id))
-    # survey = Survey.objects.filter(survey_Id=survey_Id).get()
-
     survey = get_object_or_404(Survey, survey_Id=survey_Id)
-
     return render(request, 'surveys/detail.html', {'survey': survey})
 
 
