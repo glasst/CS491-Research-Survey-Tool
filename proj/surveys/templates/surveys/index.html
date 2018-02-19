@@ -1,31 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% block title %}<title>Polls Site</title>{% endblock %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% extends 'surveys/base.html' %}
+{#name of this page#}
+{% block pagename %}Survey index{% endblock %}
 
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
-
-<body>
-{% block content %}
-
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <!-- HOME -->
-            <div class="navbar-header">
-                <a class="navbar-brand" href="{%  url 'surveys:index' %}">survey</a></a>
-            </div>
-        </div>
-    </nav>
-
+{% block body %}
 
     {% if user_surveys %}
 
@@ -49,8 +26,4 @@
         <h3> You don't have any surveys </h3>
     {% endif %}
 
-
 {% endblock %}
-
-</body>
-</html>
