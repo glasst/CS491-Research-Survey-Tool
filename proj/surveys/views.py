@@ -94,33 +94,7 @@ def editsurvey(request):
     )
 
 
-def newquestion(request):
-    QUESTIONPAGES = {
-        'MC': 'multiplechoice.html',
-        'TE': 'textentry.html',
-        'CB': 'checkbox.html',
-    }
-    nextpage = '/surveys/'
 
-    if request.method == 'POST':
-        form = QuestionForm(request.POST)
-        if form.is_valid():
-            # owningsurvey = request.
-            # set_survey_foreign_key(owningsurvey)
-            # https://chriskief.com/2013/05/24/django-form-wizard-and-getting-data-from-previous-steps/
-            # https://docs.djangoproject.com/en/1.7/ref/contrib/formtools/form-wizard/
-
-            nextpage += QUESTIONPAGES[request.POST.get('question_type')]
-            form.save()  # save to DB
-            return HttpResponseRedirect(nextpage)
-    else:
-        form = QuestionForm()
-
-    return render(
-        request,
-        'newquestion.html',
-        context={'form': form},
-    )
 
 
 def multiplechoice(request):
@@ -247,6 +221,48 @@ def add_survey(request, survey_Id):
 def detail(request, survey_Id):
     survey = get_object_or_404(Survey, survey_Id=survey_Id)
     return render(request, 'surveys/detail.html', {'survey': survey})
+
+def add_question(request, survey_Id):
+    QUESTIONPAGES = {
+        'MC': 'multiplechoice.html',
+        'TE': 'textentry.html',
+        'CB': 'checkbox.html',
+    }
+    nextpage = '/surveys/'
+
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            # owningsurvey = request.
+            # set_survey_foreign_key(owningsurvey)
+            # https://chriskief.com/2013/05/24/django-form-wizard-and-getting-data-from-previous-steps/
+            # https://docs.djangoproject.com/en/1.7/ref/contrib/formtools/form-wizard/
+            question = form.save(commit=False)
+            question.set(question_survey_Id=survey_Id)
+
+            nextpage += QUESTIONPAGES[request.POST.get('question_type')]
+            question.save()  # save to DB
+            #return HttpResponseRedirect(nextpage)
+            return render(request, 'surveys/detail.html', {'survey': survey})
+    else:
+        form = QuestionForm()
+
+    return render(request, 'surveys/add_question.html', {'survey': survey_Id})
+
+
+def new_question(request, survey_Id):
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.set(question_survey_Id=survey_Id)
+            nextpage += QUESTIONPAGES[request.POST.get('question_type')]
+            question.save()  # save to DB
+            return redirect(reverse('surveys:detail', args=(survey.survey_Id,)))
+    else:
+        form = QuestionForm()
+
+    return render(request('add_question.html', context={ 'survey':survey.survey_Id, 'form':form }))
 
 
 def delete_question(request, survey_Id):
