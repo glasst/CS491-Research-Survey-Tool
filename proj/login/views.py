@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
 #experimental
-from surveys.models import UserForm
+from surveys.models import UserForm, User
 
 def index(request):
     template = loader.get_template('login/index.html')
@@ -23,6 +23,7 @@ def signup(request):
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
+            User(username=username).save()
             user = authenticate(username=username, password=raw_password)
             #form2.fields['user_Id'] = request.user ### this gives username, not UUID
             login(request, user)

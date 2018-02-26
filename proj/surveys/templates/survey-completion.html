@@ -20,7 +20,6 @@
 <h1>You're taking the survey</h1>
 <p>link for multiple forms on one page: https://rock-it.pl/multiple-forms-on-one-page-in-django/</p>
 
-
 <p>survey id: {{ surveyid.toString }}</p>
 
 <!--
@@ -31,6 +30,14 @@ questions:
 <!--
 <p>questions:</p>
 {% for q in allQ %}
+
+
+<p> {{ q }} </p>
+<p> question_ID: {{ q.get_Id }}</p>
+<p> question_survey_ID: {{ q.get_survey_Id }}</p>
+<p> question_type: {{ q.question_type  }}</p>
+<br />
+
 
 {% if q.question_type == 'MC' %}
 <p>{{ q.question_type }}</p>
