@@ -1,14 +1,23 @@
 <!doctype html>
 {% load staticfiles %}{% load bootstrap4 %}
-<html>
+<html lang="en">
 <head>
-<title></title>
+<title>{% block title %}{% endblock %}</title>
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 {% block head %}{% endblock %}
 </head>
 <body>
+    <div class="container-fluid" align="right">
+        {% if user.is_authenticated %}
+        Logged in as <b><i>{{ user.username }}</i></b><br />
+        <a href="{% url 'logout' %}?next=../..">Logout</a><br />
+        {% else %}
+        <a href="{% url 'login' %}">Login</a><br />
+        <a href="{% url 'signup' %}">Create an account</a>
+        {% endif %}
+    </div>
 {% block content %}{% endblock %}
 </body>
 </html>

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, Response, Profile
+from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, Response
 from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, SurveyForm, TakeSurveyForm
 from django.urls import reverse
 
@@ -22,7 +22,7 @@ class UUIDEncoder(json.JSONEncoder):
 
 def home(request):
     num_users = User.objects.all().count()
-    num_surveys = Survey.objects.all().count()
+    surveys = Survey.objects.filter(creator_Id=request.user.pk)
     creator = User.objects.get(username=request.user.username)
     survey_list = Survey.objects.filter(creator_Id=creator)
 
@@ -40,15 +40,13 @@ def home(request):
             # form.cleaned_data['creator_Id'] = creator
             n = form.save()
 
-        return HttpResponseRedirect('edit/?id=' + str(n.pk))
-
     else:
-        form = SurveyForm()
+        form = SurveyForm(initial={'creator_Id': request.user.pk})
 
     return render(
         request,
         'home.html',
-        context={'form': form, 'num_users': num_users, 'num_surveys': num_surveys, 'userID': creator})
+        context={'form': form, 'num_users': num_users, 'surveys': surveys, 'userID': creator})
 
 
 ### VIEWS FOR SURVEY MAKING ###
@@ -58,7 +56,7 @@ def editsurvey(request):
     if 'id' in request.GET: request.session['survey'] = request.GET['id']
     if 'survey' in request.session:
         try:
-            sid = UUID(request.session['survey'], version=4)
+            sid = request.session['survey']
             s = Survey.objects.get(survey_Id=sid)
         except:
             return HttpResponseRedirect('/surveys')
