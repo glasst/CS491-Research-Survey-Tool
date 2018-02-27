@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, Response, SurveyForm, QuestionForm, \
-    MCQuestionForm, TEQuestionForm, CBQuestionForm, TakeSurveyForm, Profile
+from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, Response, Profile
+from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, SurveyForm, TakeSurveyForm
 from django.urls import reverse
 
 import json
@@ -237,11 +237,18 @@ def detail(request, survey_Id):
             question.question_Id = uuid.uuid4()
             question.question_type = request.POST.get('question_type')
             # question.question_survey_Id = request.POST.get('question_survey_Id')
-
-            nextpage += QUESTIONPAGES[request.POST.get('question_type')]
+            type = request.POST.get('question_type')
+            nextpage += QUESTIONPAGES[type]
             question.save()  # save to DB
             # return HttpResponseRedirect(nextpage)
-            # return render(request, 'surveys/detail.html', {'survey': survey})
+            '''
+            if type is 'MC':
+                return redirect(reverse('surveys:multiplechoice', kwargs={'survey_Id': survey.survey_Id}))
+            elif type is 'TE':
+                return redirect(reverse('surveys:textentry', kwargs={'survey_Id': survey.survey_Id}))
+            else:
+                return redirect(reverse('surveys:checkbox', kwargs={'survey_Id': survey.survey_Id}))
+                '''
 
         # else:
         #    print(form.errors, len(form.errors))
@@ -260,6 +267,8 @@ def add_question(request, survey_Id):
     }
     nextpage = '/surveys/'
 
+    question_form = QuestionForm()
+
     if request.method == 'POST':
         form = QuestionForm(request.POST)
         if form.is_valid():
@@ -274,7 +283,7 @@ def add_question(request, survey_Id):
             nextpage += QUESTIONPAGES[request.POST.get('question_type')]
             question.save()  # save to DB
             # return HttpResponseRedirect(nextpage)
-            return render(request, 'surveys/detail.html', {'survey': survey})
+            return redirect(reverse('surveys:detail', args=(survey.survey_Id)))
     else:
         form = QuestionForm()
 
@@ -310,3 +319,23 @@ def delete_question(request, survey_Id):
     else:
         question.delete()
     return render(request, 'surveys/detail.html', {'survey': survey})
+
+
+def delete_survey(request, survey_Id):
+    survey = get_object_or_404(Survey, survey_Id=survey_Id)
+    survey.delete()
+    user_surveys = Survey.objects.filter(creator_Id=request.user)
+    return render(request, 'surveys/index.html', {'user_surveys': user_surveys})
+
+
+'''
+def multiplechoice(request, survey_Id):
+    #return render(request('multiplechoice.html', context={'survey': survey.survey_Id, 'form': form}))
+    return redirect(reverse('surveys:multiplechoice', args=(survey.survey_Id,)))
+
+def textentry(request, survey_Id):
+    return render(request('textentry.html', context={'survey': survey.survey_Id, 'form': form}))
+
+def checkbox(request, survey_Id):
+    return render(request('checkbox.html', context={'survey': survey.survey_Id, 'form': form}))
+'''

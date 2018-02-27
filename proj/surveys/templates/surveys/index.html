@@ -9,7 +9,14 @@
         <ul>
             <h3><p> List of your surveys: </p></h3>
             {% for survey in user_surveys %}
-                <li><a href="{% url 'surveys:detail' survey.survey_Id %}">{{ survey.title }}</a></li>
+                <input type="radio" id="survey{{ forloop.counter }}" name="survey" value="{{ survey.survey_Id }}">
+                <label for="survey{{ forloop.counter }}">
+                    <li><a href="{% url 'surveys:detail' survey.survey_Id %}">{{ survey.title }}</a></li>
+                </label><br>
+                <form action="{% url 'surveys:delete_survey' survey.survey_Id %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="delete survey">
+                </form>
             {% endfor %}
         </ul>
 

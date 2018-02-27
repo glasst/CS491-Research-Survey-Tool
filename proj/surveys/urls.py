@@ -28,4 +28,6 @@ urlpatterns = [
     path('<uuid:survey_Id>/delete_question/', views.delete_question, name='delete_question'),
     #path('<uuid:survey_Id>/add_question/', views.add_question, name='add_question'),
     path('<uuid:survey_Id>/new_question/', views.new_question, name='new_question'),
+    path('<uuid:survey_Id>/delete_survey/', views.delete_survey, name='delete_survey'),
+
 ]

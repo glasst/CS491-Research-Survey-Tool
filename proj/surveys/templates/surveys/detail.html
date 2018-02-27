@@ -28,10 +28,11 @@
     {% else %}
         <h3> You don't have any questions </h3>
     {% endif %}
-    <form action="" method="post">
+
+   <form action="" method="post">
         {% csrf_token %}
         {{ form }}
         <input type="submit" value="add question">
         <input type="hidden" name="question_survey_Id" value="{{ survey.survey_Id }}">
-    </form>
+</form>
 {% endblock %}

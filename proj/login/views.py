@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 
 # experimental
 
-from surveys.models import UserForm
+from surveys.forms import UserForm
 
 
 def index(request):
