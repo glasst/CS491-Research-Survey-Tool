@@ -214,9 +214,8 @@ def index(request):
             survey = form.save(commit=False)
             survey.survey_Id = uuid.uuid4()
             survey.save()
-            survey.save()
             # return redirect(reverse('surveys:add_survey'))
-            return redirect(reverse('surveys:detail', args=(survey.survey_Id)))
+            return redirect(reverse('surveys:detail', kwargs={'survey_Id': survey.survey_Id}))
 
     else:
         form = SurveyForm()

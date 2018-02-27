@@ -123,11 +123,9 @@ class SurveyForm(forms.ModelForm):
             'creator_Id': forms.HiddenInput(),
         }
 
-    def set_creator_foreign_key(self, arg):
-        # https://docs.djangoproject.com/en/2.0/topics/db/queries/
-        # srvy = Survey.objects.get(pk=1)
-        usr = User.objects.get(username=arg)
-        creator_Id = usr
+    #def set_creator_foreign_key(self, arg):
+    #    usr = User.objects.get(username=arg)
+    #    creator_Id = usr
 
 
 # form class for Question model
@@ -141,11 +139,6 @@ class QuestionForm(forms.ModelForm):
             'question_type': forms.Select(choices=CHOICES),
             # 'question_text': forms.Textarea(attrs={'cols':50, 'rows': 5,}),
         }
-# def clean_question_type(self):
-#    data = self.cleaned_data['question_type']
-#    return data
-# def set_survey_foreign_key(self, arg):
-#	question_survey_Id=arg
 
 
 class MCQuestionForm(forms.ModelForm):
