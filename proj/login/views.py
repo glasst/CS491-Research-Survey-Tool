@@ -4,33 +4,38 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
 
-#experimental
-from surveys.models import UserForm, User
+# experimental
+
+from surveys.models import UserForm
+
 
 def index(request):
     template = loader.get_template('login/index.html')
     context = {}
     return HttpResponse(template.render(context, request));
 
+
 def signup(request):
     if request.method == 'POST':
-       	form = UserCreationForm(request.POST)
+        form = UserCreationForm(request.POST)
 
-        #form2 = UserForm(request.POST) ###
+        # form2 = UserForm(request.POST) ###
 
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
-            User(username=username).save()
+            #User(username=username).save()
             user = authenticate(username=username, password=raw_password)
-            #form2.fields['user_Id'] = request.user ### this gives username, not UUID
+            # form2.fields['user_Id'] = request.user ### this gives username, not UUID
             login(request, user)
             return redirect('profile')
     else:
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
+
 
 @login_required
 def profile(request):
@@ -38,10 +43,12 @@ def profile(request):
     context = {}
     return HttpResponse(template.render(context, request));
 
+
 @login_required
 def create(request):
     # add new survey to database
     return redirect('edit')
+
 
 @login_required
 def edit(request):

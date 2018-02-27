@@ -17,21 +17,6 @@ class UUIDEncoder(json.JSONEncoder):
             return obj.hex
         return json.JSONEncoder.default(self, obj)
 
-
-'''
-class User(models.Model):
-        user_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
-        username = models.CharField(max_length=45)
-        #username = models.CharField(primary_key=True, max_length=45)
-        email = models.CharField(max_length=255)
-        password = models.CharField(max_length=32)
-        create_time = models.DateTimeField(auto_now=True)
-        first_name = models.CharField(max_length=45)
-        last_name = models.CharField(max_length=45)
-        role = models.CharField(max_length=1)
-'''
-
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=1)
@@ -72,9 +57,9 @@ class Question(models.Model):
 
 
 class MCQuestion(models.Model):
-    question_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    question_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT, null=True)
     question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
+    #question_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    question_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT, null=True)
     question_text = models.CharField(max_length=400)
     option_1 = models.CharField(max_length=100)
     option_2 = models.CharField(max_length=100)
