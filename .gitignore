@@ -2,6 +2,7 @@
 *~
 __pycache__
 myvenv
+venv
 db.sqlite3
 /static
 .DS_Store
@@ -10,5 +11,5 @@ db.sqlite3
 **/migrations/**
 !**/migrations
 !**/migrations/__init__.py
-.idea/
+.idea
 migrations
