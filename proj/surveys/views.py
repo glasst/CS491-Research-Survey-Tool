@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, Response, SurveyForm, QuestionForm, \
-    MCQuestionForm, TEQuestionForm, CBQuestionForm, TakeSurveyForm
+    MCQuestionForm, TEQuestionForm, CBQuestionForm, TakeSurveyForm, Profile
 from django.urls import reverse
 
 import json
@@ -47,7 +47,7 @@ def home(request):
 
     return render(
         request,
-        'index.html',
+        'home.html',
         context={'form': form, 'num_users': num_users, 'num_surveys': num_surveys, 'userID': creator})
 
 
