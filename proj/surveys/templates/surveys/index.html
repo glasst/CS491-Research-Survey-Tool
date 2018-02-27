@@ -1,0 +1,35 @@
+{% extends 'surveys/base.html' %}
+{#name of this page#}
+{% block pagename %}Survey index{% endblock %}
+
+{% block body %}
+
+    {% if user_surveys %}
+
+        <ul>
+            <h3><p> List of your surveys: </p></h3>
+            {% for survey in user_surveys %}
+                <input type="radio" id="survey{{ forloop.counter }}" name="survey" value="{{ survey.survey_Id }}">
+                <label for="survey{{ forloop.counter }}">
+                    <li><a href="{% url 'surveys:detail' survey.survey_Id %}">{{ survey.title }}</a></li>
+                </label><br>
+                <form action="{% url 'surveys:delete_survey' survey.survey_Id %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="delete survey">
+                </form>
+            {% endfor %}
+        </ul>
+
+    {% else %}
+        <h3> You don't have any surveys </h3>
+    {% endif %}
+    <h3>Here is the survey creation form:</h3>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="text" name="title">
+        <input type="submit" value="Create Survey"/>
+        <input type="hidden" name="creator_Id" value={{ request.user.profile.pk }}>
+    </form>
+
+{% endblock %}

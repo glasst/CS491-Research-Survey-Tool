@@ -1,0 +1,38 @@
+{% extends 'surveys/base.html' %}
+{#name of this page#}
+{% block pagename %}Survey Detail{% endblock %}
+
+{% block body %}
+    <h2> {{ survey }} </h2><br>
+
+    {% if error_message %}
+        <p><strong> {{ error_message }} </strong></p>
+    {% endif %}
+
+    {% if survey.question_set.all %}
+
+
+        {% for question in survey.question_set.all %}
+            <input type="radio" id="question{{ forloop.counter }}" name="question" value="{{ question.question_Id }}">
+            <label for="question{{ forloop.counter }}">
+                <h3>{{ question.question_Id }}</h3>
+            </label><br>
+            <form action="{% url 'surveys:delete_question' survey.survey_Id %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="delete question">
+                <input type="hidden" name="question_Id" value="{{ question.question_Id }}">
+            </form>
+        {% endfor %}
+
+
+    {% else %}
+        <h3> You don't have any questions </h3>
+    {% endif %}
+
+   <form action="" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="add question">
+        <input type="hidden" name="question_survey_Id" value="{{ survey.survey_Id }}">
+</form>
+{% endblock %}

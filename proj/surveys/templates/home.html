@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	{% block title %}<title>New Question Page</title>{% endblock %}
+	{% block title %}<title>Polls Site</title>{% endblock %}
 	<meta charset="utf-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- Latest compiled and minified CSS -->
@@ -16,19 +16,23 @@
 
 <body>
 {% block content %}
-<h1>New Question Page</h1>
-<h3>things sent from views.py:</h3>
-<p>question type: {{question_type}}</p>
-<p>question text: {{question_text}}</p>
-<p>question options: {{question_options}}</p>
+<h1>Research Survey Tool</h1>
+<p> welcome to the Research Survey Tool's survey creation page</p>
 
+<h4>Dynamic content...</h4>
+<p>there are this many users: {{num_users}}</p>
+<p>user ID: {{ userID }} </p>
+<p>there are this many surveys: {{num_surveys}}</p>
 
-<form action="" method="POST">	
-	{%csrf_token %}
+<h1>Here is the survey creation form:</h1>
+<form action="" method="POST">
+	{% csrf_token %}
 	{{ form }}
-	<input type="submit" value="Submit"/>
+	<input type="submit" value="Create Survey"/>
 </form>
-	
+
+<h1>Here is the survey taking link:</h1>
+<button onclick="location.href = 'takesurvey'" type="button">Take Survey</button>
 
 {% endblock %}
 
