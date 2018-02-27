@@ -24,25 +24,17 @@ def index(request):
 
 	if request.method == 'POST':
 		#form = SurveyForm(request.POST or None, initial={'creator_Id':creator,})
-		form = SurveyForm(request.POST)
+		form = SurveyForm(user=request.user)
 		#form.fields['creator_Id'] = creator
 
 		#usr = form.set_creator_foreign_key(creator)
 
 		if form.is_valid():
-			#creator = request.user
-			#form.set_creator_foreign_key(creator)
-
-			#form.cleaned_data['creator_Id'] = creator
 			form.save()
-
-			#bbb = form.save(commit=False)
-			#bbb.creator_Id = creator
-			#bbb.save()
 
 			return HttpResponseRedirect('newquestion/')
 	else:
-		form = SurveyForm()
+		form = SurveyForm(user=request.user)
 
 	return render(
 		request,
@@ -179,10 +171,10 @@ def takesurvey(request):
 	)
 
 
-def surveycompletion(request):
+'''def surveycompletion(request):
 	surveyid = request.session.get('survey_to_take')
 	questions = Question.objects.filter(question_survey_Id=surveyid)
-
+	print(surveyid)
 	mclist = []
 	telist = []
 	cblist = []
@@ -207,4 +199,41 @@ def surveycompletion(request):
 		request,
 		'survey-completion.html',
 		{'surveyid':surveyid, 'allQ':questions, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
+	)'''
+
+def surveycompletion(request):
+	surveyid = request.session.get('survey_to_take')
+	questions = Question.objects.filter(question_survey_Id=surveyid)
+	mcquestions = MCQuestion.objects.filter(question_survey_Id = surveyid)
+	tequestions = TEQuestion.objects.filter(question_survey_Id=surveyid)
+	print(surveyid)
+	mclist = []
+	telist = []
+	cblist = []
+	qlist = []
+	# Still need to get cross-Question table querying
+	for q in questions:
+		qlist.append(q)
+	for q in mcquestions:
+		qlist.append(q)
+	for q in tequestions:
+		qlist.append(q)
+
+
+	for q in qlist:
+		print("questionID: ", end = "")
+		print(q.question_Id, "\n" , q.question_type, end="")
+		print("	question text: ", end = "") 
+		print(q.question_text)
+		
+
+	return render (request,
+		'survey-completion.html',
+		{'surveyid':surveyid, 'allQ':qlist, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
 	)
+
+
+
+
+
+

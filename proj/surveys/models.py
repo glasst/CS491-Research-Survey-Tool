@@ -59,19 +59,17 @@ class Question(models.Model):
 	question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
 	question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
 	question_type = models.CharField(max_length=20)
-	#question_text = models.CharField(max_length=400, default="Add question text")
-	#option_1 = models.CharField(max_length=100, default=None, blank=True, null=True)
-	#option_2 = models.CharField(max_length=100, default=None, blank=True, null=True)
-	#option_3 = models.CharField(max_length=100, default=None, blank=True, null=True)
-	#option_4 = models.CharField(max_length=100, default=None, blank=True, null=True)
-	#option_5 = models.CharField(max_length=100, default=None, blank=True, null=True)
+	question_text = models.CharField(max_length=400, default="Add question text")
+	
 
 	def __str__(self):
                 return 'Question ID: %s, %s' % (self.question_Id, self.question_survey_Id)
 
+
 class MCQuestion(models.Model):
 	question_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
 	question_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT, null=True)
+	question_type = models.CharField(max_length=20)
 	question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
 	question_text = models.CharField(max_length=400)
 	option_1 = models.CharField(max_length=100)
@@ -79,11 +77,18 @@ class MCQuestion(models.Model):
 	option_3 = models.CharField(max_length=100)
 	option_4 = models.CharField(max_length=100)
 	option_5 = models.CharField(max_length=100)
+
+
 class TEQuestion(models.Model):
 	question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
+	question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
+	question_type = models.CharField(max_length=20)
 	question_text = models.CharField(max_length=400)
+
 class CBQuestion(models.Model):
 	question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
+	question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
+	question_type = models.CharField(max_length=20)
 	question_text = models.CharField(max_length=400)
 	option_1 = models.CharField(max_length=100)
 	option_2 = models.CharField(max_length=100)
@@ -93,32 +98,31 @@ class CBQuestion(models.Model):
 
 class Response(models.Model):
 	response_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
-	response_question_Id = models.ForeignKey(Question, on_delete=models.PROTECT)
-	#response_question_type = models.ForeignKey(Questions, on_delete=models.PROTECT)
+	response_question_Id = models.ForeignKey(MCQuestion, on_delete=models.PROTECT)
+	#response_question_type = models.ForeignKey(MCQuestions, on_delete=models.PROTECT)
 	response_survey_Id 	= models.ForeignKey(Survey, on_delete=models.PROTECT)
 	response_user_Id = models.ForeignKey(User, on_delete=models.PROTECT)
 	response_text = models.CharField(max_length=400)
+
+
+class ResponseForm(forms.Form):
+	class Meta:
+		model = Response
+		fields = '__all__'
+		
 
 class UserForm(forms.ModelForm):
 	class Meta:
 		model = User
 		fields = ['username',]
 
+
 #form class for Survey model
-class SurveyForm(forms.ModelForm):
-	class Meta:
-		model = Survey
-		fields = '__all__'
-		#fields = ['survey_Id',]
-		widgets = {
-			'survey_Id': forms.HiddenInput(),
-			#'creator_Id': forms.HiddenInput(),
-		}
-	def set_creator_foreign_key(self, arg):
-		# https://docs.djangoproject.com/en/2.0/topics/db/queries/
-		#srvy = Survey.objects.get(pk=1)
-		usr = User.objects.get(username=arg)
-		creator_Id = usr
+class SurveyForm(forms.Form):
+	def __init__(self, *args, **kwargs):
+		self.user = kwargs.pop('user')
+		super(SurveyForm, self).__init__(*args, **kwargs)
+		usr = forms.ModelChoiceField(queryset=Survey.objects.filter(creator_Id__username=self.user))
 
 
 #form class for Question model
