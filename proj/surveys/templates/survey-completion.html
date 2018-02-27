@@ -1,46 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	{% block title %}<title>Take a Survey</title>{% endblock %}
-	<meta charset="utf-8">
-  	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    {% block title %}<title>Take a Survey</title>{% endblock %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-	<!-- jQuery library -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-	<!-- Latest compiled JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
 {% block content %}
 
-<h1>You're taking the survey</h1>
-<p>link for multiple forms on one page: https://rock-it.pl/multiple-forms-on-one-page-in-django/</p>
+    <h1>You're taking the survey</h1>
+    <p>link for multiple forms on one page: https://rock-it.pl/multiple-forms-on-one-page-in-django/</p>
 
-<p>survey id: {{ surveyid.toString }}</p>
+    <p>survey id: {{ surveyid.toString }}</p>
 
+    <!--
+    survey: 	8a1993449c7143b098b47fac60e86ff4
+    questions:
+    -->
 
-{% for q in mclist %}
-<p>{{ q.question_type }}</p>
-<p>{{ q.question_text }}</p>
-{% endfor %}
-
-{% for q in telist %}
-<p>{{ q.question_type }}</p>
-<p>{{ q.question_text }}</p>
-{% endfor %}
-
-{% for q in cblist %}
-<p>{{ q.question_type }}</p>
-<p>{{ q.question_text }}</p>
-{% endfor %}
-
-<!--
+    <!--
 <p>questions:</p>
-{% for q in questions %}
+{% for q in allQ %}
 
 
 <p> {{ q }} </p>
@@ -68,6 +57,29 @@
 {% endif %}
 {% endfor %}
 -->
+
+    <p>-----</p>
+
+    {% for q in mclist %}
+        <p>MC{{ q.question_type }}</p>
+        <p>{{ q.question_Id }}</p>
+        <p>{{ q.question_text|stringformat:"s" }}</p>
+    {% endfor %}
+
+    <!--
+{% for q in telist %}
+<p>TE{{ q.question_type }}</p>
+<p>{{ q.question_Id }}</p>
+<p>{{ q.question_text }}</p>
+{% endfor %}
+
+{% for q in cblist %}
+<p>CB{{ q.question_type }}</p>
+<p>{{ q.question_Id }}</p>
+<p>{{ q.question_text }}</p>
+{% endfor %}
+-->
+
 
 {% endblock %}
 

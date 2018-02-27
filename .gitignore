@@ -5,3 +5,8 @@ myvenv
 db.sqlite3
 /static
 .DS_Store
+__pycache__/
+db.sqlite3
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
