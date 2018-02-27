@@ -206,6 +206,7 @@ def surveycompletion(request):
 	questions = Question.objects.filter(question_survey_Id=surveyid)
 	mcquestions = MCQuestion.objects.filter(question_survey_Id = surveyid)
 	tequestions = TEQuestion.objects.filter(question_survey_Id=surveyid)
+	cbquestions = CBQuestion.objects.filter(question_survey_Id=surveyid)
 	print(surveyid)
 	mclist = []
 	telist = []
@@ -218,6 +219,10 @@ def surveycompletion(request):
 		qlist.append(q)
 	for q in tequestions:
 		qlist.append(q)
+	for q in cbquestions:
+		qlist.append(q)
+
+
 
 
 	for q in qlist:
@@ -225,6 +230,8 @@ def surveycompletion(request):
 		print(q.question_Id, "\n" , q.question_type, end="")
 		print("	question text: ", end = "") 
 		print(q.question_text)
+
+		
 		
 
 	return render (request,
