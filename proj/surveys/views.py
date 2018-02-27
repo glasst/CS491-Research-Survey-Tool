@@ -37,41 +37,43 @@ def home(request):
             # creator = request.user
             # form.set_creator_foreign_key(creator)
 
-			#form.cleaned_data['creator_Id'] = creator
-			n = form.save()
+            # form.cleaned_data['creator_Id'] = creator
+            n = form.save()
 
-            return HttpResponseRedirect('edit/?id=' + str(n.pk))
-        else:
+        return HttpResponseRedirect('edit/?id=' + str(n.pk))
+
+    else:
         form = SurveyForm()
 
     return render(
         request,
         'index.html',
-        context={'form': form, 'num_users': num_users, 'num_surveys': num_surveys, 'userID': creator},
-    )
+        context={'form': form, 'num_users': num_users, 'num_surveys': num_surveys, 'userID': creator})
 
 
 ### VIEWS FOR SURVEY MAKING ###
 
 def editsurvey(request):
-	s = None
-	if 'id' in request.GET: request.session['survey'] = request.GET['id']
-	if 'survey' in request.session:
-		try:
-			sid = UUID(request.session['survey'], version=4)
-			s = Survey.objects.get(survey_Id=sid)
-		except: return HttpResponseRedirect('/surveys')
+    s = None
+    if 'id' in request.GET: request.session['survey'] = request.GET['id']
+    if 'survey' in request.session:
+        try:
+            sid = UUID(request.session['survey'], version=4)
+            s = Survey.objects.get(survey_Id=sid)
+        except:
+            return HttpResponseRedirect('/surveys')
 
-	if not s: return HttpResponseRedirect('/surveys')
+    if not s: return HttpResponseRedirect('/surveys')
 
-	if request.method == 'POST' and 'remove' in request.POST:
-		MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
+    if request.method == 'POST' and 'remove' in request.POST:
+        MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
 
-	return render(
-		request,
-		'edit.html',
-		context={'survey':s.title, 'mcquestions':MCQuestion.objects.filter(question_survey_Id=s.survey_Id)},
-)
+    return render(
+        request,
+        'edit.html',
+        context={'survey': s.title, 'mcquestions': MCQuestion.objects.filter(question_survey_Id=s.survey_Id)},
+    )
+
 
 def newquestion(request):
     QUESTIONPAGES = {
@@ -103,20 +105,19 @@ def newquestion(request):
 
 
 def multiplechoice(request):
-	if request.method == 'POST':
-		form = MCQuestionForm(request.POST)
-		if form.is_valid():
+    if request.method == 'POST':
+        form = MCQuestionForm(request.POST)
+        if form.is_valid():
+            form.save()  # save to DB
+            return HttpResponseRedirect('/surveys/edit')
+    else:
+        form = MCQuestionForm()
 
-			form.save() #save to DB
-			return HttpResponseRedirect('/surveys/edit')
-	else:
-		form = MCQuestionForm()
-
-	return render(
-		request,
-		'multiplechoice.html',
-		context={'form':form},
-)
+    return render(
+        request,
+        'multiplechoice.html',
+        context={'form': form},
+    )
 
 
 def textentry(request):
@@ -168,34 +169,34 @@ def takesurvey(request):
 
 
 def surveycompletion(request):
-	surveyid = request.session.get('survey_to_take')
-	questions = Question.objects.filter(question_survey_Id=surveyid)
+    surveyid = request.session.get('survey_to_take')
+    questions = Question.objects.filter(question_survey_Id=surveyid)
 
-	mclist = []
-	telist = []
-	cblist = []
+    mclist = []
+    telist = []
+    cblist = []
 
-	# Still need to get cross-Question table querying
-	for q in questions:
-		qid = q.question_Id
+    # Still need to get cross-Question table querying
+    for q in questions:
+        qid = q.question_Id
 
-		if q.question_type == 'MC':
-			qq = MCQuestion.objects.filter(question_Id=qid)
-			mclist.append(qq)
+        if q.question_type == 'MC':
+            qq = MCQuestion.objects.filter(question_Id=qid)
+            mclist.append(qq)
 
-		if q.question_type == 'TE':
-			qq = MCQuestion.objects.filter(question_Id=qid)
-			telist.append(qq)
+        if q.question_type == 'TE':
+            qq = MCQuestion.objects.filter(question_Id=qid)
+            telist.append(qq)
 
-		if q.question_type == 'CB':
-			qq = MCQuestion.objects.filter(question_Id=qid)
-			cblist.append(qq)
+        if q.question_type == 'CB':
+            qq = MCQuestion.objects.filter(question_Id=qid)
+            cblist.append(qq)
 
-	return render (
-		request,
-		'survey-completion.html',
-		{'surveyid':surveyid, 'allQ':questions, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
-)
+    return render(
+        request,
+        'survey-completion.html',
+        {'surveyid': surveyid, 'allQ': questions, 'mclist': mclist, 'telist': telist, 'cblist': cblist}
+    )
 
 
 # prints list of all survey objects
