@@ -11,19 +11,18 @@
             {% for survey in user_surveys %}
                 <li><a href="{% url 'surveys:detail' survey.survey_Id %}">{{ survey.title }}</a></li>
             {% endfor %}
-
-            <h3>Here is the survey creation form:</h3>
-            <form action="" method="POST">
-                {% csrf_token %}
-                {{ form }}
-                <input type="text" name="title">
-                <input type="submit" value="Create Survey"/>
-                <input type="hidden" name="creator_Id" value={{ request.user.profile.pk }}>
-            </form>
         </ul>
 
     {% else %}
         <h3> You don't have any surveys </h3>
     {% endif %}
+    <h3>Here is the survey creation form:</h3>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="text" name="title">
+        <input type="submit" value="Create Survey"/>
+        <input type="hidden" name="creator_Id" value={{ request.user.profile.pk }}>
+    </form>
 
 {% endblock %}
