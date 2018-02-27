@@ -17,16 +17,27 @@
 <body>
 {% block content %}
 
+     Bar at top -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- HOME -->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{%  url 'surveys:index' %}">survey</a></a>
+            </div>
+        </div>
+    </nav>
+
+
     {% if all_surveys %}
 
         <ul>
             <h3><p> List of all surveys: </p></h3>
             {% for survey in all_surveys %}
-                <li><a href="{% url 'survey' survey.survey_Id %}">{{ survey.title }}</a></li>
+                <li><a href="{% url 'surveys:detail' survey.survey_Id %}">{{ survey.title }}</a></li>
             {% endfor %}
 
             <h3>Here is the survey creation form:</h3>
-            <form action="{% url 'survey_index'  %}" method="POST">
+            <form action="" method="POST">
                 {% csrf_token %}
                 {{ form }}
                 <input type="text" name="title">
