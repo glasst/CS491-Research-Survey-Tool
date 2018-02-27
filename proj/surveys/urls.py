@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.home, name='home'),
 
     # ex: /surveys/newquestion/
+
     path('newquestion/', views.newquestion, name='newquestion'),
 
     path('takesurvey/', views.takesurvey, name='takesurvey'),
@@ -33,3 +34,8 @@ urlpatterns = [
     path('<uuid:survey_Id>/', views.survey_detail, name='survey')
 
     path('<uuid:survey_Id>/deleteq/', views.deleteq, name='deleteq')
+
+    path('<uuid:survey_Id>/delete_question/', views.delete_question, name='delete_question'),
+    path('<uuid:survey_Id>/add_question/', views.add_question, name='add_question'),
+    #path('<uuid:survey_Id>/new_question/', views.new_question, name='new_question'),
+]
