@@ -1,38 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	{% block title %}<title>Polls Site</title>{% endblock %}
-	<meta charset="utf-8">
-  	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-	<!-- jQuery library -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-	<!-- Latest compiled JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
-
-<body>
+{% extends "base.html" %}
+{% load bootstrap4 %}
 {% block content %}
-<h1>Research Survey Tool</h1>
-<p> welcome to the Research Survey Tool's survey creation page</p>
+<h2 align="center">Research Survey Tool</h2>
 
-<h4>Dynamic content...</h4>
-<p>there are this many users: {{num_users}}</p>
-<p>user ID: {{ userID }} </p>
-<p>there are this many surveys: {{num_surveys}}</p>
+<h4>Your surveys:</h4>
+<div class="container">
+	{% if not surveys %}
+	(None)
+	{% endif %}
+	{% for s in surveys %}
+	<a href="edit?id={{ s.survey_Id }}">
+	<button type="button" class="list-group-item list-group-item-action">
+	{{ s.title }}
+	</button>
+	</a>
+	{% endfor %}
+</div>
 
-<h1>Here is the survey creation form:</h1>
+<h4>Create new survey:</h4>
+<div class="container" style="border:1px solid #cecece; padding: 20px;">
 <form action="" method="POST">
 	{% csrf_token %}
-	{{ form }}
-	<input type="submit" value="Create Survey"/>
+	{% bootstrap_form form %}
+	{% bootstrap_button "Create survey" button_type="submit" button_class="btn-primary" %}
 </form>
+</div>
 
-<h1>Here is the survey taking link:</h1>
-<button onclick="location.href = 'takesurvey'" type="button">Take Survey</button>
+{% bootstrap_button "Take survey" button_type="link" href="takesurvey" button_class="btn-primary" %}
 
 {% endblock %}
 

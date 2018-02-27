@@ -125,3 +125,7 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = '/surveys/'
 LOGOUT_REDIRECT_URL = '/'
+
+BOOTSTRAP4 = {
+    'set_placeholder': False,
+}

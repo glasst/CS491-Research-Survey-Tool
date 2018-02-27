@@ -29,7 +29,6 @@ class User(models.Model):
         first_name = models.CharField(max_length=45)
         last_name = models.CharField(max_length=45)
         role = models.CharField(max_length=1)
-'''
 
 
 class Profile(models.Model):
@@ -40,7 +39,6 @@ class Profile(models.Model):
         u = self.user
         return 'Username: %s, Name: %s %s' % (u.username, u.first_name, u.last_name)
 
-
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
@@ -50,6 +48,8 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+	'''
+
 
 
 class Survey(models.Model):
@@ -58,7 +58,7 @@ class Survey(models.Model):
     title = models.CharField(max_length=100, null=True)
 
     def __str__(self):
-        return 'Survey ID: %s, Title: %s, %s' % (self.survey_Id, self.title, self.creator_Id.profile)
+        return 'Survey ID: %s, Title: %s, %s' % (self.survey_Id, self.title, self.creator_Id)
 
 
 class Question(models.Model):
@@ -108,6 +108,8 @@ class Response(models.Model):
     response_survey_Id  = models.ForeignKey(Survey, on_delete=models.PROTECT)
     response_user_Id = models.ForeignKey(User, on_delete=models.PROTECT)
     response_text = models.CharField(max_length=400)
+
+'''
 
 
 class ResponseForm(forms.Form):
@@ -190,3 +192,4 @@ class TakeSurveyForm(forms.Form):
         super(TakeSurveyForm, self).__init__(*args, **kwargs)
         self.fields['survey_to_take'] = forms.ModelChoiceField(queryset=Survey.objects.filter(creator_Id__username=self.user))
 
+'''
