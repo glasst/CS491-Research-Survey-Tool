@@ -44,7 +44,7 @@ def home(request):
             # bbb.creator_Id = creator
             # bbb.save()
 
-            return HttpResponseRedirect('surveys:newquestion')
+            return HttpResponseRedirect('edit/?id=' + str(n.pk))
     else:
         form = SurveyForm()
 
@@ -69,25 +69,13 @@ def editsurvey(request):
 
     if not s: return HttpResponseRedirect('/surveys')
 
-    if request.method == 'POST':
-        if 'add' in request.POST and request.POST['add']:
-            typ = request.POST['type']
-            try:
-                s = Survey.objects.get(survey_Id=request.session['survey'])
-            except:
-                return HttpResponseRedirect('/surveys')
-            if typ == 'MC':
-                q = MCQuestion(question_survey_Id=s, question_text=request.POST['add'], option_1=request.POST['op1'],
-                               option_2=request.POST['op2'])
-                q.save()
-        elif 'remove' in request.POST:
-            MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
+    if request.method == 'POST' and 'remove' in request.POST:
+        MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
 
     return render(
         request,
         'edit.html',
-        context={'survey': request.session['survey'],
-                 'mcquestions': MCQuestion.objects.filter(question_survey_Id=s.survey_Id)},
+        context={'survey': s.title, 'mcquestions': MCQuestion.objects.filter(question_survey_Id=s.survey_Id)},
     )
 
 
@@ -115,7 +103,7 @@ def newquestion(request):
 
     return render(
         request,
-        'new_question.html',
+        'newquestion.html',
         context={'form': form},
     )
 
@@ -125,7 +113,7 @@ def multiplechoice(request):
         form = MCQuestionForm(request.POST)
         if form.is_valid():
             form.save()  # save to DB
-            return HttpResponseRedirect('/surveys/newquestion')
+            return HttpResponseRedirect('/surveys/edit')
     else:
         form = MCQuestionForm()
 
@@ -192,10 +180,7 @@ def surveycompletion(request):
     telist = []
     cblist = []
 
-
-# Still need to get cross-Question table querying
-
-
+    # Still need to get cross-Question table querying
     for q in questions:
         qid = q.question_Id
 
@@ -211,11 +196,12 @@ def surveycompletion(request):
             qq = MCQuestion.objects.filter(question_Id=qid)
             cblist.append(qq)
 
-        return render(
-            request,
-            'survey-completion.html',
-            {'surveyid': surveyid, 'allQ': questions, 'mclist': mclist, 'telist': telist, 'cblist': cblist}
-        )
+    return render(
+        request,
+        'survey-completion.html',
+        {'surveyid': surveyid, 'allQ': questions, 'mclist': mclist, 'telist': telist, 'cblist': cblist}
+    )
+
 
 # prints list of all survey objects
 def index(request):
@@ -229,7 +215,7 @@ def index(request):
             survey.survey_Id = uuid.uuid4()
             survey.save()
             survey.save()
-            #return redirect(reverse('surveys:add_survey'))
+            # return redirect(reverse('surveys:add_survey'))
             return redirect(reverse('surveys:detail', args=(survey.survey_Id)))
 
     else:
@@ -255,19 +241,19 @@ def detail(request, survey_Id):
             question = form.save(commit=False)
             question.question_Id = uuid.uuid4()
             question.question_type = request.POST.get('question_type')
-            #question.question_survey_Id = request.POST.get('question_survey_Id')
+            # question.question_survey_Id = request.POST.get('question_survey_Id')
 
             nextpage += QUESTIONPAGES[request.POST.get('question_type')]
             question.save()  # save to DB
-            #return HttpResponseRedirect(nextpage)
-            #return render(request, 'surveys/detail.html', {'survey': survey})
+            # return HttpResponseRedirect(nextpage)
+            # return render(request, 'surveys/detail.html', {'survey': survey})
 
-        #else:
+        # else:
         #    print(form.errors, len(form.errors))
     else:
         form = QuestionForm()
 
-    #return render(request, 'surveys/add_question.html', {'survey': survey_Id})
+    # return render(request, 'surveys/add_question.html', {'survey': survey_Id})
     return render(request, 'surveys/detail.html', {'survey': survey})
 
 
@@ -292,7 +278,7 @@ def add_question(request, survey_Id):
 
             nextpage += QUESTIONPAGES[request.POST.get('question_type')]
             question.save()  # save to DB
-            #return HttpResponseRedirect(nextpage)
+            # return HttpResponseRedirect(nextpage)
             return render(request, 'surveys/detail.html', {'survey': survey})
     else:
         form = QuestionForm()
@@ -312,14 +298,14 @@ def new_question(request, survey_Id):
     else:
         form = QuestionForm()
 
-    return render(request('add_question.html', context={ 'survey':survey.survey_Id, 'form':form }))
+    return render(request('add_question.html', context={'survey': survey.survey_Id, 'form': form}))
 
 
 def delete_question(request, survey_Id):
     survey = get_object_or_404(Survey, survey_Id=survey_Id)
-    #question = None
+    # question = None
     try:
-        #question = request.POST.get('question')
+        # question = request.POST.get('question')
         question = survey.question_set.get(question_Id=request.POST['question_Id'])
     except (KeyError, Question.DoesNotExist):
         return render(request, 'surveys/detail.html', {

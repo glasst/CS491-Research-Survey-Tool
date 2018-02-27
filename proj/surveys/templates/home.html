@@ -29,7 +29,6 @@
 	{% csrf_token %}
 	{{ form }}
 	<input type="submit" value="Create Survey"/>
-    <input type="hidden" name="creator_Id" value={{ request.user.profile.pk }}>
 </form>
 
 <h1>Here is the survey taking link:</h1>
