@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, Response, SurveyForm, QuestionForm, \
     MCQuestionForm, TEQuestionForm, CBQuestionForm, TakeSurveyForm
@@ -39,7 +39,7 @@ def home(request):
             # form.set_creator_foreign_key(creator)
 
             # form.cleaned_data['creator_Id'] = creator
-            n = form.save()
+            form.save()
 
             # bbb = form.save(commit=False)
             # bbb.creator_Id = creator
@@ -47,7 +47,7 @@ def home(request):
 
             #return render(request, 'newquestion.html', {'surveyID': survey.survey_Id})
             #return render(request, 'newquestion.html', {'newquestion': })
-            return HttpResponseRedirect('edit/?id=' + str(n.pk))
+            return HttpResponseRedirect('newquestion/')
     else:
         form = SurveyForm()
 
@@ -75,11 +75,13 @@ def editsurvey(request):
     if request.method == 'POST':
         if 'add' in request.POST and request.POST['add']:
             typ = request.POST['type']
-
-            try: s = Survey.objects.get(survey_Id=request.session['survey'])
-            except: return HttpResponseRedirect('/surveys')
+            try:
+                s = Survey.objects.get(survey_Id=request.session['survey'])
+            except:
+                return HttpResponseRedirect('/surveys')
             if typ == 'MC':
-                q = MCQuestion(question_survey_Id=s, question_text=request.POST['add'], option_1=request.POST['op1'], option_2=request.POST['op2'])
+                q = MCQuestion(question_survey_Id=s, question_text=request.POST['add'], option_1=request.POST['op1'],
+                               option_2=request.POST['op2'])
                 q.save()
         elif 'remove' in request.POST:
             MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
@@ -87,54 +89,13 @@ def editsurvey(request):
     return render(
         request,
         'edit.html',
-        context={'survey':request.session['survey'], 'mcquestions':MCQuestion.objects.filter(question_survey_Id=s.survey_Id)},
+        context={'survey': request.session['survey'],
+                 'mcquestions': MCQuestion.objects.filter(question_survey_Id=s.survey_Id)},
     )
 
 
-def newquestion(request):
-    QUESTIONPAGES = {
-        'MC': 'multiplechoice.html',
-        'TE': 'textentry.html',
-        'CB': 'checkbox.html',
-    }
-    nextpage = '/surveys/'
-
-    if request.method == 'POST':
-        form = QuestionForm(request.POST)
-        if form.is_valid():
-            #owningsurvey = request.
-            #set_survey_foreign_key(owningsurvey)
-            #https://chriskief.com/2013/05/24/django-form-wizard-and-getting-data-from-previous-steps/
-            #https://docs.djangoproject.com/en/1.7/ref/contrib/formtools/form-wizard/
-
-            nextpage += QUESTIONPAGES[request.POST.get('question_type')]
-            form.save() #save to DB
-            return HttpResponseRedirect(nextpage)
-    else:
-        form = QuestionForm()
-
-    return render(
-        request,
-        'newquestion.html',
-        context={'form':form},
-    )
 
 
-def multiplechoice(request):
-    if request.method == 'POST':
-        form = MCQuestionForm(request.POST)
-        if form.is_valid():
-
-            form.save() #save to DB
-            return HttpResponseRedirect('/surveys/newquestion')
-    else:
-        form = MCQuestionForm()
-
-    return render(
-        request,
-        'multiplechoice.html',
-        context={'form':form},
-    )
 
 def multiplechoice(request):
     if request.method == 'POST':
@@ -145,87 +106,88 @@ def multiplechoice(request):
     else:
         form = MCQuestionForm()
 
+    return render(
+        request,
+        'multiplechoice.html',
+        context={'form': form},
+    )
+
 
 def textentry(request):
-	if request.method == 'POST':
-		form = TEQuestionForm(request.POST)
-		if form.is_valid():
+    if request.method == 'POST':
+        form = TEQuestionForm(request.POST)
+        if form.is_valid():
+            form.save()  # save to DB
+            return HttpResponseRedirect('/surveys/newquestion')
+    else:
+        form = TEQuestionForm()
 
-			form.save() #save to DB
-			return HttpResponseRedirect('/surveys/newquestion')
-	else:
-		form = TEQuestionForm()
-
-	return render(
-		request,
-		'textentry.html',
-		context={'form':form},
-)
+    return render(
+        request,
+        'textentry.html',
+        context={'form': form},
+    )
 
 
 def checkbox(request):
-	if request.method == 'POST':
-		form = CBQuestionForm(request.POST)
-		if form.is_valid():
+    if request.method == 'POST':
+        form = CBQuestionForm(request.POST)
+        if form.is_valid():
+            form.save()  # save to DB
+            return HttpResponseRedirect('/surveys/newquestion')
+    else:
+        form = CBQuestionForm()
 
-			form.save() #save to DB
-			return HttpResponseRedirect('/surveys/newquestion')
-	else:
-		form = CBQuestionForm()
-
-	return render(
-		request,
-		'checkbox.html',
-		context={'form':form},
-)
+    return render(
+        request,
+        'checkbox.html',
+        context={'form': form},
+    )
 
 
 ### VIEWS FOR SURVEY TAKING ###
 def takesurvey(request):
-
-	if request.method == 'POST':
-		form = TakeSurveyForm(request.POST, user=request.user)
-		if form.is_valid():
-			request.session['survey_to_take'] = getattr(form.cleaned_data.get('survey_to_take'), 'survey_Id').hex
-			return HttpResponseRedirect('/surveys/survey-completion')
-	else:
-		form = TakeSurveyForm(user=request.user)
-	return render(
-		request,
-		'takesurvey.html',
-		{'form':form}
-)
+    if request.method == 'POST':
+        form = TakeSurveyForm(request.POST, user=request.user)
+        if form.is_valid():
+            request.session['survey_to_take'] = getattr(form.cleaned_data.get('survey_to_take'), 'survey_Id').hex
+            return HttpResponseRedirect('/surveys/survey-completion')
+    else:
+        form = TakeSurveyForm(user=request.user)
+    return render(
+        request,
+        'takesurvey.html',
+        {'form': form}
+    )
 
 
 def surveycompletion(request):
-	surveyid = request.session.get('survey_to_take')
-	questions = Question.objects.filter(question_survey_Id=surveyid)
+    surveyid = request.session.get('survey_to_take')
+    questions = Question.objects.filter(question_survey_Id=surveyid)
 
-	mclist = []
-	telist = []
-	cblist = []
+    mclist = []
+    telist = []
+    cblist = []
 
-	# Still need to get cross-Question table querying
-	for q in questions:
-		qid = q.question_Id
+    # Still need to get cross-Question table querying
+    for q in questions:
+        if q.question_type == 'MC':
+            qq = MCQuestion.objects.filter(question_Id=q.question_Id)
+            mclist.append(qq)
 
-		if q.question_type == 'MC':
-			qq = MCQuestion.objects.filter(question_Id=qid)
-			mclist.append(qq)
+        if q.question_type == 'TE':
+            qq = MCQuestion.objects.filter(question_Id=q.question_Id)
+            telist.append(qq)
 
-		if q.question_type == 'TE':
-			qq = MCQuestion.objects.filter(question_Id=qid)
-			telist.append(qq)
+        if q.question_type == 'CB':
+            qq = MCQuestion.objects.filter(question_Id=q.question_Id)
+            cblist.append(qq)
 
-		if q.question_type == 'CB':
-			qq = MCQuestion.objects.filter(question_Id=qid)
-			cblist.append(qq)
-
-	return render (
-		request,
-		'survey-completion.html',
-		{'surveyid':surveyid, 'allQ':questions, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
-)
+    return render(
+        request,
+        'survey-completion.html',
+        {'surveyid': surveyid, 'mclist': mclist, 'telist': telist, 'cblist': cblist}
+    )
 
 
 # prints list of all survey objects
@@ -317,3 +279,19 @@ def delete_question(request, survey_Id):
     else:
         question.delete()
     return render(request, 'surveys/detail.html', {'survey': survey})
+
+'''
+def add_survey(request, survey_Id):
+    survey = get_object_or_404(Survey, survey_Id=survey_Id)
+    try:
+        selected_question = survey.question_set.get(question_Id=request.POST['question'])
+    except (KeyError, Question.DoesNotExist):
+        return render(request, 'surveys/detail.html', {
+            'question': question,
+            'error_message': "You did not select a valid question",
+        })
+    else:
+        selected_question.delete()
+
+    return render(request, 'surveys/detail.html', {'survey': survey})
+'''
