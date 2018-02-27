@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load bootstrap3 %}
+{% load bootstrap4 %}
 {% block content %}
 <h3 align="center">Editing survey - {{ survey }}</h3>
 <br />
@@ -11,6 +11,9 @@
             <h3>{{ q.question_text }}</h3>
             {{ q.option_1 }}<br />
             {{ q.option_2 }}<br />
+            {{ q.option_3 }}<br />
+            {{ q.option_4 }}<br />
+            {{ q.option_5 }}<br />
             <input type="hidden" name="remove" value="{{ q.question_Id }}" />
             <p class="text-right">
             {% bootstrap_button "Remove" button_type="submit" button_class="btn-primary" %}
@@ -21,14 +24,11 @@
     {% endfor %}
 </div><br />
 <div class="container">
-    <form method="post">
-        {% csrf_token %}
-        <textarea name="add" rows="2" cols="40"></textarea><br />
-        <input type="text" name="op1" value="option 1"></input>
-        <input type="text" name="op2" value="option 2"></input><br />
-        <input type="hidden" name="type" value="MC"></input>
-        {% bootstrap_button "Add MC question" button_type="submit" button_class="btn-primary" %}
-    </form>
+        {% bootstrap_button "Add MC question" button_type="link" href="../multiplechoice.html" button_class="btn-primary" %}
+        {% bootstrap_button "Add TE question" button_type="link" href="../textentry.html" button_class="btn-primary" %}
+        {% bootstrap_button "Add CB question" button_type="link" href="../checkbox.html" button_class="btn-primary" %}
+        <br /><br />
+        {% bootstrap_button "Back" button_type="link" href="../" button_class="btn-primary" %}
 </div>
 
 {% endblock %}

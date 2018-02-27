@@ -1,9 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Question, Survey, Response, Profile
+from .models import MCQuestion, TEQuestion, CBQuestion, Survey, Response, Profile
 
-admin.site.register(Question)
 admin.site.register(MCQuestion)
 admin.site.register(TEQuestion)
 admin.site.register(CBQuestion)

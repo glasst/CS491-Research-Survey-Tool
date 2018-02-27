@@ -34,13 +34,13 @@ def index(request):
 			#form.set_creator_foreign_key(creator)
 
 			#form.cleaned_data['creator_Id'] = creator
-			form.save()
+			n = form.save()
 
 			#bbb = form.save(commit=False)
 			#bbb.creator_Id = creator
 			#bbb.save()
 
-			return HttpResponseRedirect('newquestion/')
+			return HttpResponseRedirect('edit/?id=' + str(n.pk))
 	else:
 		form = SurveyForm()
 
@@ -63,21 +63,13 @@ def editsurvey(request):
 
 	if not s: return HttpResponseRedirect('/surveys')
 
-	if request.method == 'POST':
-		if 'add' in request.POST and request.POST['add']:
-			typ = request.POST['type']
-			try: s = Survey.objects.get(survey_Id=request.session['survey'])
-			except: return HttpResponseRedirect('/surveys')
-			if typ == 'MC':
-				q = MCQuestion(question_survey_Id=s, question_text=request.POST['add'], option_1=request.POST['op1'], option_2=request.POST['op2'])
-				q.save()
-		elif 'remove' in request.POST:
-			MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
+	if request.method == 'POST' and 'remove' in request.POST:
+		MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
 
 	return render(
 		request,
 		'edit.html',
-		context={'survey':request.session['survey'], 'mcquestions':MCQuestion.objects.filter(question_survey_Id=s.survey_Id)},
+		context={'survey':s.title, 'mcquestions':MCQuestion.objects.filter(question_survey_Id=s.survey_Id)},
 	)
 
 
@@ -116,7 +108,7 @@ def multiplechoice(request):
 		if form.is_valid():
 
 			form.save() #save to DB
-			return HttpResponseRedirect('/surveys/newquestion')
+			return HttpResponseRedirect('/surveys/edit')
 	else:
 		form = MCQuestionForm()
 
@@ -190,7 +182,7 @@ def surveycompletion(request):
 	# Still need to get cross-Question table querying
 	for q in questions:
 		qid = q.question_Id
-		
+
 		if q.question_type == 'MC':
 			qq = MCQuestion.objects.filter(question_Id=qid)
 			mclist.append(qq)

@@ -33,7 +33,7 @@ class User(models.Model):
 class Profile(models.Model):
         user = models.OneToOneField(User, on_delete=models.CASCADE)
         role = models.CharField(max_length=1)
-        
+
         def __str__(self):
                 u = self.user
                 return 'Username: %s, Name: %s %s' % (u.username, u.first_name, u.last_name)

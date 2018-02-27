@@ -23,11 +23,10 @@ def signup(request):
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
-            User(username=username).save()
             user = authenticate(username=username, password=raw_password)
             #form2.fields['user_Id'] = request.user ### this gives username, not UUID
             login(request, user)
-            return redirect('profile')
+            return redirect('surveys')
     else:
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
