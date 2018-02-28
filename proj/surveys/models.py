@@ -66,15 +66,13 @@ class Question(models.Model):
     question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question_type = models.CharField(max_length=20)
     question_text = models.CharField(max_length=400, default="Add question text")
-    
+
 
     def __str__(self):
                 return 'Question ID: %s, %s' % (self.question_Id, self.question_survey_Id)
 
 class MCQuestion(models.Model):
-    question_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    question_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT, null=True)
-    question_type = models.CharField(max_length=20)
+    question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_text = models.CharField(max_length=400)
     option_1 = models.CharField(max_length=100)
@@ -87,13 +85,11 @@ class MCQuestion(models.Model):
 class TEQuestion(models.Model):
     question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
-    question_type = models.CharField(max_length=20)
     question_text = models.CharField(max_length=400)
 
 class CBQuestion(models.Model):
     question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
-    question_type = models.CharField(max_length=20)
     question_text = models.CharField(max_length=400)
     option_1 = models.CharField(max_length=100)
     option_2 = models.CharField(max_length=100)
@@ -116,7 +112,7 @@ class ResponseForm(forms.Form):
     class Meta:
         model = Response
         fields = '__all__'
-        
+
 
 class UserForm(forms.ModelForm):
     class Meta:

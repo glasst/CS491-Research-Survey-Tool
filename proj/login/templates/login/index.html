@@ -1,6 +1,9 @@
 {% extends "base.html" %}
+{% load bootstrap4 %}
 {% block content %}
 
-
+{% if user.is_authenticated %}
+{% bootstrap_button "Your surveys" button_type="link" href="surveys" button_class="btn-primary" %}
+{% endif %}
 
 {% endblock %}

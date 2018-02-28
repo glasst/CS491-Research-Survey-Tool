@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap4',
-    'bootstrap_themes',
     'login.apps.LoginConfig',
     'surveys.apps.SurveysConfig',
 ]

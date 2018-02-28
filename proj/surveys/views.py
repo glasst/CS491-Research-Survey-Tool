@@ -26,24 +26,24 @@ def home(request):
     creator = User.objects.get(username=request.user.username)
     survey_list = Survey.objects.filter(creator_Id=creator)
 
-
-
-
     if request.method == 'POST':
-        #form = SurveyForm(user=request.user)
+        # form = SurveyForm(request.POST or None, initial={'creator_Id':creator,})
         form = SurveyForm(request.POST)
-        
+        # form.fields['creator_Id'] = creator
+
+        # usr = form.set_creator_foreign_key(creator)
+
         if form.is_valid():
-            n = form.save()
-                
-            #return HttpResponseRedirect('newquestion/')
-            return HttpResponseRedirect('edit/?id=' + str(n.pk))
+            # creator = request.user
+            # form.set_creator_foreign_key(creator)
+
+            # form.cleaned_data['creator_Id'] = creator
+            s = form.save(commit=False)
+            s.survey_Id = uuid.uuid4()
+            s.save()
 
     else:
-        #form = SurveyForm(user=request.user)
-        #form = SurveyForm()
         form = SurveyForm(initial={'creator_Id': request.user.pk})
-
 
     return render(
         request,
@@ -67,11 +67,18 @@ def editsurvey(request):
 
     if request.method == 'POST' and 'remove' in request.POST:
         MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
+        #TEQuestion.objects.get(question_Id=request.POST['remove']).delete()
+        #CBQuestion.objects.get(question_Id=request.POST['remove']).delete()
 
     return render(
         request,
         'edit.html',
-        context={'survey': s.title, 'mcquestions': MCQuestion.objects.filter(question_survey_Id=s.survey_Id)},
+        context={
+            'survey': s.title,
+            'mcquestions': MCQuestion.objects.filter(question_survey_Id=s.survey_Id),
+            #'tequestions': TEQuestion.objects.filter(question_survey_Id=s.survey_Id),
+            #'cbquestions': CBQuestion.objects.filter(question_survey_Id=s.survey_Id),
+        }
     )
 
 
@@ -108,10 +115,12 @@ def multiplechoice(request):
     if request.method == 'POST':
         form = MCQuestionForm(request.POST)
         if form.is_valid():
-            form.save()  # save to DB
+            q = form.save(commit=False)
+            q.question_Id = uuid.uuid4()
+            q.save()
             return HttpResponseRedirect('/surveys/edit')
     else:
-        form = MCQuestionForm()
+        form = MCQuestionForm(initial={'question_survey_Id': request.session['survey']})
 
     return render(
         request,
@@ -124,10 +133,12 @@ def textentry(request):
     if request.method == 'POST':
         form = TEQuestionForm(request.POST)
         if form.is_valid():
-            form.save()  # save to DB
-            return HttpResponseRedirect('/surveys/newquestion')
+            q = form.save(commit=False)
+            q.question_Id = uuid.uuid4()
+            q.save()
+            return HttpResponseRedirect('/surveys/edit')
     else:
-        form = TEQuestionForm()
+        form = TEQuestionForm(initial={'question_survey_Id': request.session['survey']})
 
     return render(
         request,
@@ -140,10 +151,12 @@ def checkbox(request):
     if request.method == 'POST':
         form = CBQuestionForm(request.POST)
         if form.is_valid():
-            form.save()  # save to DB
-            return HttpResponseRedirect('/surveys/newquestion')
+            q = form.save(commit=False)
+            q.question_Id = uuid.uuid4()
+            q.save()
+            return HttpResponseRedirect('/surveys/edit')
     else:
-        form = CBQuestionForm()
+        form = CBQuestionForm(initial={'question_survey_Id': request.session['survey']})
 
     return render(
         request,
@@ -168,78 +181,6 @@ def takesurvey(request):
     )
 
 
-
-'''def surveycompletion(request):
-    surveyid = request.session.get('survey_to_take')
-    questions = Question.objects.filter(question_survey_Id=surveyid)
-    print(surveyid)
-    mclist = []
-    telist = []
-    cblist = []
-
-    # Still need to get cross-Question table querying
-    for q in questions:
-        qid = q.question_Id
-        
-        if q.question_type == 'MC':
-            qq = MCQuestion.objects.filter(question_Id=qid)
-            mclist.append(qq)
-
-        if q.question_type == 'TE':
-            qq = MCQuestion.objects.filter(question_Id=qid)
-            telist.append(qq)
-
-        if q.question_type == 'CB':
-            qq = MCQuestion.objects.filter(question_Id=qid)
-            cblist.append(qq)
-
-    return render (
-        request,
-        'survey-completion.html',
-        {'surveyid':surveyid, 'allQ':questions, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
-    )'''
-
-def surveycompletion(request):
-    surveyid = request.session.get('survey_to_take')
-    questions = Question.objects.filter(question_survey_Id=surveyid)
-    mcquestions = MCQuestion.objects.filter(question_survey_Id = surveyid)
-    tequestions = TEQuestion.objects.filter(question_survey_Id=surveyid)
-    cbquestions = CBQuestion.objects.filter(question_survey_Id=surveyid)
-    print(surveyid)
-    mclist = []
-    telist = []
-    cblist = []
-    qlist = []
-    # Still need to get cross-Question table querying
-    for q in questions:
-        qlist.append(q)
-    for q in mcquestions:
-        qlist.append(q)
-    for q in tequestions:
-        qlist.append(q)
-    for q in cbquestions:
-        qlist.append(q)
-
-
-
-
-    for q in qlist:
-        print("questionID: ", end = "")
-        print(q.question_Id, "\n" , q.question_type, end="")
-        print(" question text: ", end = "") 
-        print(q.question_text)
-
-        
-        
-
-    return render (request,
-        'survey-completion.html',
-        {'surveyid':surveyid, 'allQ':qlist, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
-    )
-
-
-
-'''
 def surveycompletion(request):
     surveyid = request.session.get('survey_to_take')
     questions = Question.objects.filter(question_survey_Id=surveyid)
@@ -269,7 +210,6 @@ def surveycompletion(request):
         'survey-completion.html',
         {'surveyid': surveyid, 'allQ': questions, 'mclist': mclist, 'telist': telist, 'cblist': cblist}
     )
-'''
 
 
 # prints list of all survey objects

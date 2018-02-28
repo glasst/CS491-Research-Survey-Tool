@@ -1,33 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    {% block title %}<title>Text Entry Creation</title>{% endblock %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %}Text Entry Creation{% endblock %}
+{% block content %}
 
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  </head>
-
-  <body>
-    {% block content %}
-    <h1>Text Entry</h1>
-
+<h1 align="center">Text Entry</h1>
+<div class="container" style="border:1px solid #cecece; padding:20px;">
     <form action="" method="POST">
-      <!-- csrf token increases security for POST -->		
-      {% csrf_token %}
-      <table border="1">
-	{{ form }}
-      </table>
-      <input type="submit" value="Submit"/>
+        {% csrf_token %}
+    	{% bootstrap_form form %}
+        {% bootstrap_button "Add question" button_type="submit" button_class="btn-primary" %}
     </form>
+</div>
 
-    {% endblock %}
-
-  </body>
-</html>
+{% endblock %}

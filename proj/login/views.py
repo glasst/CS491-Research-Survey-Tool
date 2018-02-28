@@ -30,7 +30,7 @@ def signup(request):
             user = authenticate(username=username, password=raw_password)
             # form2.fields['user_Id'] = request.user ### this gives username, not UUID
             login(request, user)
-            return redirect('../surveys/')
+            return redirect('../../surveys/')
     else:
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})

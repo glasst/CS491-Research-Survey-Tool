@@ -5,15 +5,15 @@
 <br />
 <div class="container">
     {% for q in mcquestions %}
-    <div class="container" style="border:1px solid #cecece;">
+    <div class="container" style="border:1px solid #cecece; padding: 20px;">
         <form method="post">
             {% csrf_token %}
             <h3>{{ q.question_text }}</h3>
-            {{ q.option_1 }}<br />
-            {{ q.option_2 }}<br />
-            {{ q.option_3 }}<br />
-            {{ q.option_4 }}<br />
-            {{ q.option_5 }}<br />
+            <div class="radio"><label><input type="radio" name="radio"> {{ q.option_1 }}</label></div>
+            <div class="radio"><label><input type="radio" name="radio"> {{ q.option_2 }}</label></div>
+            <div class="radio"><label><input type="radio" name="radio"> {{ q.option_3 }}</label></div>
+            <div class="radio"><label><input type="radio" name="radio"> {{ q.option_4 }}</label></div>
+            <div class="radio"><label><input type="radio" name="radio"> {{ q.option_5 }}</label></div>
             <input type="hidden" name="remove" value="{{ q.question_Id }}" />
             <p class="text-right">
             {% bootstrap_button "Remove" button_type="submit" button_class="btn-primary" %}

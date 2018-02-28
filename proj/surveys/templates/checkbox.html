@@ -4,11 +4,11 @@
 {% block content %}
 
 <h1 align="center">Checkbox</h1>
-<div class="container" style="border:1px solid #cecece;">
+<div class="container" style="border:1px solid #cecece; padding:20px;">
     <form action="" method="POST">
         {% csrf_token %}
         {% bootstrap_form form %}
-        <input type="submit" value="Submit"/>
+        {% bootstrap_button "Add question" button_type="submit" button_class="btn-primary" %}
     </form>
 </div>
 
