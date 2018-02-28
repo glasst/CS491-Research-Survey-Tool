@@ -4,7 +4,6 @@
 <h1>You're taking the survey : {{ survey_Id }}</h1>
 <p>link for multiple forms on one page: https://rock-it.pl/multiple-forms-on-one-page-in-django/</p>
 
-<<<<<<< HEAD
 <p>survey id: {{ surveyid }}</p>
 
 <!--
@@ -27,10 +26,10 @@ questions:
  <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_3}} </label><br/>
  <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_4}}</label><br/>
  <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_5}}</label><br/>
-	
+
 	{% elif q in telist %}
 
-	<form action="" method="POST">	
+	<form action="" method="POST">
 	{% csrf_token %}
 	{{ form }}
 	<input type="text" value="Answer"/>
@@ -42,13 +41,13 @@ questions:
  <input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_3}} </label><br/>
  <input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_4}}</label><br/>
  <input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_5}}</label><br/>
-	
+
 <!--
 	<input type="text" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_1}}</label><br/>-->
 	{% endif %}
 
-	
-	
+
+
 
 
 <!--
@@ -76,7 +75,6 @@ questions:
 
 
 {% endfor %}
-=======
     {% if survey_Id.mcquestion_set.all %}
         {% for q in survey_Id.mcquestion_set.all %}
             <p>{{ q.question_type }}</p>
@@ -110,7 +108,6 @@ questions:
             {{ q.option_5 }}
         {% endfor %}
     {% endif %}
->>>>>>> a7bb9b95388daa6034e6eacd92626156eb3fecab
 
 {% endblock %}
 {#<p>{{ q.question_text|stringformat:"s" }}</p>#}
