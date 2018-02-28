@@ -25,25 +25,19 @@ def home(request):
     surveys = Survey.objects.filter(creator_Id=request.user.pk)
     creator = User.objects.get(username=request.user.username)
     survey_list = Survey.objects.filter(creator_Id=creator)
+    form = SurveyForm(initial={'creator_Id': request.user.pk})
 
     if request.method == 'POST':
-        # form = SurveyForm(request.POST or None, initial={'creator_Id':creator,})
-        form = SurveyForm(request.POST)
-        # form.fields['creator_Id'] = creator
-
-        # usr = form.set_creator_foreign_key(creator)
-
-        if form.is_valid():
-            # creator = request.user
-            # form.set_creator_foreign_key(creator)
-
-            # form.cleaned_data['creator_Id'] = creator
-            s = form.save(commit=False)
-            s.survey_Id = uuid.uuid4()
-            s.save()
-
-    else:
-        form = SurveyForm(initial={'creator_Id': request.user.pk})
+        if 'remove' in request.POST:
+            try: s = Survey.objects.get(survey_Id=request.POST['remove'])
+            except: s = None
+            if s: s.delete()
+        else:
+            form = SurveyForm(request.POST)
+            if form.is_valid():
+                s = form.save(commit=False)
+                s.survey_Id = uuid.uuid4()
+                s.save()
 
     return render(
         request,
@@ -66,9 +60,13 @@ def editsurvey(request):
     if not s: return HttpResponseRedirect('/surveys')
 
     if request.method == 'POST' and 'remove' in request.POST:
-        MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
-        #TEQuestion.objects.get(question_Id=request.POST['remove']).delete()
-        #CBQuestion.objects.get(question_Id=request.POST['remove']).delete()
+        try: q = MCQuestion.objects.get(question_Id=request.POST['remove'])
+        except: q = None
+        try: q = TEQuestion.objects.get(question_Id=request.POST['remove'])
+        except: q = None
+        try: q = CBQuestion.objects.get(question_Id=request.POST['remove'])
+        except: q = None
+        if q: q.delete()
 
     return render(
         request,
@@ -76,8 +74,8 @@ def editsurvey(request):
         context={
             'survey': s.title,
             'mcquestions': MCQuestion.objects.filter(question_survey_Id=s.survey_Id),
-            #'tequestions': TEQuestion.objects.filter(question_survey_Id=s.survey_Id),
-            #'cbquestions': CBQuestion.objects.filter(question_survey_Id=s.survey_Id),
+            'tequestions': TEQuestion.objects.filter(question_survey_Id=s.survey_Id),
+            'cbquestions': CBQuestion.objects.filter(question_survey_Id=s.survey_Id),
         }
     )
 
@@ -192,7 +190,7 @@ def takesurvey(request):
     # Still need to get cross-Question table querying
     for q in questions:
         qid = q.question_Id
-        
+
         if q.question_type == 'MC':
             qq = MCQuestion.objects.filter(question_Id=qid)
             mclist.append(qq)
@@ -235,7 +233,7 @@ def surveycompletion(request):
     for q in qlist:
         print("questionID: ", end = "")
         print(q.question_Id, "\n" , end="")
-        print("     question text: ", end = "") 
+        print("     question text: ", end = "")
         print(q.question_text)
     if q in mcquestions:
         print("----MC----")
@@ -244,8 +242,8 @@ def surveycompletion(request):
     elif q in cbquestions:
         print("----CB---")
 
-        
-        
+
+
 
     return render (request,
         'survey-completion.html',

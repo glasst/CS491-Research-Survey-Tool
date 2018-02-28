@@ -5,24 +5,35 @@
 
 <h4>Your surveys:</h4>
 <div class="container">
-	{% if not surveys %}
-	(None)
-	{% endif %}
-	{% for s in surveys %}
-	<a href="edit?id={{ s.survey_Id }}">
-	<button type="button" class="list-group-item list-group-item-action">
-	{{ s.title }}
-	</button>
-	</a>
-	{% endfor %}
+    {% if not surveys %}
+    (None)
+    {% endif %}
+    {% for s in surveys %}
+    <div class="row">
+    <div class="col-10">
+        <a href="edit?id={{ s.survey_Id }}">
+        <button type="button" class="list-group-item list-group-item-action">
+        {{ s.title }}
+        </button>
+        </a>
+    </div>
+    <div class="col">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="remove" value="{{ s.survey_Id }}" />
+            {% bootstrap_button "Delete" button_type="submit" button_class="btn-primary" %}
+        </form>
+    </div>
+    </div>
+    {% endfor %}
 </div>
 
 <h4>Create new survey:</h4>
 <div class="container" style="border:1px solid #cecece; padding: 20px;">
 <form action="" method="POST">
-	{% csrf_token %}
-	{% bootstrap_form form %}
-	{% bootstrap_button "Create survey" button_type="submit" button_class="btn-primary" %}
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% bootstrap_button "Create survey" button_type="submit" button_class="btn-primary" %}
 </form>
 </div>
 
