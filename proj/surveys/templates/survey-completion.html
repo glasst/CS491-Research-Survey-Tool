@@ -33,18 +33,17 @@ questions:
 <p> {{ q }} </p>
 <p> question_ID: {{ q.question_Id }}</p>
 <p> question_survey_ID: {{ q.surveyid }}</p>
-<p> question_type: {{ q.question_type  }}</p>
 <br />
 <h3>Question text: {{q.question_text}} </h3>
-	{% if q.question_type == 'MC' %}
+	{% if q in mclist %}
+
  <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_1}}</label><br/>
  <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_2}}</label><br/>
  <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_3}} </label><br/>
  <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_4}}</label><br/>
  <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_5}}</label><br/>
 	
-	{% elif q.question_type == 'TE' %}
-
+	{% elif q in telist %}
 
 	<form action="" method="POST">	
 	{% csrf_token %}
@@ -52,7 +51,7 @@ questions:
 	<input type="text" value="Answer"/>
 	</form>
 
-	{% elif q.question_type == 'CB' %}
+	{% elif q in cblist %}
 <input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_1}}</label><br/>
  <input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_2}}</label><br/>
  <input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_3}} </label><br/>

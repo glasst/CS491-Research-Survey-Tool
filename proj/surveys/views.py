@@ -181,6 +181,80 @@ def takesurvey(request):
     )
 
 
+'''def surveycompletion(request):
+    surveyid = request.session.get('survey_to_take')
+    questions = Question.objects.filter(question_survey_Id=surveyid)
+    print(surveyid)
+    mclist = []
+    telist = []
+    cblist = []
+
+    # Still need to get cross-Question table querying
+    for q in questions:
+        qid = q.question_Id
+        
+        if q.question_type == 'MC':
+            qq = MCQuestion.objects.filter(question_Id=qid)
+            mclist.append(qq)
+
+        if q.question_type == 'TE':
+            qq = MCQuestion.objects.filter(question_Id=qid)
+            telist.append(qq)
+
+        if q.question_type == 'CB':
+            qq = MCQuestion.objects.filter(question_Id=qid)
+            cblist.append(qq)
+
+    return render (
+        request,
+        'survey-completion.html',
+        {'surveyid':surveyid, 'allQ':questions, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
+    )'''
+
+def surveycompletion(request):
+    surveyid = request.session.get('survey_to_take')
+    questions = Question.objects.filter(question_survey_Id=surveyid)
+    mcquestions = MCQuestion.objects.filter(question_survey_Id = surveyid)
+    tequestions = TEQuestion.objects.filter(question_survey_Id=surveyid)
+    cbquestions = CBQuestion.objects.filter(question_survey_Id=surveyid)
+    print(surveyid)
+    mclist = []
+    telist = []
+    cblist = []
+    qlist = []
+    # Still need to get cross-Question table querying
+    for q in questions:
+        qlist.append(q)
+    for q in mcquestions:
+        qlist.append(q)
+    for q in tequestions:
+        qlist.append(q)
+    for q in cbquestions:
+        qlist.append(q)
+
+    for q in qlist:
+        print("questionID: ", end = "")
+        print(q.question_Id, "\n" , end="")
+        print("     question text: ", end = "") 
+        print(q.question_text)
+    if q in mcquestions:
+        print("----MC----")
+    elif q in tequestions:
+        print("----TE----")
+    elif q in cbquestions:
+        print("----CB---")
+
+        
+        
+
+    return render (request,
+        'survey-completion.html',
+        {'surveyid':surveyid, 'allQ':qlist, 'mclist':mcquestions, 'telist':tequestions, 'cblist': cbquestions}
+    )
+
+
+
+'''
 def surveycompletion(request):
     surveyid = request.session.get('survey_to_take')
     questions = Question.objects.filter(question_survey_Id=surveyid)
@@ -210,6 +284,7 @@ def surveycompletion(request):
         'survey-completion.html',
         {'surveyid': surveyid, 'allQ': questions, 'mclist': mclist, 'telist': telist, 'cblist': cblist}
     )
+'''
 
 
 # prints list of all survey objects
