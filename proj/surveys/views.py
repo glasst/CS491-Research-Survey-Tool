@@ -38,7 +38,9 @@ def home(request):
             # form.set_creator_foreign_key(creator)
 
             # form.cleaned_data['creator_Id'] = creator
-            n = form.save()
+            s = form.save(commit=False)
+            s.survey_Id = uuid.uuid4()
+            s.save()
 
     else:
         form = SurveyForm(initial={'creator_Id': request.user.pk})
@@ -65,11 +67,18 @@ def editsurvey(request):
 
     if request.method == 'POST' and 'remove' in request.POST:
         MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
+        #TEQuestion.objects.get(question_Id=request.POST['remove']).delete()
+        #CBQuestion.objects.get(question_Id=request.POST['remove']).delete()
 
     return render(
         request,
         'edit.html',
-        context={'survey': s.title, 'mcquestions': MCQuestion.objects.filter(question_survey_Id=s.survey_Id)},
+        context={
+            'survey': s.title,
+            'mcquestions': MCQuestion.objects.filter(question_survey_Id=s.survey_Id),
+            #'tequestions': TEQuestion.objects.filter(question_survey_Id=s.survey_Id),
+            #'cbquestions': CBQuestion.objects.filter(question_survey_Id=s.survey_Id),
+        }
     )
 
 
@@ -106,10 +115,12 @@ def multiplechoice(request):
     if request.method == 'POST':
         form = MCQuestionForm(request.POST)
         if form.is_valid():
-            form.save()  # save to DB
+            q = form.save(commit=False)
+            q.question_Id = uuid.uuid4()
+            q.save()
             return HttpResponseRedirect('/surveys/edit')
     else:
-        form = MCQuestionForm()
+        form = MCQuestionForm(initial={'question_survey_Id': request.session['survey']})
 
     return render(
         request,
@@ -122,10 +133,12 @@ def textentry(request):
     if request.method == 'POST':
         form = TEQuestionForm(request.POST)
         if form.is_valid():
-            form.save()  # save to DB
-            return HttpResponseRedirect('/surveys/newquestion')
+            q = form.save(commit=False)
+            q.question_Id = uuid.uuid4()
+            q.save()
+            return HttpResponseRedirect('/surveys/edit')
     else:
-        form = TEQuestionForm()
+        form = TEQuestionForm(initial={'question_survey_Id': request.session['survey']})
 
     return render(
         request,
@@ -138,10 +151,12 @@ def checkbox(request):
     if request.method == 'POST':
         form = CBQuestionForm(request.POST)
         if form.is_valid():
-            form.save()  # save to DB
-            return HttpResponseRedirect('/surveys/newquestion')
+            q = form.save(commit=False)
+            q.question_Id = uuid.uuid4()
+            q.save()
+            return HttpResponseRedirect('/surveys/edit')
     else:
-        form = CBQuestionForm()
+        form = CBQuestionForm(initial={'question_survey_Id': request.session['survey']})
 
     return render(
         request,

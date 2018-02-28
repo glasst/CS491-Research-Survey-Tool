@@ -73,7 +73,6 @@ class Question(models.Model):
 
 
 class MCQuestion(models.Model):
-    question_Id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     question_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT, null=True)
     question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_text = models.CharField(max_length=400)
@@ -85,11 +84,13 @@ class MCQuestion(models.Model):
 
 
 class TEQuestion(models.Model):
+    question_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT, null=True)
     question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_text = models.CharField(max_length=400)
 
 
 class CBQuestion(models.Model):
+    question_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT, null=True)
     question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_text = models.CharField(max_length=400)
     option_1 = models.CharField(max_length=100)

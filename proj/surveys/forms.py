@@ -40,6 +40,7 @@ class MCQuestionForm(forms.ModelForm):
         model = MCQuestion
         fields = '__all__'
         widgets = {
+            'question_survey_Id': forms.HiddenInput(),
             'question_Id': forms.HiddenInput(),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
             'option_1': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
@@ -55,6 +56,7 @@ class TEQuestionForm(forms.ModelForm):
         model = TEQuestion
         fields = '__all__'
         widgets = {
+            'question_survey_Id': forms.HiddenInput(),
             'question_Id': forms.HiddenInput(),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
         }
@@ -65,6 +67,7 @@ class CBQuestionForm(forms.ModelForm):
         model = CBQuestion
         fields = '__all__'
         widgets = {
+            'question_survey_Id': forms.HiddenInput(),
             'question_Id': forms.HiddenInput(),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
             'option_1': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
