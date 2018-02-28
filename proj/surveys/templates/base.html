@@ -9,14 +9,35 @@
 {% block head %}{% endblock %}
 </head>
 
+<nav class="navbar navbar-expand-md navbar-dark bg-primary">
+    <a class="navbar-brand" href="{% url 'surveys:home' %}">Surveys</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    Stuff to add
+                </a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            {% if user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Create an account</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+
 <body>
     <div class="container-fluid" align="right">
         {% if user.is_authenticated %}
         Logged in as <b><i>{{ user.username }}</i></b><br />
-        <a href="{% url 'logout' %}?next=../..">Logout</a><br />
-        {% else %}
-        <a href="{% url 'login' %}">Login</a><br />
-        <a href="{% url 'signup' %}">Create an account</a>
         {% endif %}
     </div>
 {% block content %}{% endblock %}
