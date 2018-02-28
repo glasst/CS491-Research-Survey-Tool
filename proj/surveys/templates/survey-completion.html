@@ -1,25 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	{% block title %}<title>Take a Survey</title>{% endblock %}
-	<meta charset="utf-8">
-  	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-	<!-- jQuery library -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-	<!-- Latest compiled JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
-
-<body>
+{% extends "base.html" %}
 {% block content %}
 
-<h1>You're taking the survey</h1>
+<h1>You're taking the survey : {{ survey_Id }}</h1>
 <p>link for multiple forms on one page: https://rock-it.pl/multiple-forms-on-one-page-in-django/</p>
 
+<<<<<<< HEAD
 <p>survey id: {{ surveyid }}</p>
 
 <!--
@@ -91,45 +76,41 @@ questions:
 
 
 {% endfor %}
+=======
+    {% if survey_Id.mcquestion_set.all %}
+        {% for q in survey_Id.mcquestion_set.all %}
+            <p>{{ q.question_type }}</p>
+            <p>{{ q.question_text }}</p>
+            <p> question text: {{ q.question_text }} </p>
+            {{ q.option_1 }}
+            {{ q.option_2 }}
+            {{ q.option_3 }}
+            {{ q.option_4 }}
+            {{ q.option_5 }}
+        {% endfor %}
+    {% endif %}
+
+    {% if survey_Id.tequestion_set.all %}
+        {% for q in survey_Id.tequestion_set.all %}
+            <p>TE Questions{{ q.question_type }}</p>
+            <p>{{ q.question_text }}</p>
+            <p> question text: {{ q.question_text }} </p>
+        {% endfor %}
+    {% endif %}
+
+    {% if survey_Id.cbquestion_set.all %}
+        {% for q in survey_Id.cbquestion_set.all %}
+            <p>CB questions {{ q.question_type }}</p>
+            <p>{{ q.question_text }}</p>
+            <p> question text: {{ q.question_text }} </p>
+            {{ q.option_1 }}
+            {{ q.option_2 }}
+            {{ q.option_3 }}
+            {{ q.option_4 }}
+            {{ q.option_5 }}
+        {% endfor %}
+    {% endif %}
+>>>>>>> a7bb9b95388daa6034e6eacd92626156eb3fecab
 
 {% endblock %}
-<p>-----</p>
-<!--
-{% for q in mclist %}
-<p>MC{{ q.question_type }}</p>
-<p>{{ q.question_Id }}</p>
-<p>{{ q.question_text|stringformat:"s" }}</p>
-
-{% endfor %}	
-		
-{% for q in telist %}
-<p>TE{{ q.question_type }}</p>
-<p>{{ q.question_Id }}</p>
-<p>{{ q.question_text }}</p>
-{% endfor %}
-
-{% for q in cblist %}
-<p>CB{{ q.question_type }}</p>
-<p>{{ q.question_Id }}</p>
-<p>{{ q.question_text }}</p>
-{% endfor %}
--->
-
-</br>
-</br>
-
-</br>
-
-</br>
-
-</br>
-
-
-</br>
-
-</br>
-
-
-
-</body>
-</html>
+{#<p>{{ q.question_text|stringformat:"s" }}</p>#}
