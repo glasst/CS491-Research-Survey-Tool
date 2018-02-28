@@ -26,24 +26,31 @@ def home(request):
     creator = User.objects.get(username=request.user.username)
     survey_list = Survey.objects.filter(creator_Id=creator)
 
-    if request.method == 'POST':
-        # form = SurveyForm(request.POST or None, initial={'creator_Id':creator,})
-        form = SurveyForm(request.POST)
-        # form.fields['creator_Id'] = creator
 
-        # usr = form.set_creator_foreign_key(creator)
 
-        if form.is_valid():
-            # creator = request.user
-            # form.set_creator_foreign_key(creator)
 
+<<<<<<< HEAD
             # form.cleaned_data['creator_Id'] = creator
             s = form.save(commit=False)
             s.survey_Id = uuid.uuid4()
             s.save()
+=======
+    if request.method == 'POST':
+        #form = SurveyForm(user=request.user)
+        form = SurveyForm(request.POST)
+        
+        if form.is_valid():
+            n = form.save()
+                
+            #return HttpResponseRedirect('newquestion/')
+            return HttpResponseRedirect('edit/?id=' + str(n.pk))
+>>>>>>> 417f739cafacfcdd0d5802bcc9a39ec0a0bce876
 
     else:
+        #form = SurveyForm(user=request.user)
+        #form = SurveyForm()
         form = SurveyForm(initial={'creator_Id': request.user.pk})
+
 
     return render(
         request,
@@ -181,6 +188,78 @@ def takesurvey(request):
     )
 
 
+
+'''def surveycompletion(request):
+    surveyid = request.session.get('survey_to_take')
+    questions = Question.objects.filter(question_survey_Id=surveyid)
+    print(surveyid)
+    mclist = []
+    telist = []
+    cblist = []
+
+    # Still need to get cross-Question table querying
+    for q in questions:
+        qid = q.question_Id
+        
+        if q.question_type == 'MC':
+            qq = MCQuestion.objects.filter(question_Id=qid)
+            mclist.append(qq)
+
+        if q.question_type == 'TE':
+            qq = MCQuestion.objects.filter(question_Id=qid)
+            telist.append(qq)
+
+        if q.question_type == 'CB':
+            qq = MCQuestion.objects.filter(question_Id=qid)
+            cblist.append(qq)
+
+    return render (
+        request,
+        'survey-completion.html',
+        {'surveyid':surveyid, 'allQ':questions, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
+    )'''
+
+def surveycompletion(request):
+    surveyid = request.session.get('survey_to_take')
+    questions = Question.objects.filter(question_survey_Id=surveyid)
+    mcquestions = MCQuestion.objects.filter(question_survey_Id = surveyid)
+    tequestions = TEQuestion.objects.filter(question_survey_Id=surveyid)
+    cbquestions = CBQuestion.objects.filter(question_survey_Id=surveyid)
+    print(surveyid)
+    mclist = []
+    telist = []
+    cblist = []
+    qlist = []
+    # Still need to get cross-Question table querying
+    for q in questions:
+        qlist.append(q)
+    for q in mcquestions:
+        qlist.append(q)
+    for q in tequestions:
+        qlist.append(q)
+    for q in cbquestions:
+        qlist.append(q)
+
+
+
+
+    for q in qlist:
+        print("questionID: ", end = "")
+        print(q.question_Id, "\n" , q.question_type, end="")
+        print(" question text: ", end = "") 
+        print(q.question_text)
+
+        
+        
+
+    return render (request,
+        'survey-completion.html',
+        {'surveyid':surveyid, 'allQ':qlist, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
+    )
+
+
+
+'''
 def surveycompletion(request):
     surveyid = request.session.get('survey_to_take')
     questions = Question.objects.filter(question_survey_Id=surveyid)
@@ -210,6 +289,7 @@ def surveycompletion(request):
         'survey-completion.html',
         {'surveyid': surveyid, 'allQ': questions, 'mclist': mclist, 'telist': telist, 'cblist': cblist}
     )
+'''
 
 
 # prints list of all survey objects

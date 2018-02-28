@@ -20,53 +20,89 @@
 <h1>You're taking the survey</h1>
 <p>link for multiple forms on one page: https://rock-it.pl/multiple-forms-on-one-page-in-django/</p>
 
-<p>survey id: {{ surveyid.toString }}</p>
+<p>survey id: {{ surveyid }}</p>
 
 <!--
 survey: 	8a1993449c7143b098b47fac60e86ff4
 questions:
 -->
 
-<!--
-<p>questions:</p>
 {% for q in allQ %}
 
-
+<h2> Question </h2>
 <p> {{ q }} </p>
-<p> question_ID: {{ q.get_Id }}</p>
-<p> question_survey_ID: {{ q.get_survey_Id }}</p>
+<p> question_ID: {{ q.question_Id }}</p>
+<p> question_survey_ID: {{ q.surveyid }}</p>
 <p> question_type: {{ q.question_type  }}</p>
 <br />
+<h3>Question text: {{q.question_text}} </h3>
+	{% if q.question_type == 'MC' %}
+ <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_1}}</label><br/>
+ <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_2}}</label><br/>
+ <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_3}} </label><br/>
+ <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_4}}</label><br/>
+ <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_5}}</label><br/>
+	
+	{% elif q.question_type == 'TE' %}
 
 
+	<form action="" method="POST">	
+	{% csrf_token %}
+	{{ form }}
+	<input type="text" value="Answer"/>
+	</form>
+
+	{% elif q.question_type == 'CB' %}
+<input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_1}}</label><br/>
+ <input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_2}}</label><br/>
+ <input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_3}} </label><br/>
+ <input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_4}}</label><br/>
+ <input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_5}}</label><br/>
+	
+<!--
+	<input type="text" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_1}}</label><br/>-->
+	{% endif %}
+
+	
+	
+
+
+<!--
 {% if q.question_type == 'MC' %}
 <p>{{ q.question_type }}</p>
 <p>{{ q.question_text }}</p>
+<p> question text: {{q.question_text}} </p>
+
 
 {% elif q.question_type == 'TE' %}
-<p>{{ q.question_type }}</p>
+<p>TE Questions{{ q.question_type }}</p>
 <p>{{ q.question_text }}</p>
+<p> question text: {{q.question_text}} </p>
+
 
 {% elif q.question_type == 'CB' %}
-<p>{{ q.question_type }}</p>
+<p>CB questions {{ q.question_type }}</p>
 <p>{{ q.question_text }}</p>
+<p> question text: {{q.question_text}} </p>
 
 {% else %}
 <p></p>
 
-{% endif %}
+{% endif %}    -->
+
+
 {% endfor %}
--->
 
+{% endblock %}
 <p>-----</p>
-
+<!--
 {% for q in mclist %}
 <p>MC{{ q.question_type }}</p>
 <p>{{ q.question_Id }}</p>
 <p>{{ q.question_text|stringformat:"s" }}</p>
-{% endfor %}
 
-<!--
+{% endfor %}	
+		
 {% for q in telist %}
 <p>TE{{ q.question_type }}</p>
 <p>{{ q.question_Id }}</p>
@@ -80,8 +116,21 @@ questions:
 {% endfor %}
 -->
 
+</br>
+</br>
 
-{% endblock %}
+</br>
+
+</br>
+
+</br>
+
+
+</br>
+
+</br>
+
+
 
 </body>
 </html>
