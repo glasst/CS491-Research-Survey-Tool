@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, Response
 from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, SurveyForm, TakeSurveyForm
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 import json
 import uuid
@@ -19,7 +20,7 @@ class UUIDEncoder(json.JSONEncoder):
 
 
 # Create your views here.
-
+@login_required
 def home(request):
     num_users = User.objects.all().count()
     surveys = Survey.objects.filter(creator_Id=request.user.pk)
@@ -46,7 +47,7 @@ def home(request):
 
 
 ### VIEWS FOR SURVEY MAKING ###
-
+@login_required
 def editsurvey(request):
     s = None
     if 'id' in request.GET: request.session['survey'] = request.GET['id']
@@ -60,13 +61,12 @@ def editsurvey(request):
     if not s: return HttpResponseRedirect('/surveys')
 
     if request.method == 'POST' and 'remove' in request.POST:
-        try: q = MCQuestion.objects.get(question_Id=request.POST['remove'])
-        except: q = None
-        try: q = TEQuestion.objects.get(question_Id=request.POST['remove'])
-        except: q = None
-        try: q = CBQuestion.objects.get(question_Id=request.POST['remove'])
-        except: q = None
-        if q: q.delete()
+        try: MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
+        except: pass
+        try: TEQuestion.objects.get(question_Id=request.POST['remove']).delete()
+        except: pass
+        try: CBQuestion.objects.get(question_Id=request.POST['remove']).delete()
+        except: pass
 
     return render(
         request,
@@ -108,7 +108,7 @@ def newquestion(request):
         context={'form': form},
     )
 
-
+@login_required
 def multiplechoice(request):
     if request.method == 'POST':
         form = MCQuestionForm(request.POST)
@@ -126,7 +126,7 @@ def multiplechoice(request):
         context={'form': form},
     )
 
-
+@login_required
 def textentry(request):
     if request.method == 'POST':
         form = TEQuestionForm(request.POST)
@@ -144,7 +144,7 @@ def textentry(request):
         context={'form': form},
     )
 
-
+@login_required
 def checkbox(request):
     if request.method == 'POST':
         form = CBQuestionForm(request.POST)
@@ -164,6 +164,7 @@ def checkbox(request):
 
 
 ### VIEWS FOR SURVEY TAKING ###
+@login_required
 def takesurvey(request):
     if request.method == 'POST':
         form = TakeSurveyForm(request.POST, user=request.user)
@@ -209,6 +210,7 @@ def takesurvey(request):
         {'surveyid':surveyid, 'allQ':questions, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
     )'''
 
+@login_required
 def surveycompletion(request):
     surveyid = request.session.get('survey_to_take')
     questions = Question.objects.filter(question_survey_Id=surveyid)
