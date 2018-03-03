@@ -12,7 +12,7 @@ class UserForm(forms.ModelForm):
 class SurveyForm(forms.ModelForm):
     class Meta:
         model = Survey
-        exclude = ['survey_Id']
+        exclude = ['survey_Id', 'num_questions']
         widgets = {
             'creator_Id': forms.HiddenInput(),
         }

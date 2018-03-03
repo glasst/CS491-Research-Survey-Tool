@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from polymorphic.models import PolymorphicModel
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django import forms
@@ -90,6 +91,7 @@ class MCQuestion(models.Model):
         self.question_num = question_survey_Id.num_questions
         super(MCQuestion, self).save()
 
+
     def delete(self):
         question_survey_Id.num_questions -= 1
         super(MCQuestion, self).delete()
@@ -106,6 +108,7 @@ class TEQuestion(models.Model):
         question_survey_Id.num_questions += 1
         self.question_num = question_survey_Id.num_questions
         super(MCQuestion, self).save()
+
 
     def delete(self):
         question_survey_Id.num_questions -= 1
@@ -126,7 +129,7 @@ class CBQuestion(models.Model):
     def save(self):
         question_survey_Id.num_questions += 1
         self.question_num = question_survey_Id.num_questions
-        super(MCQuestion, self).save(
+        super(MCQuestion, self).save()
 
 
     def delete(self):
@@ -155,3 +158,4 @@ class Option(models.Model):
     mc_question_Id = models.ForeignKey(MCQuestion, on_delete=models.PROTECT)
     cb_question_Id = models.ForeignKey(CBQuestion, on_delete=models.PROTECT)
     #question_Id = models.GenericForeignKey()
+'''
