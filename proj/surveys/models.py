@@ -87,8 +87,12 @@ class MCQuestion(models.Model):
     # increment number of questions in survey and set current question number
     def save(self):
         question_survey_Id.num_questions += 1
-        question_num = question_survey_Id.num_questions
+        self.question_num = question_survey_Id.num_questions
         super(MCQuestion, self).save()
+
+    def delete(self):
+        question_survey_Id.num_questions -= 1
+        super(MCQuestion, self).delete()
 
 
 class TEQuestion(models.Model):
@@ -100,8 +104,12 @@ class TEQuestion(models.Model):
     # increment number of questions in survey and set current question number
     def save(self):
         question_survey_Id.num_questions += 1
-        question_num = question_survey_Id.num_questions
+        self.question_num = question_survey_Id.num_questions
         super(MCQuestion, self).save()
+
+    def delete(self):
+        question_survey_Id.num_questions -= 1
+        super(MCQuestion, self).delete()
 
 class CBQuestion(models.Model):
     question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
@@ -114,10 +122,16 @@ class CBQuestion(models.Model):
     option_4 = models.CharField(max_length=100)
     option_5 = models.CharField(max_length=100)
 
-def save(self):
+
+    def save(self):
         question_survey_Id.num_questions += 1
-        question_num = question_survey_Id.num_questions
-        super(MCQuestion, self).save()
+        self.question_num = question_survey_Id.num_questions
+        super(MCQuestion, self).save(
+
+
+    def delete(self):
+        question_survey_Id.num_questions -= 1
+        super(MCQuestion, self).delete()
 
 
 class ResponseTE(models.Model):
@@ -141,5 +155,3 @@ class Option(models.Model):
     mc_question_Id = models.ForeignKey(MCQuestion, on_delete=models.PROTECT)
     cb_question_Id = models.ForeignKey(CBQuestion, on_delete=models.PROTECT)
     #question_Id = models.GenericForeignKey()
-
->>>>>>> 8654c05800755b7a9f16ae29902fde702853adf6
