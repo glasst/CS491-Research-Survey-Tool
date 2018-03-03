@@ -10,7 +10,6 @@ import json
 from uuid import UUID
 from json import JSONEncoder
 
-
 NUM_OPTIONS = 10
 
 
@@ -21,35 +20,40 @@ class UUIDEncoder(json.JSONEncoder):
             return obj.hex
         return json.JSONEncoder.default(self, obj)
 
+
 class Survey(models.Model):
     survey_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     creator_Id = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, null=True)
-    #num_questions = models.IntegerField(default=0)
+
+    # num_questions = models.IntegerField(default=0)
 
     def __str__(self):
         return 'Survey ID: %s, Title: %s, %s' % (self.survey_Id, self.title, self.creator_Id)
+
 
 QUESTION_CHOICES = (
     ('CB', 'CheckBox'),
     ('MC', 'MultipleChoice'),
     ('TE', 'TextEntry'),
 )
+
+
 class Question(PolymorphicModel):
     question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question_type = models.CharField(max_length=2, choices=QUESTION_CHOICES)
     question_num = models.IntegerField()
-    #question_text = models.CharField(max_length=400, default="Add question text")
+
+    # question_text = models.CharField(max_length=400, default="Add question text")
 
     def __str__(self):
-                return 'Question ID: %s, %s' % (self.question_Id, self.question_survey_Id)
+        return 'Question ID: %s, %s' % (self.question_Id, self.question_survey_Id)
 
     def save(self):
         question_survey_Id.num_questions += 1
         self.question_num = question_survey_Id.num_questions
         super(MCQuestion, self).save()
-
 
     def delete(self):
         question_survey_Id.num_questions -= 1
@@ -57,10 +61,10 @@ class Question(PolymorphicModel):
 
 
 class MCQuestion(Question):
-    #question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
-    #question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
+    # question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
+    # question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_text = models.CharField(max_length=400)
-    #question_num = models.IntegerField()
+    # question_num = models.IntegerField()
     option_1 = models.CharField(max_length=100)
     option_2 = models.CharField(max_length=100)
     option_3 = models.CharField(max_length=100)
@@ -69,7 +73,6 @@ class MCQuestion(Question):
 
 
 class TEQuestion(Question):
-
     # question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     # question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=400)
@@ -96,16 +99,14 @@ class CBQuestion(Question):
     option_5 = models.CharField(max_length=100)
 
 
-
 class ResponseTE(models.Model):
     # increment number of questions in survey and set current question number
     response_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     response_question_Id = models.ForeignKey(MCQuestion, on_delete=models.PROTECT)
-   # response_question_type = models.ForeignKey(MCQuestions, on_delete=models.PROTECT)
-    response_survey_Id  = models.ForeignKey(Survey, on_delete=models.PROTECT)
+    # response_question_type = models.ForeignKey(MCQuestions, on_delete=models.PROTECT)
+    response_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT)
     response_user_Id = models.ForeignKey(User, on_delete=models.PROTECT)
     response_text = models.CharField(max_length=400)
-
 
 
 OPTION_CHOICES = (
@@ -120,4 +121,3 @@ class Option(models.Model):
     mc_question_Id = models.ForeignKey(MCQuestion, on_delete=models.PROTECT)
     cb_question_Id = models.ForeignKey(CBQuestion, on_delete=models.PROTECT)
     #question_Id = models.GenericForeignKey()'''
-

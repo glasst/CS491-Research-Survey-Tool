@@ -30,8 +30,10 @@ def home(request):
 
     if request.method == 'POST':
         if 'remove' in request.POST:
-            try: s = Survey.objects.get(survey_Id=request.POST['remove'])
-            except: s = None
+            try:
+                s = Survey.objects.get(survey_Id=request.POST['remove'])
+            except:
+                s = None
             if s: s.delete()
         else:
             form = SurveyForm(request.POST)
@@ -61,12 +63,18 @@ def editsurvey(request):
     if not s: return HttpResponseRedirect('/surveys')
 
     if request.method == 'POST' and 'remove' in request.POST:
-        try: MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
-        except: pass
-        try: TEQuestion.objects.get(question_Id=request.POST['remove']).delete()
-        except: pass
-        try: CBQuestion.objects.get(question_Id=request.POST['remove']).delete()
-        except: pass
+        try:
+            MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
+        except:
+            pass
+        try:
+            TEQuestion.objects.get(question_Id=request.POST['remove']).delete()
+        except:
+            pass
+        try:
+            CBQuestion.objects.get(question_Id=request.POST['remove']).delete()
+        except:
+            pass
 
     return render(
         request,
@@ -108,6 +116,7 @@ def newquestion(request):
         context={'form': form},
     )
 
+
 @login_required
 def multiplechoice(request):
     if request.method == 'POST':
@@ -126,6 +135,7 @@ def multiplechoice(request):
         context={'form': form},
     )
 
+
 @login_required
 def textentry(request):
     if request.method == 'POST':
@@ -143,6 +153,7 @@ def textentry(request):
         'textentry.html',
         context={'form': form},
     )
+
 
 @login_required
 def checkbox(request):
@@ -180,12 +191,11 @@ def takesurvey(request):
     )
 
 
-
 @login_required
 def surveycompletion(request):
     surveyid = request.session.get('survey_to_take')
     questions = Question.objects.filter(question_survey_Id=surveyid)
-    mcquestions = MCQuestion.objects.filter(question_survey_Id = surveyid)
+    mcquestions = MCQuestion.objects.filter(question_survey_Id=surveyid)
     tequestions = TEQuestion.objects.filter(question_survey_Id=surveyid)
     cbquestions = CBQuestion.objects.filter(question_survey_Id=surveyid)
     print(surveyid)
@@ -195,7 +205,7 @@ def surveycompletion(request):
     qlist = []
     # Still need to get cross-Question table querying
     for q in questions:
-	print(q.questionID
+        print(q.questionID)
         qlist.append(q)
     for q in mcquestions:
         qlist.append(q)
@@ -205,9 +215,9 @@ def surveycompletion(request):
         qlist.append(q)
 
     for q in qlist:
-        print("questionID: ", end = "")
-        print(q.question_Id, "\n" , end="")
-        print("     question text: ", end = "")
+        print("questionID: ", end="")
+        print(q.question_Id, "\n", end="")
+        print("     question text: ", end="")
         print(q.question_text)
     if q in mcquestions:
         print("----MC----")
@@ -216,14 +226,11 @@ def surveycompletion(request):
     elif q in cbquestions:
         print("----CB---")
 
-
-
-
-    return render (request,
-        'survey-completion.html',
-        {'surveyid':surveyid, 'allQ':qlist, 'mclist':mcquestions, 'telist':tequestions, 'cblist': cbquestions}
-    )
-
+    return render(request,
+                  'survey-completion.html',
+                  {'surveyid': surveyid, 'allQ': qlist, 'mclist': mcquestions, 'telist': tequestions,
+                   'cblist': cbquestions}
+                  )
 
 
 '''
