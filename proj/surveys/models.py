@@ -10,6 +10,9 @@ from uuid import UUID
 from json import JSONEncoder
 
 
+NUM_OPTIONS = 10
+
+
 class UUIDEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, UUID):
@@ -48,7 +51,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
-	'''
+'''
 
 
 
@@ -56,6 +59,7 @@ class Survey(models.Model):
     survey_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     creator_Id = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, null=True)
+    num_questions = models.IntegerField(default=0)
 
     def __str__(self):
         return 'Survey ID: %s, Title: %s, %s' % (self.survey_Id, self.title, self.creator_Id)
@@ -67,7 +71,6 @@ class Question(models.Model):
     question_type = models.CharField(max_length=20)
     question_text = models.CharField(max_length=400, default="Add question text")
 
-
     def __str__(self):
                 return 'Question ID: %s, %s' % (self.question_Id, self.question_survey_Id)
 
@@ -75,27 +78,49 @@ class MCQuestion(models.Model):
     question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_text = models.CharField(max_length=400)
+    question_num = models.IntegerField()
     option_1 = models.CharField(max_length=100)
     option_2 = models.CharField(max_length=100)
     option_3 = models.CharField(max_length=100)
     option_4 = models.CharField(max_length=100)
     option_5 = models.CharField(max_length=100)
+
+    # increment number of questions in survey and set current question number
+    def save(self):
+        question_survey_Id.num_questions += 1
+        question_num = question_survey_Id.num_questions
+        super(MCQuestion, self).save()
 
 
 class TEQuestion(models.Model):
     question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=400)
+    question_num = models.IntegerField()
+
+    # increment number of questions in survey and set current question number
+    def save(self):
+        question_survey_Id.num_questions += 1
+        question_num = question_survey_Id.num_questions
+        super(MCQuestion, self).save()
 
 class CBQuestion(models.Model):
     question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=400)
+    question_num = models.IntegerField()
     option_1 = models.CharField(max_length=100)
     option_2 = models.CharField(max_length=100)
     option_3 = models.CharField(max_length=100)
     option_4 = models.CharField(max_length=100)
     option_5 = models.CharField(max_length=100)
+
+    # increment number of questions in survey and set current question number
+    def save(self):
+        question_survey_Id.num_questions += 1
+        question_num = question_survey_Id.num_questions
+        super(MCQuestion, self).save()
+
 
 class Response(models.Model):
     response_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
@@ -105,9 +130,21 @@ class Response(models.Model):
     response_user_Id = models.ForeignKey(User, on_delete=models.PROTECT)
     response_text = models.CharField(max_length=400)
 
+
+OPTION_CHOICES = )
+    ('CB', 'CheckBox'),
+    ('MC', "MultipleChoice')
+)
+
+class Option(models.Model):
+    option_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
+    type_of_question = models.CharField(max_length=2, choices=OPTION_CHOICES)
+    mc_question_Id = models.ForeignKey(MCQuestion, on_delete=models.PROTECT)
+    cb_question_Id = models.ForeignKey(CBQuestion, on_delete=models.PROTECT)
+    #question_Id = models.GenericForeignKey()
+
+
 '''
-
-
 class ResponseForm(forms.Form):
     class Meta:
         model = Response
