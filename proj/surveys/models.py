@@ -131,9 +131,9 @@ class Response(models.Model):
     response_text = models.CharField(max_length=400)
 
 
-OPTION_CHOICES = )
+OPTION_CHOICES = (
     ('CB', 'CheckBox'),
-    ('MC', "MultipleChoice')
+    ('MC', 'MultipleChoice'),
 )
 
 class Option(models.Model):
