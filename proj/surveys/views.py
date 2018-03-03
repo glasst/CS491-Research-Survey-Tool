@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, Response
+from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, ResponseTE
 from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, SurveyForm, TakeSurveyForm
 from django.urls import reverse
 

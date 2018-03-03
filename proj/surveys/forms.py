@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, Response
+from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, ResponseTE
 
 class UserForm(forms.ModelForm):
     class Meta:
