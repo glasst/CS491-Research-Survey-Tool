@@ -26,7 +26,7 @@ class Survey(models.Model):
     creator_Id = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, null=True)
 
-    # num_questions = models.IntegerField(default=0)
+    num_questions = models.IntegerField(default=0)
 
     def __str__(self):
         return 'Survey ID: %s, Title: %s, %s' % (self.survey_Id, self.title, self.creator_Id)
@@ -44,20 +44,17 @@ class Question(PolymorphicModel):
     question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question_type = models.CharField(max_length=2, choices=QUESTION_CHOICES)
     question_num = models.IntegerField()
-
-    # question_text = models.CharField(max_length=400, default="Add question text")
+    question_title = models.CharField(max_length=400)
 
     def __str__(self):
         return 'Question ID: %s, %s' % (self.question_Id, self.question_survey_Id)
 
-    def save(self):
-        question_survey_Id.num_questions += 1
-        self.question_num = question_survey_Id.num_questions
-        super(MCQuestion, self).save()
+    def add_to_q_num(self):
+        self.question_survey_Id.num_questions += 1
+        self.question_num = self.question_survey_Id.num_questions
 
-    def delete(self):
-        question_survey_Id.num_questions -= 1
-        super(MCQuestion, self).delete()
+    def rm_from_q_num(self):
+        self.question_survey_Id.num_questions -= 1
 
 
 class MCQuestion(Question):
@@ -71,23 +68,25 @@ class MCQuestion(Question):
     option_4 = models.CharField(max_length=100)
     option_5 = models.CharField(max_length=100)
 
+    def save(self):
+        self.add_to_q_num()
+        super(MCQuestion, self).save()
+
+    def delete(self):
+        self.rm_from_q_num()
+        super(MCQuestion, self).delete()
+
 
 class TEQuestion(Question):
-    # question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
-    # question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=400)
-    # question_num = models.IntegerField()
-    #
-    # # increment number of questions in survey and set current question number
-    # def save(self):
-    #     question_survey_Id.num_questions += 1
-    #     self.question_num = question_survey_Id.num_questions
-    #     super(MCQuestion, self).save()
-    #
-    #
-    # def delete(self):
-    #     question_survey_Id.num_questions -= 1
-    #     super(MCQuestion, self).delete()
+
+    def save(self):
+        self.add_to_q_num()
+        super(TEQuestion, self).save()
+
+    def delete(self):
+        self.rm_from_q_num()
+        super(TEQuestion, self).delete()
 
 
 class CBQuestion(Question):
@@ -97,6 +96,14 @@ class CBQuestion(Question):
     option_3 = models.CharField(max_length=100)
     option_4 = models.CharField(max_length=100)
     option_5 = models.CharField(max_length=100)
+
+    def save(self):
+        self.add_to_q_num()
+        super(CBQuestion, self).save()
+
+    def delete(self):
+        self.rm_from_q_num()
+        super(CBQuestion, self).delete()
 
 
 class ResponseTE(models.Model):

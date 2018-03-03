@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load bootstrap4 %}
 {% block content %}
-<h3 align="center">Editing survey - {{ survey }}</h3>
+<h3 align="center">Editing survey - {{ survey_Id }}</h3>
 <br />
 <div class="container">
     {% for q in mcquestions %}
@@ -56,11 +56,17 @@
     {% endfor %}
 </div><br />
 <div class="container">
-        {% bootstrap_button "Add MC question" button_type="link" href="../multiplechoice.html" button_class="btn-primary" %}
-        {% bootstrap_button "Add TE question" button_type="link" href="../textentry.html" button_class="btn-primary" %}
-        {% bootstrap_button "Add CB question" button_type="link" href="../checkbox.html" button_class="btn-primary" %}
-        <br /><br />
-        {% bootstrap_button "Back" button_type="link" href="../" button_class="btn-primary" %}
+    <a href="{% url 'surveys:multiplechoice' survey_Id %}">
+        {% bootstrap_button "Add MC question" button_type="link" button_class="btn-primary" %}
+    </a>
+    <a href="{% url 'surveys:textentry' survey_Id %}">
+        {% bootstrap_button "Add TE question" button_type="link" button_class="btn-primary" %}
+    </a>
+    <a href="{% url 'surveys:checkbox' survey_Id %}">
+        {% bootstrap_button "Add CB question" button_type="link" button_class="btn-primary" %}
+    </a>
+    <br/><br/>
+    {% bootstrap_button "Back" button_type="link" href="../" button_class="btn-primary" %}
 </div>
 
 {% endblock %}

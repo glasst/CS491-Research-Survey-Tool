@@ -26,10 +26,11 @@ class SurveyForm(forms.ModelForm):
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
-        exclude = ['question_Id', 'question_survey_Id', 'question_type', 'question_num']
+        exclude = ['question_num', 'question_type']
         CHOICES = (('MC', 'multiplechoice'), ('TE', 'textentry'), ('CB', 'checkbox'),)
         widgets = {
             'question_survey_Id': forms.HiddenInput(),
+            'question_Id': forms.HiddenInput(),
             'question_type': forms.Select(choices=CHOICES),
             # 'question_text': forms.Textarea(attrs={'cols':50, 'rows': 5,}),
         }
@@ -38,10 +39,11 @@ class QuestionForm(forms.ModelForm):
 class MCQuestionForm(forms.ModelForm):
     class Meta:
         model = MCQuestion
-        exclude = ['question_Id', 'question_survey_Id', 'question_type', 'question_num']
+        exclude = ['question_num', 'question_type', 'question_survey_Id']
         widgets = {
             'question_survey_Id': forms.HiddenInput(),
             'question_Id': forms.HiddenInput(),
+            'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
             'option_1': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
             'option_2': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
@@ -54,10 +56,10 @@ class MCQuestionForm(forms.ModelForm):
 class TEQuestionForm(forms.ModelForm):
     class Meta:
         model = TEQuestion
-        exclude = ['question_Id', 'question_survey_Id', 'question_type', 'question_num']
+        exclude = ['question_num', 'question_type', 'question_survey_Id']
         widgets = {
-            'question_survey_Id': forms.HiddenInput(),
             'question_Id': forms.HiddenInput(),
+            'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
         }
 
@@ -65,10 +67,11 @@ class TEQuestionForm(forms.ModelForm):
 class CBQuestionForm(forms.ModelForm):
     class Meta:
         model = CBQuestion
-        exclude = ['question_Id', 'question_survey_Id', 'question_type', 'question_num']
+        exclude = ['question_num', 'question_type', 'question_survey_Id']
         widgets = {
             'question_survey_Id': forms.HiddenInput(),
             'question_Id': forms.HiddenInput(),
+            'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
             'option_1': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
             'option_2': forms.Textarea(attrs={'cols': 10, 'rows': 2}),

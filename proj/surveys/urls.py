@@ -12,12 +12,12 @@ urlpatterns = [
     path('takesurvey/', views.takesurvey, name='takesurvey'),
     path('survey-completion/', views.surveycompletion, name='survey-completion'),
 
-    path('edit/', views.editsurvey, name='editsurvey'),
+    path('edit/<uuid:survey_Id>/', views.editsurvey, name='editsurvey'),
 
     # ex: /surveys/multiplechoice.html
-    path('multiplechoice.html', views.multiplechoice, name='multiplechoice'),
-    path('textentry.html', views.textentry, name='textentry'),
-    path('checkbox.html', views.checkbox, name='checkbox'),
+    path('edit/<uuid:survey_Id>/multiplechoice', views.multiplechoice, name='multiplechoice'),
+    path('edit/<uuid:survey_Id>/textentry', views.textentry, name='textentry'),
+    path('edit/<uuid:survey_Id>/checkbox', views.checkbox, name='checkbox'),
 
     #/surveys/index
     path('index', views.index, name='index'),

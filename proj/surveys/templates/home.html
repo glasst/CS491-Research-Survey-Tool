@@ -11,7 +11,8 @@
     {% for s in surveys %}
     <div class="row">
     <div class="col-10">
-        <a href="edit?id={{ s.survey_Id }}">
+        <a href="{% url 'surveys:editsurvey' s.survey_Id %}">
+        <input type="hidden" name="edit" value="{{ s.survey_Id }}" />
         <button type="button" class="list-group-item list-group-item-action">
         {{ s.title }}
         </button>

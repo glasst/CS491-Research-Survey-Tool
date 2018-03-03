@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, ResponseTE
 from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, SurveyForm, TakeSurveyForm
-from django.urls import reverse
+from django.urls import reverse, resolve
 from django.contrib.auth.decorators import login_required
 
 import json
@@ -50,17 +50,18 @@ def home(request):
 
 ### VIEWS FOR SURVEY MAKING ###
 @login_required
-def editsurvey(request):
-    s = None
-    if 'id' in request.GET: request.session['survey'] = request.GET['id']
-    if 'survey' in request.session:
-        try:
-            sid = request.session['survey']
-            s = Survey.objects.get(survey_Id=sid)
-        except:
-            return HttpResponseRedirect('/surveys')
+def editsurvey(request, survey_Id):
+    #s = None
+    #if 'id' in request.GET: request.session['survey'] = request.GET['id']
+    #if 'survey' in request.session:
+    if not survey_Id:
+        #try:
+            #sid = request.session['survey']
+        #    s = Survey.objects.get(survey_Id=survey_Id)
+        #except:
+        return HttpResponseRedirect('/surveys')
 
-    if not s: return HttpResponseRedirect('/surveys')
+    #else: return HttpResponseRedirect('/surveys')
 
     if request.method == 'POST' and 'remove' in request.POST:
         try:
@@ -68,7 +69,10 @@ def editsurvey(request):
         except:
             pass
         try:
-            TEQuestion.objects.get(question_Id=request.POST['remove']).delete()
+            #TEQuestion.objects.get(question_Id=request.POST['remove']).delete()
+            #question = get_object_or_404(Survey, survey_Id=survey_Id)
+            question = Question.objects.get(question_Id=request.POST['remove'])
+            question.delete()
         except:
             pass
         try:
@@ -80,10 +84,10 @@ def editsurvey(request):
         request,
         'edit.html',
         context={
-            'survey': s.title,
-            'mcquestions': MCQuestion.objects.filter(question_survey_Id=s.survey_Id),
-            'tequestions': TEQuestion.objects.filter(question_survey_Id=s.survey_Id),
-            'cbquestions': CBQuestion.objects.filter(question_survey_Id=s.survey_Id),
+            'survey_Id': survey_Id,
+            'mcquestions': MCQuestion.objects.filter(question_survey_Id=survey_Id),
+            'tequestions': TEQuestion.objects.filter(question_survey_Id=survey_Id),
+            'cbquestions': CBQuestion.objects.filter(question_survey_Id=survey_Id),
         }
     )
 
@@ -118,16 +122,18 @@ def newquestion(request):
 
 
 @login_required
-def multiplechoice(request):
+def multiplechoice(request, survey_Id):
     if request.method == 'POST':
         form = MCQuestionForm(request.POST)
         if form.is_valid():
+            survey = get_object_or_404(Survey, survey_Id=survey_Id)
             q = form.save(commit=False)
             q.question_Id = uuid.uuid4()
+            q.question_survey_Id = survey
             q.save()
-            return HttpResponseRedirect('/surveys/edit')
+            return redirect(reverse('surveys:editsurvey', args=(survey.survey_Id,)))
     else:
-        form = MCQuestionForm(initial={'question_survey_Id': request.session['survey']})
+        form = MCQuestionForm(initial={'question_survey_Id': survey_Id})
 
     return render(
         request,
@@ -137,16 +143,19 @@ def multiplechoice(request):
 
 
 @login_required
-def textentry(request):
+def textentry(request, survey_Id):
     if request.method == 'POST':
         form = TEQuestionForm(request.POST)
         if form.is_valid():
+            survey = get_object_or_404(Survey, survey_Id=survey_Id)
             q = form.save(commit=False)
             q.question_Id = uuid.uuid4()
+            q.question_survey_Id = survey
             q.save()
-            return HttpResponseRedirect('/surveys/edit')
+            return redirect(reverse('surveys:editsurvey', args=(survey.survey_Id,)))
+
     else:
-        form = TEQuestionForm(initial={'question_survey_Id': request.session['survey']})
+        form = TEQuestionForm(initial={'question_survey_Id': survey_Id})
 
     return render(
         request,
@@ -156,16 +165,18 @@ def textentry(request):
 
 
 @login_required
-def checkbox(request):
+def checkbox(request, survey_Id):
     if request.method == 'POST':
         form = CBQuestionForm(request.POST)
         if form.is_valid():
+            survey = get_object_or_404(Survey, survey_Id=survey_Id)
             q = form.save(commit=False)
             q.question_Id = uuid.uuid4()
+            q.question_survey_Id = survey
             q.save()
-            return HttpResponseRedirect('/surveys/edit')
+            return redirect(reverse('surveys:editsurvey', args=(survey.survey_Id,)))
     else:
-        form = CBQuestionForm(initial={'question_survey_Id': request.session['survey']})
+        form = CBQuestionForm(initial={'question_survey_Id': survey_Id})
 
     return render(
         request,
