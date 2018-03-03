@@ -12,7 +12,7 @@ class UserForm(forms.ModelForm):
 class SurveyForm(forms.ModelForm):
     class Meta:
         model = Survey
-        exclude = ['survey_Id']
+        exclude = ['survey_Id', 'num_questions']
         widgets = {
             'creator_Id': forms.HiddenInput(),
         }
@@ -26,7 +26,7 @@ class SurveyForm(forms.ModelForm):
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
-        exclude = ['question_Id']
+        exclude = ['question_Id', 'question_survey_Id', 'question_type', 'question_num']
         CHOICES = (('MC', 'multiplechoice'), ('TE', 'textentry'), ('CB', 'checkbox'),)
         widgets = {
             'question_survey_Id': forms.HiddenInput(),
@@ -38,7 +38,7 @@ class QuestionForm(forms.ModelForm):
 class MCQuestionForm(forms.ModelForm):
     class Meta:
         model = MCQuestion
-        fields = '__all__'
+        exclude = ['question_Id', 'question_survey_Id', 'question_type', 'question_num']
         widgets = {
             'question_survey_Id': forms.HiddenInput(),
             'question_Id': forms.HiddenInput(),
@@ -54,7 +54,7 @@ class MCQuestionForm(forms.ModelForm):
 class TEQuestionForm(forms.ModelForm):
     class Meta:
         model = TEQuestion
-        fields = '__all__'
+        exclude = ['question_Id', 'question_survey_Id', 'question_type', 'question_num']
         widgets = {
             'question_survey_Id': forms.HiddenInput(),
             'question_Id': forms.HiddenInput(),
@@ -65,7 +65,7 @@ class TEQuestionForm(forms.ModelForm):
 class CBQuestionForm(forms.ModelForm):
     class Meta:
         model = CBQuestion
-        fields = '__all__'
+        exclude = ['question_Id', 'question_survey_Id', 'question_type', 'question_num']
         widgets = {
             'question_survey_Id': forms.HiddenInput(),
             'question_Id': forms.HiddenInput(),

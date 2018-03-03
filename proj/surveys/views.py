@@ -180,35 +180,6 @@ def takesurvey(request):
     )
 
 
-'''def surveycompletion(request):
-    surveyid = request.session.get('survey_to_take')
-    questions = Question.objects.filter(question_survey_Id=surveyid)
-    print(surveyid)
-    mclist = []
-    telist = []
-    cblist = []
-
-    # Still need to get cross-Question table querying
-    for q in questions:
-        qid = q.question_Id
-
-        if q.question_type == 'MC':
-            qq = MCQuestion.objects.filter(question_Id=qid)
-            mclist.append(qq)
-
-        if q.question_type == 'TE':
-            qq = MCQuestion.objects.filter(question_Id=qid)
-            telist.append(qq)
-
-        if q.question_type == 'CB':
-            qq = MCQuestion.objects.filter(question_Id=qid)
-            cblist.append(qq)
-
-    return render (
-        request,
-        'survey-completion.html',
-        {'surveyid':surveyid, 'allQ':questions, 'mclist':mclist, 'telist':telist, 'cblist':cblist}
-    )'''
 
 @login_required
 def surveycompletion(request):
@@ -224,6 +195,7 @@ def surveycompletion(request):
     qlist = []
     # Still need to get cross-Question table querying
     for q in questions:
+	print(q.questionID
         qlist.append(q)
     for q in mcquestions:
         qlist.append(q)
