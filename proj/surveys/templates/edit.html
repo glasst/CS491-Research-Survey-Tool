@@ -66,7 +66,9 @@
         {% bootstrap_button "Add CB question" button_type="link" button_class="btn-primary" %}
     </a>
     <br/><br/>
-    {% bootstrap_button "Back" button_type="link" href="../" button_class="btn-primary" %}
+    <a href="{% url 'surveys:home' %}">
+        {% bootstrap_button "Back" button_type="link" button_class="btn-primary" %}
+    </a>
 </div>
 
 {% endblock %}
