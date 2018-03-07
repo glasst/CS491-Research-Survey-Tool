@@ -1,6 +1,7 @@
 <!doctype html>
 {% load staticfiles %}
 {% load bootstrap4 %}
+{% load url from login %}
 <html lang="en">
 <head>
 <title>{% block title %}{% endblock %}</title>
@@ -18,17 +19,15 @@
     <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="#">
-                    Stuff to add
-                </a>
+                <li class="nav-item"><a class="nav-link" href="{% url 'surveys:index' %}">Index</a></li>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
             {% if user.is_authenticated %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'login:logout' %}">Logout</a></li>
             {% else %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Create an account</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'login:login' %}">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'login:signup' %}">Create an account</a></li>
             {% endif %}
         </ul>
     </div>

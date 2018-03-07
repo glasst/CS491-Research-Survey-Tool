@@ -20,8 +20,15 @@ class UUIDEncoder(json.JSONEncoder):
 
 
 # Create your views here.
-@login_required
 def home(request):
+    return render(
+        request,
+        'home.html',
+        context={})
+
+
+@login_required
+def index(request):
     num_users = User.objects.all().count()
     surveys = Survey.objects.filter(creator_Id=request.user.pk)
     creator = User.objects.get(username=request.user.username)
@@ -44,7 +51,7 @@ def home(request):
 
     return render(
         request,
-        'home.html',
+        'index.html',
         context={'form': form, 'num_users': num_users, 'surveys': surveys, 'userID': creator})
 
 
@@ -278,7 +285,7 @@ def surveycompletion(request):
     )
 '''
 
-
+'''
 # prints list of all survey objects
 def index(request):
     user_surveys = Survey.objects.filter(creator_Id=request.user)
@@ -297,8 +304,9 @@ def index(request):
         form = SurveyForm()
 
     return render(request, 'surveys/index.html', {'user_surveys': user_surveys})
+'''
 
-
+'''
 # page of specific survey listing its questions
 def detail(request, survey_Id):
     survey = get_object_or_404(Survey, survey_Id=survey_Id)
@@ -321,14 +329,14 @@ def detail(request, survey_Id):
             nextpage += QUESTIONPAGES[type]
             question.save()  # save to DB
             # return HttpResponseRedirect(nextpage)
-            '''
-            if type is 'MC':
-                return redirect(reverse('surveys:multiplechoice', kwargs={'survey_Id': survey.survey_Id}))
-            elif type is 'TE':
-                return redirect(reverse('surveys:textentry', kwargs={'survey_Id': survey.survey_Id}))
-            else:
-                return redirect(reverse('surveys:checkbox', kwargs={'survey_Id': survey.survey_Id}))
-                '''
+            
+            #if type is 'MC':
+            #    return redirect(reverse('surveys:multiplechoice', kwargs={'survey_Id': survey.survey_Id}))
+            #elif type is 'TE':
+            #    return redirect(reverse('surveys:textentry', kwargs={'survey_Id': survey.survey_Id}))
+            #else:
+            #    return redirect(reverse('surveys:checkbox', kwargs={'survey_Id': survey.survey_Id}))
+            
 
         # else:
         #    print(form.errors, len(form.errors))
@@ -337,8 +345,10 @@ def detail(request, survey_Id):
 
     # return render(request, 'surveys/add_question.html', {'survey': survey_Id})
     return render(request, 'surveys/detail.html', {'survey': survey})
+'''
 
 
+'''
 def add_question(request, survey_Id):
     QUESTIONPAGES = {
         'MC': 'multiplechoice.html',
@@ -406,7 +416,7 @@ def delete_survey(request, survey_Id):
     survey.delete()
     user_surveys = Survey.objects.filter(creator_Id=request.user)
     return render(request, 'surveys/index.html', {'user_surveys': user_surveys})
-
+'''
 
 '''
 def multiplechoice(request, survey_Id):
