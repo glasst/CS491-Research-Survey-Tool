@@ -1,9 +1,10 @@
 from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 # experimental
 
@@ -30,7 +31,7 @@ def signup(request):
             user = authenticate(username=username, password=raw_password)
             # form2.fields['user_Id'] = request.user ### this gives username, not UUID
             login(request, user)
-            return redirect('../../surveys/')
+            return redirect(reverse('surveys:home'))
     else:
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
