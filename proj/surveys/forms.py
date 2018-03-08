@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, ResponseTE
+from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, ResponseTE, Option
 
 class UserForm(forms.ModelForm):
     class Meta:
@@ -39,10 +39,8 @@ class QuestionForm(forms.ModelForm):
 class MCQuestionForm(forms.ModelForm):
     class Meta:
         model = MCQuestion
-        exclude = ['question_num', 'question_type', 'question_survey_Id']
+        exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type']
         widgets = {
-            'question_survey_Id': forms.HiddenInput(),
-            'question_Id': forms.HiddenInput(),
             'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
             'option_1': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
@@ -56,9 +54,8 @@ class MCQuestionForm(forms.ModelForm):
 class TEQuestionForm(forms.ModelForm):
     class Meta:
         model = TEQuestion
-        exclude = ['question_num', 'question_type', 'question_survey_Id']
+        exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type']
         widgets = {
-            'question_Id': forms.HiddenInput(),
             'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
         }
@@ -67,10 +64,8 @@ class TEQuestionForm(forms.ModelForm):
 class CBQuestionForm(forms.ModelForm):
     class Meta:
         model = CBQuestion
-        exclude = ['question_num', 'question_type', 'question_survey_Id']
+        exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type']
         widgets = {
-            'question_survey_Id': forms.HiddenInput(),
-            'question_Id': forms.HiddenInput(),
             'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
             'option_1': forms.Textarea(attrs={'cols': 10, 'rows': 2}),

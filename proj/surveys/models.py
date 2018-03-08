@@ -47,7 +47,7 @@ class Question(PolymorphicModel):
     question_title = models.CharField(max_length=400)
 
     def __str__(self):
-        return 'Question ID: %s, %s' % (self.question_Id, self.question_survey_Id)
+        return 'Question ID: %s, %s' % (self.question_Id, self.question_title)
 
     def save(self):
         self.question_survey_Id.num_questions += 1

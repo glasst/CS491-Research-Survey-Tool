@@ -1,74 +1,74 @@
 {% extends "base.html" %}
 {% load bootstrap4 %}
 {% block content %}
-<h3 align="center">Editing survey - {{ survey_Id }}</h3>
-<br />
-<div class="container">
-    {% for q in mcquestions %}
-    <div class="container" style="border:1px solid #cecece; padding: 20px;">
-        <form method="post">
-            {% csrf_token %}
-            <h5>{{ q.question_text }}</h5><br />
-            <div class="radio"><label><input type="radio" name="radio"> {{ q.option_1 }}</label></div>
-            <div class="radio"><label><input type="radio" name="radio"> {{ q.option_2 }}</label></div>
-            <div class="radio"><label><input type="radio" name="radio"> {{ q.option_3 }}</label></div>
-            <div class="radio"><label><input type="radio" name="radio"> {{ q.option_4 }}</label></div>
-            <div class="radio"><label><input type="radio" name="radio"> {{ q.option_5 }}</label></div>
-            <input type="hidden" name="remove" value="{{ q.question_Id }}" />
-            <p class="text-right">
-            {% bootstrap_button "Remove" button_type="submit" button_class="btn-primary" %}
-            </p>
-        </form>
-    </div>
-    <br />
+    <h3 align="center">Editing survey - {{ survey_Id }}</h3>
+    <br/>
+    <div class="container">
+    {% for q in questions %}
+        {% if q.question_type == 'MC' %}
+            <div class="container" style="border:1px solid #cecece; padding: 20px;">
+                <form method="post">
+                    {% csrf_token %}
+                    <h4>{{ q.question_title }}</h4><br/>
+                    <h5>{{ q.question_text }}</h5><br/>
+                    <div class="radio"><label><input type="radio" name="radio"> {{ q.option_1 }}</label></div>
+                    <div class="radio"><label><input type="radio" name="radio"> {{ q.option_2 }}</label></div>
+                    <div class="radio"><label><input type="radio" name="radio"> {{ q.option_3 }}</label></div>
+                    <div class="radio"><label><input type="radio" name="radio"> {{ q.option_4 }}</label></div>
+                    <div class="radio"><label><input type="radio" name="radio"> {{ q.option_5 }}</label></div>
+                    <input type="hidden" name="remove" value="{{ q.question_Id }}"/>
+                    <p class="text-right">
+                        {% bootstrap_button "Remove" button_type="submit" button_class="btn-primary" %}
+                    </p>
+                </form>
+            </div>
+        {% elif q.question_type == 'TE' %}
+            <div class="container" style="border:1px solid #cecece; padding: 20px;">
+                <form method="post">
+                    {% csrf_token %}
+                    <h4>{{ q.question_title }}</h4><br/>
+                    <h5>{{ q.question_text }}</h5><br/>
+                    <div class="form-group"><textarea class="form-control" rows="3"></textarea></div>
+                    <br/>
+                    <input type="hidden" name="remove" value="{{ q.question_Id }}"/>
+                    <p class="text-right">
+                        {% bootstrap_button "Remove" button_type="submit" button_class="btn-primary" %}
+                    </p>
+                </form>
+            </div>
+        {% else %}
+            <div class="container" style="border:1px solid #cecece; padding: 20px;">
+                <form method="post">
+                    {% csrf_token %}
+                    <h4>{{ q.question_title }}</h4><br/>
+                    <h5>{{ q.question_text }}</h5><br/>
+                    <div class="checkbox"><label><input type="checkbox"> {{ q.option_1 }}</label></div>
+                    <div class="checkbox"><label><input type="checkbox"> {{ q.option_2 }}</label></div>
+                    <div class="checkbox"><label><input type="checkbox"> {{ q.option_3 }}</label></div>
+                    <div class="checkbox"><label><input type="checkbox"> {{ q.option_4 }}</label></div>
+                    <div class="checkbox"><label><input type="checkbox"> {{ q.option_5 }}</label></div>
+                    <input type="hidden" name="remove" value="{{ q.question_Id }}"/>
+                    <p class="text-right">
+                        {% bootstrap_button "Remove" button_type="submit" button_class="btn-primary" %}
+                    </p>
+                </form>
+            </div>
+        {% endif %}
     {% endfor %}
-    {% for q in tequestions %}
-    <div class="container" style="border:1px solid #cecece; padding: 20px;">
-        <form method="post">
-            {% csrf_token %}
-            <h5>{{ q.question_text }}</h5><br />
-            <div class="form-group"><textarea class="form-control" rows="3"></textarea></div><br />
-            <input type="hidden" name="remove" value="{{ q.question_Id }}" />
-            <p class="text-right">
-            {% bootstrap_button "Remove" button_type="submit" button_class="btn-primary" %}
-            </p>
-        </form>
+    <br/>
+    <div class="container">
+        <a href="{% url 'surveys:multiplechoice' survey_Id %}">
+            {% bootstrap_button "Add MC question" button_type="link" button_class="btn-primary" %}
+        </a>
+        <a href="{% url 'surveys:textentry' survey_Id %}">
+            {% bootstrap_button "Add TE question" button_type="link" button_class="btn-primary" %}
+        </a>
+        <a href="{% url 'surveys:checkbox' survey_Id %}">
+            {% bootstrap_button "Add CB question" button_type="link" button_class="btn-primary" %}
+        </a>
+        <br/><br/>
+        <a href="{% url 'surveys:home' %}">
+            {% bootstrap_button "Back" button_type="link" button_class="btn-primary" %}
+        </a>
     </div>
-    <br />
-    {% endfor %}
-    {% for q in cbquestions %}
-    <div class="container" style="border:1px solid #cecece; padding: 20px;">
-        <form method="post">
-            {% csrf_token %}
-            <h5>{{ q.question_text }}</h5><br />
-            <div class="checkbox"><label><input type="checkbox"> {{ q.option_1 }}</label></div>
-            <div class="checkbox"><label><input type="checkbox"> {{ q.option_2 }}</label></div>
-            <div class="checkbox"><label><input type="checkbox"> {{ q.option_3 }}</label></div>
-            <div class="checkbox"><label><input type="checkbox"> {{ q.option_4 }}</label></div>
-            <div class="checkbox"><label><input type="checkbox"> {{ q.option_5 }}</label></div>
-            <input type="hidden" name="remove" value="{{ q.question_Id }}" />
-            <p class="text-right">
-            {% bootstrap_button "Remove" button_type="submit" button_class="btn-primary" %}
-            </p>
-        </form>
-    </div>
-    <br />
-    {% endfor %}
-</div><br />
-<div class="container">
-    <a href="{% url 'surveys:multiplechoice' survey_Id %}">
-        {% bootstrap_button "Add MC question" button_type="link" button_class="btn-primary" %}
-    </a>
-    <a href="{% url 'surveys:textentry' survey_Id %}">
-        {% bootstrap_button "Add TE question" button_type="link" button_class="btn-primary" %}
-    </a>
-    <a href="{% url 'surveys:checkbox' survey_Id %}">
-        {% bootstrap_button "Add CB question" button_type="link" button_class="btn-primary" %}
-    </a>
-    <br/><br/>
-    <a href="{% url 'surveys:home' %}">
-        {% bootstrap_button "Back" button_type="link" button_class="btn-primary" %}
-    </a>
-</div>
-
 {% endblock %}

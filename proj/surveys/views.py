@@ -114,9 +114,10 @@ def editsurvey(request, survey_Id):
         'edit.html',
         context={
             'survey_Id': survey_Id,
-            'mcquestions': MCQuestion.objects.filter(question_survey_Id=survey_Id),
-            'tequestions': TEQuestion.objects.filter(question_survey_Id=survey_Id),
-            'cbquestions': CBQuestion.objects.filter(question_survey_Id=survey_Id),
+            'questions': Question.objects.filter(question_survey_Id=survey_Id).order_by('question_num'),
+            #'mcquestions': MCQuestion.objects.filter(question_survey_Id=survey_Id),
+            #'tequestions': TEQuestion.objects.filter(question_survey_Id=survey_Id),
+            #'cbquestions': CBQuestion.objects.filter(question_survey_Id=survey_Id),
         }
     )
 
@@ -158,6 +159,7 @@ def multiplechoice(request, survey_Id):
             survey = get_object_or_404(Survey, survey_Id=survey_Id)
             q = form.save(commit=False)
             q.question_Id = uuid.uuid4()
+            q.question_type = 'MC'
             q.question_survey_Id = survey
             q.save()
             return redirect(reverse('surveys:editsurvey', args=(survey.survey_Id,)))
@@ -179,6 +181,7 @@ def textentry(request, survey_Id):
             survey = get_object_or_404(Survey, survey_Id=survey_Id)
             q = form.save(commit=False)
             q.question_Id = uuid.uuid4()
+            q.question_type = 'TE'
             q.question_survey_Id = survey
             q.save()
             return redirect(reverse('surveys:editsurvey', args=(survey.survey_Id,)))
@@ -201,6 +204,7 @@ def checkbox(request, survey_Id):
             survey = get_object_or_404(Survey, survey_Id=survey_Id)
             q = form.save(commit=False)
             q.question_Id = uuid.uuid4()
+            q.question_type = 'CB'
             q.question_survey_Id = survey
             q.save()
             return redirect(reverse('surveys:editsurvey', args=(survey.survey_Id,)))
