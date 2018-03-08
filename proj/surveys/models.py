@@ -10,7 +10,7 @@ import json
 from uuid import UUID
 from json import JSONEncoder
 
-NUM_OPTIONS = 10
+MAX_OPTIONS = 20
 
 
 class UUIDEncoder(json.JSONEncoder):
@@ -25,8 +25,7 @@ class Survey(models.Model):
     survey_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     creator_Id = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, null=True)
-
-    num_questions = models.IntegerField(default=0)
+    num_questions = models.PositiveSmallIntegerField(default=0, max_value=MAX_OPTIONS)
 
     def __str__(self):
         return 'Survey ID: %s, Title: %s, %s' % (self.survey_Id, self.title, self.creator_Id)
@@ -120,11 +119,9 @@ OPTION_CHOICES = (
     ('CB', 'CheckBox'),
     ('MC', 'MultipleChoice'),
 )
-
-'''
 class Option(models.Model):
     option_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     type_of_question = models.CharField(max_length=2, choices=OPTION_CHOICES)
-    mc_question_Id = models.ForeignKey(MCQuestion, on_delete=models.PROTECT)
-    cb_question_Id = models.ForeignKey(CBQuestion, on_delete=models.PROTECT)
-    #question_Id = models.GenericForeignKey()'''
+    mc_question_Id = models.ForeignKey(MCQuestion, null=True, blank=True, on_delete=models.CASCADE)
+    cb_question_Id = models.ForeignKey(CBQuestion, null=True, blank=True, on_delete=models.CASCADE)
+    text = models.CharField(max_length=100)
