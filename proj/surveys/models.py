@@ -109,24 +109,34 @@ class Option(models.Model):
     cb_question_Id = models.ForeignKey(CBQuestion, null=True, blank=True, on_delete=models.CASCADE)
     text = models.CharField(max_length=100)
 
-    def add_to_opt_num(self):
+    def save(self):
         if type_of_question == 'CB':
             self.cb_question_Id.num_options += 1
             self.option_num = self.cb_question_Id.num_options
-        elif type_of_question == 'MC':
+        else:
             self.mc_question_Id.num_options += 1
             self.option_num = self.mc_question_Id.num_options
-
-    def rm_from_opt_num(self):
-        if type_of_question == 'CB':
-            self.cb_question_Id.num_options -= 1
-        elif type_of_question == 'mc':
-            self.mc_question_Id.num_options -= 1
-
-    def save(self):
-        self.add_to_opt_num()
         super(Option, self).save()
 
     def delete(self):
-        self.rm_from_opt_num()
+        if type_of_question == 'CB':
+            self.cb_question_Id.num_options -= 1
+        else:
+            self.mc_question_Id.num_options -= 1
         super(Option, self).delete()
+
+    # def make_cb_option(self):
+    #     type_of_question = 'CB'
+    #     self.save()
+    #
+    # def make_mc_option(self):
+    #     type_of_question = 'MC'
+    #     self.save()
+
+    # def save(self, type):
+    #     self.add_to_opt_num()
+    #     if type == 'CB':
+    #         type_of_question = 'CB'
+    #     else:
+    #         type_of_question = 'MC'
+    #     super(Option, self).save()
