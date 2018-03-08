@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import F
 from django.contrib.auth.models import User
 from polymorphic.models import PolymorphicModel
 from django.db.models.signals import post_save
@@ -26,11 +27,17 @@ class Survey(models.Model):
     survey_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     creator_Id = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, null=True)
-    num_questions = models.PositiveSmallIntegerField(default=0)
+    num_questions = models.SmallIntegerField(default=0)
 
     def __str__(self):
         return 'Survey ID: %s, Title: %s, %s' % (self.survey_Id, self.title, self.creator_Id)
 
+    def decrement_questions(self, to_delete):
+        questions = self.question_set.all()
+        for q in questions:
+            if q.question_num >= to_delete:
+                q.question_num -= 1
+                q.save()
 
 QUESTION_CHOICES = (
     ('CB', 'CheckBox'),
@@ -43,20 +50,45 @@ class Question(PolymorphicModel):
     question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question_type = models.CharField(max_length=2, choices=QUESTION_CHOICES)
-    question_num = models.IntegerField()
+    question_num = models.SmallIntegerField()
     question_title = models.CharField(max_length=400)
 
     def __str__(self):
         return 'Question ID: %s, %s' % (self.question_Id, self.question_title)
 
-    def save(self):
-        self.question_survey_Id.num_questions += 1
-        self.question_num = self.question_survey_Id.num_questions
-        super(Question, self).save()
+    # def save(self):
+    #
+    #     super(Question, self).save()
+    #
+    # def delete(self):
+    #     survey = question_survey_Id
+    #     questions = survey.question_set.all()
+    #     x = question_num
+    #     print(x)
+    #     bignums = questions.filter(question_num__gt=self.question_num)
+    #     for q in bignums:
+    #         q.decrement_number
+    #     print(bignums)
+    #     #self.question_survey_Id.num_questions -= 1
+    #     #super(Question, self).delete()
+    #
+    # def decrement_number(self):
+    #     #self.question_num -= 1
+    #     print(self.question_num)
 
-    def delete(self):
-        self.question_survey_Id.num_questions -= 1
-        super(Question, self).delete()
+    # def save(self):
+    #     survey = self.question_survey_Id
+    #     num = survey.num_questions+1
+    #     survey.update(num_questions=num)
+    #     self.question_num = num
+    #     super(Question, self).save()
+    #
+    # def delete(self):
+    #     survey = self.question_survey_Id
+
+    #
+    #     survey.num_questions -= 1
+    #     super(Question, self).delete()
 
 
 class MCQuestion(Question):
@@ -103,7 +135,7 @@ OPTION_CHOICES = (
 
 class Option(models.Model):
     option_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
-    option_num = models.PositiveSmallIntegerField()
+    option_num = models.SmallIntegerField()
     type_of_question = models.CharField(max_length=2, choices=OPTION_CHOICES)
     mc_question_Id = models.ForeignKey(MCQuestion, null=True, blank=True, on_delete=models.CASCADE)
     cb_question_Id = models.ForeignKey(CBQuestion, null=True, blank=True, on_delete=models.CASCADE)

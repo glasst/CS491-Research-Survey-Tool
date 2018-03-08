@@ -5,6 +5,7 @@
     <br/>
     <div class="container">
     {% for q in questions %}
+        <h4>{{ q.question_num }}</h4><br/>
         {% if q.question_type == 'MC' %}
             <div class="container" style="border:1px solid #cecece; padding: 20px;">
                 <form method="post">

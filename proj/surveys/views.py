@@ -101,6 +101,10 @@ def editsurvey(request, survey_Id):
             #TEQuestion.objects.get(question_Id=request.POST['remove']).delete()
             #question = get_object_or_404(Survey, survey_Id=survey_Id)
             question = Question.objects.get(question_Id=request.POST['remove'])
+            survey = get_object_or_404(Survey, survey_Id=survey_Id)
+            survey.decrement_questions(question.question_num)
+            survey.num_questions -= 1
+            survey.save()
             question.delete()
         except:
             pass
@@ -161,7 +165,10 @@ def multiplechoice(request, survey_Id):
             q.question_Id = uuid.uuid4()
             q.question_type = 'MC'
             q.question_survey_Id = survey
+            survey.num_questions += 1
+            q.question_num = survey.num_questions
             q.save()
+            survey.save()
             return redirect(reverse('surveys:editsurvey', args=(survey.survey_Id,)))
     else:
         form = MCQuestionForm(initial={'question_survey_Id': survey_Id})
@@ -183,7 +190,10 @@ def textentry(request, survey_Id):
             q.question_Id = uuid.uuid4()
             q.question_type = 'TE'
             q.question_survey_Id = survey
+            survey.num_questions = survey.num_questions + 1
+            q.question_num = survey.num_questions
             q.save()
+            survey.save()
             return redirect(reverse('surveys:editsurvey', args=(survey.survey_Id,)))
 
     else:
@@ -206,7 +216,10 @@ def checkbox(request, survey_Id):
             q.question_Id = uuid.uuid4()
             q.question_type = 'CB'
             q.question_survey_Id = survey
+            survey.num_questions += 1
+            q.question_num = survey.num_questions
             q.save()
+            survey.save()
             return redirect(reverse('surveys:editsurvey', args=(survey.survey_Id,)))
     else:
         form = CBQuestionForm(initial={'question_survey_Id': survey_Id})
