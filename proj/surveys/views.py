@@ -93,10 +93,10 @@ def editsurvey(request, survey_Id):
     #else: return HttpResponseRedirect('/surveys')
 
     if request.method == 'POST' and 'remove' in request.POST:
-        try:
-            MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
-        except:
-            pass
+        # try:
+        #     MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
+        # except:
+        #     pass
         try:
             #TEQuestion.objects.get(question_Id=request.POST['remove']).delete()
             #question = get_object_or_404(Survey, survey_Id=survey_Id)
@@ -104,10 +104,10 @@ def editsurvey(request, survey_Id):
             question.delete()
         except:
             pass
-        try:
-            CBQuestion.objects.get(question_Id=request.POST['remove']).delete()
-        except:
-            pass
+        # try:
+        #     CBQuestion.objects.get(question_Id=request.POST['remove']).delete()
+        # except:
+        #     pass
 
     return render(
         request,
