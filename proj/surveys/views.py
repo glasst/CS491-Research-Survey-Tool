@@ -56,7 +56,7 @@ def index(request):
         'index.html',
         context={'form': form, 'num_users': num_users, 'surveys': surveys, 'userID': creator})
 
-
+# No longer using any login view functions
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
