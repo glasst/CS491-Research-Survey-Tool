@@ -1,51 +1,58 @@
 {% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %}{{ survey_title }} - taking survey{% endblock %}
 {% block content %}
-
-<h1>You're taking the survey : {{ survey_Id }}</h1>
+<h2 align="center">{{ survey_title }}</h2><br />
+<!--
 <p>link for multiple forms on one page: https://rock-it.pl/multiple-forms-on-one-page-in-django/</p>
 
 <p>survey id: {{ surveyid }}</p>
 
-<!--
+
 survey: 	8a1993449c7143b098b47fac60e86ff4
 questions:
 -->
+{% if allQ %}
+<form method="POST" id="{{ surveyid }}">
+<div class="container">
 
 {% for q in allQ %}
-
-<h2> Question </h2>
+<h4>{{ q.question_num }}</h4>
+<div class="container" style="border:1px solid #cecece; padding: 20px;">
+<!--<h2> Question </h2>
 <p> {{ q }} </p>
 <p> question_ID: {{ q.question_Id }}</p>
 <p> question_survey_ID: {{ q.surveyid }}</p>
 <br />
-<h3>Question text: {{q.question_text}} </h3>
+-->
+<h4>{{ q.question_text }}</h4><br />
 	{% if q in mclist %}
 
- <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_1}}</label><br/>
- <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_2}}</label><br/>
- <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_3}} </label><br/>
- <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_4}}</label><br/>
- <input type="radio" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_5}}</label><br/>
+ <input type="radio" name="q1" value="a" id="q1a"> <label for="q1a">{{q.option_1}}</label><br/>
+ <input type="radio" name="q1" value="a" id="q1a"> <label for="q1a">{{q.option_2}}</label><br/>
+ <input type="radio" name="q1" value="a" id="q1a"> <label for="q1a">{{q.option_3}} </label><br/>
+ <input type="radio" name="q1" value="a" id="q1a"> <label for="q1a">{{q.option_4}}</label><br/>
+ <input type="radio" name="q1" value="a" id="q1a"> <label for="q1a">{{q.option_5}}</label><br/>
 
 	{% elif q in telist %}
 
 	<form action="" method="POST">
 	{% csrf_token %}
 	{{ form }}
-	<input type="text" value="Answer"/>
+	<div class="form-group"><textarea class="form-control" rows="3"></textarea></div>
 	</form>
 
 	{% elif q in cblist %}
-<input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_1}}</label><br/>
- <input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_2}}</label><br/>
- <input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_3}} </label><br/>
- <input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_4}}</label><br/>
- <input type="checkbox" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_5}}</label><br/>
+<input type="checkbox" name="q1" value="a" id="q1a"> <label for="q1a">{{q.option_1}}</label><br/>
+ <input type="checkbox" name="q1" value="a" id="q1a"> <label for="q1a">{{q.option_2}}</label><br/>
+ <input type="checkbox" name="q1" value="a" id="q1a"> <label for="q1a">{{q.option_3}} </label><br/>
+ <input type="checkbox" name="q1" value="a" id="q1a"> <label for="q1a">{{q.option_4}}</label><br/>
+ <input type="checkbox" name="q1" value="a" id="q1a"> <label for="q1a">{{q.option_5}}</label><br/>
 
 <!--
 	<input type="text" name="q1" value="a" id="q1a"><label for="q1a">{{q.option_1}}</label><br/>-->
 	{% endif %}
-
+</div><br />
 
 
 
@@ -75,6 +82,13 @@ questions:
 
 
 {% endfor %}
+<button class="btn btn-primary" type="submit">Submit response</button>
+</div>
+</form>
+{% else %}
+This survey is empty.
+{% endif %}
+<!--
     {% if survey_Id.mcquestion_set.all %}
         {% for q in survey_Id.mcquestion_set.all %}
             <p>{{ q.question_type }}</p>
@@ -111,3 +125,4 @@ questions:
 
 {% endblock %}
 {#<p>{{ q.question_text|stringformat:"s" }}</p>#}
+-->

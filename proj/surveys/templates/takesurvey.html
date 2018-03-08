@@ -1,16 +1,14 @@
 {% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %}Research Survey Tool{% endblock %}
 {% block content %}
 
-<h1>Select a survey to take:</h1>
-
-<h3>Select a survey to take:</h3>
+<div class="container">
 <form action="" method="POST">
 	{% csrf_token %}
-	{{ form }}
-	<input type="submit" value="Choose"/>
+	{% bootstrap_form form %}
+	{% bootstrap_button "Choose" button_type="submit" button_class="btn-primary" %}
 </form>
+</div>
 
 {% endblock %}
-
-</body>
-</html>

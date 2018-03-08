@@ -41,6 +41,7 @@ def index(request):
         if 'remove' in request.POST:
             try:
                 s = Survey.objects.get(survey_Id=request.POST['remove'])
+                print(s.title)
             except:
                 s = None
             if s: s.delete()
@@ -91,7 +92,7 @@ def editsurvey(request, survey_Id):
         return HttpResponseRedirect('/surveys')
 
     #else: return HttpResponseRedirect('/surveys')
-
+    survey = get_object_or_404(Survey, survey_Id=survey_Id)
     if request.method == 'POST' and 'remove' in request.POST:
         # try:
         #     MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
@@ -101,7 +102,6 @@ def editsurvey(request, survey_Id):
             #TEQuestion.objects.get(question_Id=request.POST['remove']).delete()
             #question = get_object_or_404(Survey, survey_Id=survey_Id)
             question = Question.objects.get(question_Id=request.POST['remove'])
-            survey = get_object_or_404(Survey, survey_Id=survey_Id)
             survey.decrement_questions(question.question_num)
             survey.num_questions -= 1
             survey.save()
@@ -117,6 +117,7 @@ def editsurvey(request, survey_Id):
         request,
         'edit.html',
         context={
+            'survey_title': survey.title,
             'survey_Id': survey_Id,
             'questions': Question.objects.filter(question_survey_Id=survey_Id).order_by('question_num'),
             #'mcquestions': MCQuestion.objects.filter(question_survey_Id=survey_Id),
@@ -238,7 +239,7 @@ def takesurvey(request):
         form = TakeSurveyForm(request.POST, user=request.user)
         if form.is_valid():
             request.session['survey_to_take'] = getattr(form.cleaned_data.get('survey_to_take'), 'survey_Id').hex
-            return HttpResponseRedirect('/surveys/survey-completion')
+            return HttpResponseRedirect('/survey-completion')
     else:
         form = TakeSurveyForm(user=request.user)
     return render(
@@ -251,6 +252,7 @@ def takesurvey(request):
 @login_required
 def surveycompletion(request):
     surveyid = request.session.get('survey_to_take')
+    survey = Survey.objects.get(survey_Id=surveyid)
     questions = Question.objects.filter(question_survey_Id=surveyid)
     mcquestions = MCQuestion.objects.filter(question_survey_Id=surveyid)
     tequestions = TEQuestion.objects.filter(question_survey_Id=surveyid)
@@ -262,13 +264,7 @@ def surveycompletion(request):
     qlist = []
     # Still need to get cross-Question table querying
     for q in questions:
-        print(q.questionID)
-        qlist.append(q)
-    for q in mcquestions:
-        qlist.append(q)
-    for q in tequestions:
-        qlist.append(q)
-    for q in cbquestions:
+        print(q.question_Id)
         qlist.append(q)
 
     for q in qlist:
@@ -285,7 +281,7 @@ def surveycompletion(request):
 
     return render(request,
                   'survey-completion.html',
-                  {'surveyid': surveyid, 'allQ': qlist, 'mclist': mcquestions, 'telist': tequestions,
+                  {'survey_title': survey.title, 'surveyid': surveyid, 'allQ': qlist, 'mclist': mcquestions, 'telist': tequestions,
                    'cblist': cbquestions}
                   )
 
@@ -297,7 +293,7 @@ def option(request, question_Id, type):
         if form.is_valid():
             option = form.save(commit=False)
             if(type == 'CB')
-                question = get_object_or_404(CBQuestion, question_Id=question_Id)  
+                question = get_object_or_404(CBQuestion, question_Id=question_Id)
             else:
                 question = get_object_or_404(MCQuestion, question_Id=question_Id)
             option.mc_question_Id = question

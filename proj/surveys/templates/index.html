@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 {% load bootstrap4 %}
+{% block title %}Research Survey Tool{% endblock %}
 {% block content %}
+
+<script type="text/javascript">
+function conf(str, id){
+    c = window.confirm(str);
+    if (c == true){
+        document.getElementById(id).submit();
+    }
+}
+</script>
+
 <h2 align="center">Research Survey Tool</h2>
 
 <h4>Your surveys:</h4>
@@ -19,10 +30,10 @@
         </a>
     </div>
     <div class="col">
-        <form method="post">
+        <form method="post" id="{{ s.survey_Id }}">
             {% csrf_token %}
             <input type="hidden" name="remove" value="{{ s.survey_Id }}" />
-            {% bootstrap_button "Delete" button_type="submit" button_class="btn-primary" %}
+            <button class="btn btn-primary" type="button" onclick="conf('Delete survey? This cannot be undone.', '{{ s.survey_Id }}')">Delete</button>
         </form>
     </div>
     </div>
