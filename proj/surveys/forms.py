@@ -87,3 +87,14 @@ class TakeSurveyForm(forms.Form):
         super(TakeSurveyForm, self).__init__(*args, **kwargs)
         self.fields['survey_to_take'] = forms.ModelChoiceField(
             queryset=Survey.objects.filter(creator_Id__username=self.user))
+
+
+class OptionForm(forms.ModelForm):
+    class Meta:
+        model = Option
+        exclude = ['option_Id', 'option_num', 'type_of_question']
+        widgets = {
+            'mc_question_Id': forms.HiddenInput(),
+            'cb_question_Id': forms.HiddenInput(),
+            'text': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+        }

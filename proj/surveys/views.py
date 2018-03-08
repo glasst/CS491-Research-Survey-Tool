@@ -271,3 +271,29 @@ def surveycompletion(request):
                   {'surveyid': surveyid, 'allQ': qlist, 'mclist': mcquestions, 'telist': tequestions,
                    'cblist': cbquestions}
                   )
+
+'''
+IN PROGRESS
+def option(request, question_Id, type):
+    if request.method == 'POST':
+        form = Option(request.POST)
+        if form.is_valid():
+            option = form.save(commit=False)
+            if(type == 'CB')
+                question = get_object_or_404(CBQuestion, question_Id=question_Id)  
+            else:
+                question = get_object_or_404(MCQuestion, question_Id=question_Id)
+            option.mc_question_Id = question
+            option.type_of_question = type
+            option.option_Id = uuid.uuid4()
+            q.save()
+            return redirect(reverse('surveys:editsurvey', args=(survey.survey_Id,)))
+    else:
+        form = CBQuestionForm(initial={'question_survey_Id': survey_Id})
+
+    return render(
+        request,
+        'checkbox.html',
+        context={'form': form},
+    )
+'''
