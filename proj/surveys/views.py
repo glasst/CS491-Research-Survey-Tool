@@ -118,7 +118,7 @@ def editsurvey(request, survey_Id):
             s = request.POST.get('survey')
             q = request.POST.get('reorder')
             n = int(request.POST.get('new_index'))
-            reorder(s, q, n)
+            if s and q: reorder(s, q, n)
 
     return render(
         request,
@@ -142,19 +142,19 @@ def reorder(sid, qid, new):
     if new > survey.num_questions: new = survey.num_questions
     if old == new: return
     elif old > new:
-        for i in range(new, old + 1):
-            try:
-                cq = questions.get(question_num=i)
-                cq.question_num += 1
-                cq.save()
-            except: pass
+        for i in range(old - 1, new - 1, -1):
+            #print("moving question " + str(i) + " to " + str(i + 1))
+            cq = questions.filter(question_num=i)
+            for q in cq:
+                q.question_num += 1
+                q.save()
     else:
-        for i in range(old, new + 1):
-            try:
-                cq = questions.get(question_num=i)
-                cq.question_num -= 1
-                cq.save()
-            except: pass
+        for i in range(old + 1, new + 1):
+            #print("moving question " + str(i) + " to " + str(i + 1))
+            cq = questions.filter(question_num=i)
+            for q in cq:
+                q.question_num -= 1
+                q.save()
     current.question_num = new
     current.save()
 
