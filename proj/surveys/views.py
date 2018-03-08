@@ -93,25 +93,32 @@ def editsurvey(request, survey_Id):
 
     #else: return HttpResponseRedirect('/surveys')
     survey = get_object_or_404(Survey, survey_Id=survey_Id)
-    if request.method == 'POST' and 'remove' in request.POST:
+    if request.method == 'POST':
+        if 'remove' in request.POST:
         # try:
         #     MCQuestion.objects.get(question_Id=request.POST['remove']).delete()
         # except:
         #     pass
-        try:
+            try:
             #TEQuestion.objects.get(question_Id=request.POST['remove']).delete()
             #question = get_object_or_404(Survey, survey_Id=survey_Id)
-            question = Question.objects.get(question_Id=request.POST['remove'])
-            survey.decrement_questions(question.question_num)
-            survey.num_questions -= 1
-            survey.save()
-            question.delete()
-        except:
-            pass
+                question = Question.objects.get(question_Id=request.POST['remove'])
+                survey.decrement_questions(question.question_num)
+                survey.num_questions -= 1
+                survey.save()
+                question.delete()
+            except:
+                pass
         # try:
         #     CBQuestion.objects.get(question_Id=request.POST['remove']).delete()
         # except:
         #     pass
+
+        elif 'reorder' in request.POST:
+            s = request.POST.get('survey')
+            q = request.POST.get('reorder')
+            n = int(request.POST.get('new_index'))
+            reorder(s, q, n)
 
     return render(
         request,
@@ -126,6 +133,30 @@ def editsurvey(request, survey_Id):
         }
     )
 
+def reorder(sid, qid, new):
+    current = Question.objects.get(question_Id=qid)
+    survey = Survey.objects.get(survey_Id=sid)
+    questions = Question.objects.filter(question_survey_Id=survey.survey_Id)
+    old = current.question_num
+    if new < 1: new = 1
+    if new > survey.num_questions: new = survey.num_questions
+    if old == new: return
+    elif old > new:
+        for i in range(new, old + 1):
+            try:
+                cq = questions.get(question_num=i)
+                cq.question_num += 1
+                cq.save()
+            except: pass
+    else:
+        for i in range(old, new + 1):
+            try:
+                cq = questions.get(question_num=i)
+                cq.question_num -= 1
+                cq.save()
+            except: pass
+    current.question_num = new
+    current.save()
 
 def newquestion(request):
     QUESTIONPAGES = {

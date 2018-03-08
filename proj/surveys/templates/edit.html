@@ -10,11 +10,16 @@ function conf(str, id){
     }
 }
 </script>
-<h3 align="center">{{ survey_Id }}</h3>
+<h3 align="center">{{ survey_title }}</h3>
 <br/>
 <div class="container">
     {% for q in questions %}
-        <br/><h4>{{ q.question_num }}</h4>
+        <br/>
+        <form class="form-inline" method="POST">{% csrf_token %}
+        <h4><input type="text" class="form-control mb-2 mr-sm-2" name="new_index" value="{{ q.question_num }}"></input>
+        <input type="hidden" name="survey" value="{{ survey_Id }}"></input>
+        <input type="hidden" name="reorder" value="{{ q.question_Id }}"></input>
+        <button class="btn btn-primary mb-2 mr-sm-2" type="submit">Reorder</button></h4></form>
         {% if q.question_type == 'MC' %}
             <div class="container" style="border:1px solid #cecece; padding: 20px;">
                 <form method="post" id="r{{ q.question_num }}">
