@@ -39,6 +39,13 @@ class Survey(models.Model):
                 q.question_num -= 1
                 q.save()
 
+    def delete(self):
+        questions = self.question_set.all()
+        for q in questions:
+            #if q.question_type == 'CB':
+            q.delete()
+        super(Survey, self).delete()
+
 QUESTION_CHOICES = (
     ('CB', 'CheckBox'),
     ('MC', 'MultipleChoice'),
