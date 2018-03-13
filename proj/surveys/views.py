@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, ResponseTE
 from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, SurveyForm, TakeSurveyForm
+from .forms import ResponseTEForm, ResponseMCForm, ResponseCB
 from django.urls import reverse, resolve
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -270,7 +271,8 @@ def takesurvey(request):
         form = TakeSurveyForm(request.POST, user=request.user)
         if form.is_valid():
             request.session['survey_to_take'] = getattr(form.cleaned_data.get('survey_to_take'), 'survey_Id').hex
-            return HttpResponseRedirect('/survey-completion')
+            #return surveycompletion(request, 1)
+            return redirect(reverse('surveys:survey-completion', kwargs={'qnum':1}))
     else:
         form = TakeSurveyForm(user=request.user)
     return render(
@@ -279,42 +281,82 @@ def takesurvey(request):
         {'form': form}
     )
 
+def done(request):
+    return render(request,'done.html')
+
+
 
 @login_required
-def surveycompletion(request):
+def surveycompletion(request, qnum):
+    print(qnum, "!!!!!!")
     surveyid = request.session.get('survey_to_take')
     survey = Survey.objects.get(survey_Id=surveyid)
     questions = Question.objects.filter(question_survey_Id=surveyid)
-    mcquestions = MCQuestion.objects.filter(question_survey_Id=surveyid)
-    tequestions = TEQuestion.objects.filter(question_survey_Id=surveyid)
-    cbquestions = CBQuestion.objects.filter(question_survey_Id=surveyid)
-    print(surveyid)
-    mclist = []
-    telist = []
-    cblist = []
-    qlist = []
-    # Still need to get cross-Question table querying
-    for q in questions:
-        print(q.question_Id)
-        qlist.append(q)
 
-    for q in qlist:
-        print("questionID: ", end="")
-        print(q.question_Id, "\n", end="")
-        print("     question text: ", end="")
-        print(q.question_text)
-    if q in mcquestions:
-        print("----MC----")
-    elif q in tequestions:
-        print("----TE----")
-    elif q in cbquestions:
-        print("----CB---")
+    print(request)
+    # Check if participant submitted a response
+    q = Question.objects.get(question_num = qnum, question_survey_Id=surveyid);
+    if(request.method == 'POST'):
+        print(q.question_num , "    ", q.question_type)
+        if (q.question_type == 'MC'):
+            print("MC")
+            if request.method == 'POST':
+                form = ResponseMCForm()
+                if form.is_valid():
+                    f = form.save(commit = False)
+                    form1.response_user_Id = User.objects.get(username
+                        = request.user.username)
+                    form1.response_survey_Id = survey_Id
+                    form1.response_question_Id = q.question_Id
+                    form1.save()
 
-    return render(request,
-                  'survey-completion.html',
-                  {'survey_title': survey.title, 'surveyid': surveyid, 'allQ': qlist, 'mclist': mcquestions, 'telist': tequestions,
-                   'cblist': cbquestions}
-                  )
+        elif (q.question_type == 'CB'):
+            print("CB")
+            if request.method == 'POST':
+                form = ResponseCBForm()
+                if form.is_valid():
+                    f = form.save(commit = False)
+                    form1.response_user_Id = User.objects.get(username
+                        = request.user.username)
+                    form1.response_survey_Id = survey_Id
+                    form1.response_question_Id = q.question_Id
+                    form1.save()
+
+        else:
+            print("TE")
+            if request.method == 'POST':
+                form = ResponseTEForm()
+                if form.is_valid():
+                    f = form.save(commit = False)
+                    form1.response_user_Id = User.objects.get(username
+                        = request.user.username)
+                    form1.response_survey_Id = survey_Id
+                    form1.response_question_Id = q.question_Id
+                    form1.save()
+
+        checkq = Question.objects.filter(question_survey_Id = surveyid, question_num = qnum+1)
+        print("Reached checkq")
+        # Check if there are more questions in survey
+        if not checkq:
+            return HttpResponseRedirect('/survey-completion/done')
+        else:
+            # Get next availabe question
+            return redirect(reverse('surveys:survey-completion', kwargs={'qnum':qnum+1}))
+    else:
+
+        if (q.question_type == 'MC'):
+            print("MC no post")
+            form = ResponseMCForm()
+        elif (q.question_type == 'CB'):
+            print("CB no post")
+            form = ResponseCBForm()
+        else:
+            print("TE no post")
+            form = ResponseTEForm()
+
+
+    return render (request,
+        'survey-completion2.html',{'form': form, "question": q, 'type':q.question_type})
 
 '''
 IN PROGRESS

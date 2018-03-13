@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django import forms
-from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, ResponseTE, Option
+from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, Option
+from .models import ResponseCB, ResponseMC, ResponseTE
 
 class UserForm(forms.ModelForm):
     class Meta:
@@ -93,3 +94,39 @@ class OptionForm(forms.ModelForm):
             'cb_question_Id': forms.HiddenInput(),
             'text': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
         }
+
+class ResponseTEForm(forms.ModelForm):
+	class Meta:
+		model = ResponseTE
+		exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
+		widgets = {
+			'response_Id': forms.HiddenInput(),
+			'response_question_Id': forms.HiddenInput(),
+			'response_survey_Id': forms.HiddenInput(),
+			'response_user_Id': forms.HiddenInput(),
+			'response_text': forms.Textarea(attrs={'cols': 50, 'rows':3}),
+		}
+
+class ResponseCBForm(forms.ModelForm):
+	class Meta:
+		model = ResponseCB
+		exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
+		widgets = {
+			'response_Id': forms.HiddenInput(),
+			'response_question_Id': forms.HiddenInput(),
+			'response_survey_Id': forms.HiddenInput(),
+			'response_user_Id': forms.HiddenInput(),
+			'response_text': forms.RadioSelect(),
+		}
+
+class ResponseMCForm(forms.ModelForm):
+	class Meta:
+		model = ResponseMC
+		exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
+		widgets = {
+			'response_Id': forms.HiddenInput(),
+			'response_question_Id': forms.HiddenInput(),
+			'response_survey_Id': forms.HiddenInput(),
+			'response_user_Id': forms.HiddenInput(),
+			'response_answer': forms.RadioSelect()
+		}
