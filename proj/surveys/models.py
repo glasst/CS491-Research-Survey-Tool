@@ -39,6 +39,13 @@ class Survey(models.Model):
                 q.question_num -= 1
                 q.save()
 
+    def delete(self):
+        questions = self.question_set.all()
+        for q in questions:
+            #if q.question_type == 'CB':
+            q.delete()
+        super(Survey, self).delete()
+
 QUESTION_CHOICES = (
     ('CB', 'CheckBox'),
     ('MC', 'MultipleChoice'),
@@ -129,10 +136,10 @@ class ResponseMC(models.Model):
 class ResponseTE(models.Model):
     # increment number of questions in survey and set current question number
     response_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
-    response_question_Id = models.ForeignKey(MCQuestion, on_delete=models.PROTECT)
+    response_question_Id = models.ForeignKey(MCQuestion, on_delete=models.CASCADE)
     # response_question_type = models.ForeignKey(MCQuestions, on_delete=models.PROTECT)
-    response_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT)
-    response_user_Id = models.ForeignKey(User, on_delete=models.PROTECT)
+    response_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
+    response_user_Id = models.ForeignKey(User, on_delete=models.CASCADE)
     response_text = models.CharField(max_length=400)
 
 class ResponseCB(models.Model):

@@ -45,9 +45,9 @@ def index(request):
             try:
                 s = Survey.objects.get(survey_Id=request.POST['remove'])
                 print(s.title)
+                s.delete()
             except:
-                s = None
-            if s: s.delete()
+                pass
         else:
             form = SurveyForm(request.POST)
             if form.is_valid():
