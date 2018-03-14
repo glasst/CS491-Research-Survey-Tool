@@ -3,11 +3,13 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, ResponseTE
 from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, SurveyForm, TakeSurveyForm
-from .forms import ResponseTEForm, ResponseMCForm, ResponseCB
+from .forms import ResponseTEForm, ResponseMCForm, ResponseCBForm
 from django.urls import reverse, resolve
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
+
+from django import forms
 
 import json
 import uuid
@@ -295,32 +297,41 @@ def surveycompletion(request, qnum):
 
     print(request)
     # Check if participant submitted a response
-    q = Question.objects.get(question_num = qnum, question_survey_Id=surveyid);
+    q = Question.objects.filter(question_num = qnum, question_survey_Id=surveyid);
+    if not q:
+        return HttpResponseRedirect('/survey-completion/done')
+    else:
+        q = Question.objects.get(question_num = qnum, question_survey_Id=surveyid);
     if(request.method == 'POST'):
         print(q.question_num , "    ", q.question_type)
         if (q.question_type == 'MC'):
-            print("MC")
+            print("MC!!   ", q.question_text)
             if request.method == 'POST':
-                form = ResponseMCForm()
+                form = ResponseMCForm(request.POST)
                 if form.is_valid():
+                    print("test")
+                    print(form.cleaned_data.get('response_text'))
                     f = form.save(commit = False)
-                    form1.response_user_Id = User.objects.get(username
+                    f.response_user_Id = User.objects.get(username
                         = request.user.username)
-                    form1.response_survey_Id = survey_Id
-                    form1.response_question_Id = q.question_Id
-                    form1.save()
+                    f.response_survey_Id =  Survey.objects.get(survey_Id = surveyid)
+                    f.response_question_Id = Question.objects.get(question_Id = q.question_Id)
+                    f.save()
+                else:
+                    print("form not valid")
 
         elif (q.question_type == 'CB'):
             print("CB")
             if request.method == 'POST':
-                form = ResponseCBForm()
+                form = ResponseCBForm(request.POST)
                 if form.is_valid():
+                    print(form.cleaned_data)
                     f = form.save(commit = False)
-                    form1.response_user_Id = User.objects.get(username
+                    f.response_user_Id = User.objects.get(username
                         = request.user.username)
-                    form1.response_survey_Id = survey_Id
-                    form1.response_question_Id = q.question_Id
-                    form1.save()
+                    f.response_survey_Id = Survey.objects.get(survey_Id = surveyid)
+                    f.response_question_Id = Question.objects.get(question_Id = q.question_Id)
+                    f.save()
 
         else:
             print("TE")
@@ -328,11 +339,11 @@ def surveycompletion(request, qnum):
                 form = ResponseTEForm()
                 if form.is_valid():
                     f = form.save(commit = False)
-                    form1.response_user_Id = User.objects.get(username
+                    f.response_user_Id = User.objects.get(username
                         = request.user.username)
-                    form1.response_survey_Id = survey_Id
-                    form1.response_question_Id = q.question_Id
-                    form1.save()
+                    f.response_survey_Id =  Survey.objects.get(survey_Id = surveyid)
+                    f.response_question_Id = Question.objects.get(question_Id = q.question_Id)
+                    f.save()
 
         checkq = Question.objects.filter(question_survey_Id = surveyid, question_num = qnum+1)
         print("Reached checkq")
@@ -346,7 +357,14 @@ def surveycompletion(request, qnum):
 
         if (q.question_type == 'MC'):
             print("MC no post")
+            options = ((q.option_1, q.option_1),
+                        (q.option_2, q.option_2),
+                        (q.option_3, q.option_3),
+                        (q.option_4, q.option_4),
+                        (q.option_5, q.option_5),)
+            print(options)
             form = ResponseMCForm()
+            #print(form.response_text)
         elif (q.question_type == 'CB'):
             print("CB no post")
             form = ResponseCBForm()

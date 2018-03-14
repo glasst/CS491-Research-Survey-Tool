@@ -96,37 +96,43 @@ class OptionForm(forms.ModelForm):
         }
 
 class ResponseTEForm(forms.ModelForm):
-	class Meta:
-		model = ResponseTE
-		exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
-		widgets = {
-			'response_Id': forms.HiddenInput(),
-			'response_question_Id': forms.HiddenInput(),
-			'response_survey_Id': forms.HiddenInput(),
-			'response_user_Id': forms.HiddenInput(),
-			'response_text': forms.Textarea(attrs={'cols': 50, 'rows':3}),
-		}
+    class Meta:
+        model = ResponseTE
+        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
+        widgets = {
+            'response_Id': forms.HiddenInput(),
+            'response_question_Id': forms.HiddenInput(),
+            'response_survey_Id': forms.HiddenInput(),
+            'response_user_Id': forms.HiddenInput(),
+            'response_text': forms.Textarea(attrs={'cols': 50, 'rows':3}),
+        }
+
+FAVORITE_COLORS_CHOICES = (
+    ('blue', 'Blue'),
+    ('green', 'Green'),
+    ('black', 'Black'),
+)
 
 class ResponseCBForm(forms.ModelForm):
-	class Meta:
-		model = ResponseCB
-		exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
-		widgets = {
-			'response_Id': forms.HiddenInput(),
-			'response_question_Id': forms.HiddenInput(),
-			'response_survey_Id': forms.HiddenInput(),
-			'response_user_Id': forms.HiddenInput(),
-			'response_text': forms.RadioSelect(),
-		}
+    class Meta:
+        model = ResponseCB
+        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
+        widgets = {
+          'response_Id': forms.HiddenInput(),
+          'response_question_Id': forms.HiddenInput(),
+          'response_survey_Id': forms.HiddenInput(),
+          'response_user_Id': forms.HiddenInput(),
+          'response_text': forms.CheckboxSelectMultiple(choices = FAVORITE_COLORS_CHOICES)
+        }
 
 class ResponseMCForm(forms.ModelForm):
-	class Meta:
-		model = ResponseMC
-		exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
-		widgets = {
-			'response_Id': forms.HiddenInput(),
-			'response_question_Id': forms.HiddenInput(),
-			'response_survey_Id': forms.HiddenInput(),
-			'response_user_Id': forms.HiddenInput(),
-			'response_answer': forms.RadioSelect()
-		}
+    class Meta:
+        model = ResponseMC
+        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
+        widgets = {
+            'response_Id': forms.HiddenInput(),
+            'response_question_Id': forms.HiddenInput(),
+            'response_survey_Id': forms.HiddenInput(),
+            'response_user_Id': forms.HiddenInput(),
+            'response_text': forms.CheckboxSelectMultiple(choices = FAVORITE_COLORS_CHOICES)
+        }
