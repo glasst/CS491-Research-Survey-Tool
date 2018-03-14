@@ -112,7 +112,6 @@ FAVORITE_COLORS_CHOICES = (
     ('black', 'Black'),
 )
 
-
 class ResponseCBForm(forms.ModelForm):
     class Meta:
         model = ResponseCB
@@ -122,22 +121,18 @@ class ResponseCBForm(forms.ModelForm):
           'response_question_Id': forms.HiddenInput(),
           'response_survey_Id': forms.HiddenInput(),
           'response_user_Id': forms.HiddenInput(),
-          'options': forms.CheckboxSelectMultiple(choices=[])
+          #'options': forms.CheckboxSelectMultiple(choices=[])
         }
 
     def __init__(self, *args, **kwargs):
         super(ResponseCBForm, self).__init__(*args, **kwargs)
         if 'option_list' in kwargs:
             self.fields['options'].choices = kwargs['option_list']
-        # choices = (form.instance.option_1,
-#                                                                    form.instance.option_2,
-#                                                                    form.instance.option_3,
-#                                                                    form.instance.option_4,
-#                                                                    form.instance.option_5,)
 
 
 class ResponseMCForm(forms.ModelForm):
     options = forms.CheckboxSelectMultiple(choices=[("None", "None")])
+
     class Meta:
         model = ResponseMC
         exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']

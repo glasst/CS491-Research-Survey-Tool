@@ -3,10 +3,13 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, ResponseTE
 from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, SurveyForm, TakeSurveyForm
+from .forms import ResponseTEForm, ResponseMCForm, ResponseCBForm
 from django.urls import reverse, resolve
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
+
+from django import forms
 
 import json
 import uuid
@@ -42,9 +45,9 @@ def index(request):
             try:
                 s = Survey.objects.get(survey_Id=request.POST['remove'])
                 print(s.title)
+                s.delete()
             except:
-                s = None
-            if s: s.delete()
+                pass
         else:
             form = SurveyForm(request.POST)
             if form.is_valid():
@@ -270,7 +273,8 @@ def takesurvey(request):
         form = TakeSurveyForm(request.POST, user=request.user)
         if form.is_valid():
             request.session['survey_to_take'] = getattr(form.cleaned_data.get('survey_to_take'), 'survey_Id').hex
-            return HttpResponseRedirect('/survey-completion')
+            #return surveycompletion(request, 1)
+            return redirect(reverse('surveys:survey-completion', kwargs={'qnum':1}))
     else:
         form = TakeSurveyForm(user=request.user)
     return render(
@@ -278,6 +282,10 @@ def takesurvey(request):
         'takesurvey.html',
         {'form': form}
     )
+
+def done(request):
+    return render(request,'done.html')
+
 
 
 @login_required
