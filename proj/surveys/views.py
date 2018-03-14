@@ -281,40 +281,90 @@ def takesurvey(request):
 
 
 @login_required
-def surveycompletion(request):
+def surveycompletion(request, qnum):
+    print(qnum, "!!!!!!")
     surveyid = request.session.get('survey_to_take')
     survey = Survey.objects.get(survey_Id=surveyid)
     questions = Question.objects.filter(question_survey_Id=surveyid)
-    mcquestions = MCQuestion.objects.filter(question_survey_Id=surveyid)
-    tequestions = TEQuestion.objects.filter(question_survey_Id=surveyid)
-    cbquestions = CBQuestion.objects.filter(question_survey_Id=surveyid)
-    print(surveyid)
-    mclist = []
-    telist = []
-    cblist = []
-    qlist = []
-    # Still need to get cross-Question table querying
-    for q in questions:
-        print(q.question_Id)
-        qlist.append(q)
 
-    for q in qlist:
-        print("questionID: ", end="")
-        print(q.question_Id, "\n", end="")
-        print("     question text: ", end="")
-        print(q.question_text)
-    if q in mcquestions:
-        print("----MC----")
-    elif q in tequestions:
-        print("----TE----")
-    elif q in cbquestions:
-        print("----CB---")
+    print(request)
+    # Check if participant submitted a response
+    q = Question.objects.filter(question_num = qnum, question_survey_Id=surveyid);
+    if not q:
+        return HttpResponseRedirect('/survey-completion/done')
+    else:
+        q = Question.objects.get(question_num = qnum, question_survey_Id=surveyid);
+    if(request.method == 'POST'):
+        print(q.question_num , "    ", q.question_type)
+        if (q.question_type == 'MC'):
+            print("MC!!   ", q.question_text)
+            if request.method == 'POST':
+                form = ResponseMCForm(request.POST)
+                if form.is_valid():
+                    print("test")
+                    print(form.cleaned_data.get('response_text'))
+                    f = form.save(commit = False)
+                    f.response_user_Id = User.objects.get(username
+                        = request.user.username)
+                    f.response_survey_Id =  Survey.objects.get(survey_Id = surveyid)
+                    f.response_question_Id = Question.objects.get(question_Id = q.question_Id)
+                    f.save()
+                else:
+                    print("form not valid")
 
-    return render(request,
-                  'survey-completion.html',
-                  {'survey_title': survey.title, 'surveyid': surveyid, 'allQ': qlist, 'mclist': mcquestions, 'telist': tequestions,
-                   'cblist': cbquestions}
-                  )
+        elif (q.question_type == 'CB'):
+            print("CB")
+            if request.method == 'POST':
+                form = ResponseCBForm(request.POST)
+                if form.is_valid():
+                    print(form.cleaned_data)
+                    f = form.save(commit = False)
+                    f.response_user_Id = User.objects.get(username
+                        = request.user.username)
+                    f.response_survey_Id = Survey.objects.get(survey_Id = surveyid)
+                    f.response_question_Id = Question.objects.get(question_Id = q.question_Id)
+                    f.save()
+
+        else:
+            print("TE")
+            if request.method == 'POST':
+                form = ResponseTEForm()
+                if form.is_valid():
+                    f = form.save(commit = False)
+                    f.response_user_Id = User.objects.get(username
+                        = request.user.username)
+                    f.response_survey_Id =  Survey.objects.get(survey_Id = surveyid)
+                    f.response_question_Id = Question.objects.get(question_Id = q.question_Id)
+                    f.save()
+
+        checkq = Question.objects.filter(question_survey_Id = surveyid, question_num = qnum+1)
+        print("Reached checkq")
+        # Check if there are more questions in survey
+        if not checkq:
+            return HttpResponseRedirect('/survey-completion/done')
+        else:
+            # Get next availabe question
+            return redirect(reverse('surveys:survey-completion', kwargs={'qnum':qnum+1}))
+    else:
+        print("my question type is " + q.question_type)
+        if q.question_type == 'MC':
+            print("MC no post")
+            options = q.get_options()
+            print(options)
+            form = ResponseMCForm(option_list=options)
+            #print(form.response_text)
+        elif q.question_type == 'CB':
+            print("CB no post")
+            options = q.get_options()
+            print(options)
+            form = ResponseCBForm(option_list=options)
+        else:
+            print("TE no post")
+            form = ResponseTEForm()
+
+
+    return render (request,
+        'survey-completion2.html',{'form': form, "question": q, 'type':q.question_type})
 
 '''
 IN PROGRESS

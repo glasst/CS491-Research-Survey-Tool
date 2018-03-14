@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, ResponseTE, Option
+from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, ResponseTE, ResponseMC, ResponseCB, Option
 
 class UserForm(forms.ModelForm):
     class Meta:
@@ -93,3 +93,64 @@ class OptionForm(forms.ModelForm):
             'cb_question_Id': forms.HiddenInput(),
             'text': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
         }
+
+class ResponseTEForm(forms.ModelForm):
+    class Meta:
+        model = ResponseTE
+        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
+        widgets = {
+            'response_Id': forms.HiddenInput(),
+            'response_question_Id': forms.HiddenInput(),
+            'response_survey_Id': forms.HiddenInput(),
+            'response_user_Id': forms.HiddenInput(),
+            'response_text': forms.Textarea(attrs={'cols': 50, 'rows':3}),
+        }
+
+FAVORITE_COLORS_CHOICES = (
+    ('blue', 'Blue'),
+    ('green', 'Green'),
+    ('black', 'Black'),
+)
+
+
+class ResponseCBForm(forms.ModelForm):
+    class Meta:
+        model = ResponseCB
+        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
+        widgets = {
+          'response_Id': forms.HiddenInput(),
+          'response_question_Id': forms.HiddenInput(),
+          'response_survey_Id': forms.HiddenInput(),
+          'response_user_Id': forms.HiddenInput(),
+          'options': forms.CheckboxSelectMultiple(choices=[])
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(ResponseCBForm, self).__init__(*args, **kwargs)
+        if 'option_list' in kwargs:
+            self.fields['options'].choices = kwargs['option_list']
+        # choices = (form.instance.option_1,
+#                                                                    form.instance.option_2,
+#                                                                    form.instance.option_3,
+#                                                                    form.instance.option_4,
+#                                                                    form.instance.option_5,)
+
+
+class ResponseMCForm(forms.ModelForm):
+    options = forms.CheckboxSelectMultiple(choices=[("None", "None")])
+    class Meta:
+        model = ResponseMC
+        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
+        widgets = {
+            'response_Id': forms.HiddenInput(),
+            'response_question_Id': forms.HiddenInput(),
+            'response_survey_Id': forms.HiddenInput(),
+            'response_user_Id': forms.HiddenInput(),
+            #'options': forms.CheckboxSelectMultiple(choices = [])
+        }
+
+    def __init__(self, *args, **kwargs):
+        option_list = kwargs.pop('option_list', None)
+        super(ResponseMCForm, self).__init__(*args, **kwargs)
+        if 'option_list' is not None:
+            self.fields['options'].widget = forms.CheckboxSelectMultiple(choices=option_list)

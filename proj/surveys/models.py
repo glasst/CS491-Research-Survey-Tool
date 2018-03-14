@@ -102,6 +102,13 @@ class MCQuestion(Question):
     option_4 = models.CharField(max_length=100)
     option_5 = models.CharField(max_length=100)
 
+    def get_options(self):
+        return ((self.option_1, self.option_1),
+                        (self.option_2, self.option_2),
+                        (self.option_3, self.option_3),
+                        (self.option_4, self.option_4),
+                        (self.option_5, self.option_5),)
+
 
 class TEQuestion(Question):
     question_text = models.CharField(max_length=400)
@@ -116,15 +123,41 @@ class CBQuestion(Question):
     option_5 = models.CharField(max_length=100)
     #num_options = models.PositiveSmallIntegerField(default=0, max_value=MAX_OPTIONS)
 
+    def get_options(self):
+        return ((self.option_1, self.option_1),
+                        (self.option_2, self.option_2),
+                        (self.option_3, self.option_3),
+                        (self.option_4, self.option_4),
+                        (self.option_5, self.option_5),)
+
+
+class ResponseMC(models.Model):
+    # increment number of questions in survey and set current question number
+    response_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
+    response_question_Id = models.ForeignKey(MCQuestion, on_delete=models.CASCADE)
+    # response_question_type = models.ForeignKey(MCQuestions, on_delete=models.PROTECT)
+    response_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
+    response_user_Id = models.ForeignKey(User, on_delete=models.CASCADE)
+    #response_text = models.CharField(max_length=400)
+
 
 class ResponseTE(models.Model):
     # increment number of questions in survey and set current question number
     response_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
-    response_question_Id = models.ForeignKey(MCQuestion, on_delete=models.PROTECT)
+    response_question_Id = models.ForeignKey(TEQuestion, on_delete=models.CASCADE)
     # response_question_type = models.ForeignKey(MCQuestions, on_delete=models.PROTECT)
+    response_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
+    response_user_Id = models.ForeignKey(User, on_delete=models.CASCADE)
+    response_text = models.CharField(max_length=400)
+
+
+class ResponseCB(models.Model):
+    # increment number of questions in survey and set current question number
+    response_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
+    response_question_Id = models.ForeignKey(CBQuestion, on_delete=models.CASCADE)
     response_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT)
     response_user_Id = models.ForeignKey(User, on_delete=models.PROTECT)
-    response_text = models.CharField(max_length=400)
+    #response_text = models.CharField(max_length=400)
 
 
 OPTION_CHOICES = (
