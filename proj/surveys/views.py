@@ -298,10 +298,10 @@ def surveycompletion(request, survey_Id, qnum):
     questions = Question.objects.filter(question_survey_Id=survey_Id)
 
     print(request)
-    # Check if participant submitted a response
 
-    #######
     # is this section ever used?
+    #######
+    # Check if participant submitted a response
     q = Question.objects.filter(question_num = qnum, question_survey_Id=survey_Id)
     if not q:
         print("redirecting to done")
