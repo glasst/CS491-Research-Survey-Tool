@@ -9,7 +9,9 @@ urlpatterns = [
     path('signup', views.signup, name='signup'),
 
     path('takesurvey/', views.takesurvey, name='takesurvey'),
-    path('survey-completion/<int:qnum>', views.surveycompletion, name='survey-completion'),
+    #path('<uuid:survey_Id>/takesurvey/', views.takesurvey, name='takesurvey'),
+    path('<uuid:survey_Id>/done', views.done, name='done'),
+    path('<uuid:survey_Id>/<int:qnum>', views.surveycompletion, name='survey-completion'),
 
     path('edit/<uuid:survey_Id>/', views.editsurvey, name='editsurvey'),
 
@@ -17,7 +19,7 @@ urlpatterns = [
     path('edit/<uuid:survey_Id>/textentry', views.textentry, name='textentry'),
     path('edit/<uuid:survey_Id>/checkbox', views.checkbox, name='checkbox'),
 
-    path('survey-completion/done', views.done, name='done')
+    #path('survey-completion/done', views.done, name='done')
     #/surveys/index
     #path('index', views.index, name='index'),
     #Ex: /surveys/e06f103b-d6e3-4e77-9442-ef938b621276/

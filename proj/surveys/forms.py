@@ -81,7 +81,7 @@ class TakeSurveyForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
         super(TakeSurveyForm, self).__init__(*args, **kwargs)
-        self.fields['survey_to_take'] = forms.ModelChoiceField(
+        self.fields['survey_Id'] = forms.ModelChoiceField(
             queryset=Survey.objects.filter(creator_Id__username=self.user))
 
 

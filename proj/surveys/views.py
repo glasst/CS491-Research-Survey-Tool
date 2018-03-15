@@ -271,9 +271,12 @@ def takesurvey(request):
     if request.method == 'POST':
         form = TakeSurveyForm(request.POST, user=request.user)
         if form.is_valid():
-            request.session['survey_to_take'] = getattr(form.cleaned_data.get('survey_to_take'), 'survey_Id').hex
+            #request.session['survey_to_take'] = getattr(form.cleaned_data.get('survey_Id'), 'survey_Id').hex
+            #survey = getattr(form.cleaned_data.get('survey_to_take'), 'survey_Id').hex
+            survey = get_object_or_404(Survey, survey_Id=request.POST.get('survey_Id'))
             # return surveycompletion(request, 1)
-            return redirect(reverse('surveys:survey-completion', kwargs={'qnum':1}))
+            print(survey)
+            return redirect(reverse('surveys:survey-completion', kwargs={'qnum': 1, 'survey_Id': survey.survey_Id}))
     else:
         form = TakeSurveyForm(user=request.user)
     return render(
@@ -288,19 +291,19 @@ def done(request):
 
 
 @login_required
-def surveycompletion(request, qnum):
+def surveycompletion(request, survey_Id, qnum):
     print(qnum, "!!!!!!")
-    surveyid = request.session.get('survey_to_take')
-    survey = Survey.objects.get(survey_Id=surveyid)
-    questions = Question.objects.filter(question_survey_Id=surveyid)
+    #survey_Id = request.session.get('survey_to_take')
+    survey = Survey.objects.get(survey_Id=survey_Id)
+    questions = Question.objects.filter(question_survey_Id=survey_Id)
 
     print(request)
     # Check if participant submitted a response
-    q = Question.objects.filter(question_num = qnum, question_survey_Id=surveyid)
+    q = Question.objects.filter(question_num = qnum, question_survey_Id=survey_Id)
     if not q:
         return HttpResponseRedirect('/survey-completion/done')
     else:
-        q = Question.objects.get(question_num = qnum, question_survey_Id=surveyid)
+        q = Question.objects.get(question_num = qnum, question_survey_Id=survey_Id)
 
     if request.method == 'POST':
         print(q.question_num , "    ", q.question_type)
@@ -318,7 +321,7 @@ def surveycompletion(request, qnum):
                     # save selected value
                     f = form.save(commit=False)
                     f.response_user_Id = User.objects.get(username=request.user.username)
-                    f.response_survey_Id = Survey.objects.get(survey_Id = surveyid)
+                    f.response_survey_Id = Survey.objects.get(survey_Id = survey_Id)
                     f.response_question_Id = MCQuestion.objects.get(question_Id = q.question_Id)
                     f.save()
                 else:
@@ -337,7 +340,7 @@ def surveycompletion(request, qnum):
                     # save selected values
                     f = form.save(commit = False)
                     f.response_user_Id = User.objects.get(username=request.user.username)
-                    f.response_survey_Id = Survey.objects.get(survey_Id = surveyid)
+                    f.response_survey_Id = Survey.objects.get(survey_Id = survey_Id)
                     f.response_question_Id = Question.objects.get(question_Id = q.question_Id)
                     f.save()
 
@@ -348,7 +351,7 @@ def surveycompletion(request, qnum):
                 if form.is_valid():
                     f = form.save(commit=False)
                     f.response_user_Id = User.objects.get(username=request.user.username)
-                    f.response_survey_Id = Survey.objects.get(survey_Id=surveyid)
+                    f.response_survey_Id = Survey.objects.get(survey_Id=survey_Id)
                     f.response_question_Id = Question.objects.get(question_Id=q.question_Id)
                     data = form.cleaned_data['response_text']
                     print("DATA \n" + data)
@@ -357,14 +360,14 @@ def surveycompletion(request, qnum):
                 else:
                     print("invalid form!\n" + str(form.errors))
 
-        checkq = Question.objects.filter(question_survey_Id=surveyid, question_num=qnum+1)
+        checkq = Question.objects.filter(question_survey_Id=survey_Id, question_num=qnum+1)
         print("Reached checkq")
         # Check if there are more questions in survey
         if not checkq:
             return HttpResponseRedirect('/survey-completion/done')
         else:
             # Get next availabe question
-            return redirect(reverse('surveys:survey-completion', kwargs={'qnum': qnum+1}))
+            return redirect(reverse('surveys:survey-completion', kwargs={'qnum': qnum+1, 'survey_Id': survey_Id}))
 
     else:
         if q.question_type == 'MC':
@@ -379,7 +382,7 @@ def surveycompletion(request, qnum):
 
 
     return render (request,
-        'survey-completion2.html',{'form': form, "question": q, 'type': q.question_type})
+        'survey-completion2.html',{'form': form, 'survey_Id': survey_Id,"question": q, 'type': q.question_type})
 
 '''
 IN PROGRESS
