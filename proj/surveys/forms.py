@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django import forms
 from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, ResponseTE, ResponseMC, ResponseCB, Option
 
+
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
@@ -94,6 +95,7 @@ class OptionForm(forms.ModelForm):
             'text': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
         }
 
+
 class ResponseTEForm(forms.ModelForm):
     class Meta:
         model = ResponseTE
@@ -106,16 +108,20 @@ class ResponseTEForm(forms.ModelForm):
             'response_text': forms.Textarea(attrs={'cols': 50, 'rows':3}),
         }
 
+
 FAVORITE_COLORS_CHOICES = (
     ('blue', 'Blue'),
     ('green', 'Green'),
     ('black', 'Black'),
 )
 
+
 class ResponseCBForm(forms.ModelForm):
+    options = forms.ChoiceField(choices=(('None', 'none'),),
+                                widget=forms.RadioSelect())
     class Meta:
         model = ResponseCB
-        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
+        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id', ]
         widgets = {
           'response_Id': forms.HiddenInput(),
           'response_question_Id': forms.HiddenInput(),
@@ -125,13 +131,15 @@ class ResponseCBForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        options = kwargs.pop('options', None)
         super(ResponseCBForm, self).__init__(*args, **kwargs)
-        if 'option_list' in kwargs:
-            self.fields['options'].choices = kwargs['option_list']
+        if options is not None:
+            self.fields['options'].widget = forms.RadioSelect(choices=options)
 
 
 class ResponseMCForm(forms.ModelForm):
-    options = forms.CheckboxSelectMultiple(choices=[("None", "None")])
+    options = forms.ChoiceField(choices=(('None', 'none'),),
+                                widget=forms.CheckboxSelectMultiple())
 
     class Meta:
         model = ResponseMC
@@ -141,11 +149,11 @@ class ResponseMCForm(forms.ModelForm):
             'response_question_Id': forms.HiddenInput(),
             'response_survey_Id': forms.HiddenInput(),
             'response_user_Id': forms.HiddenInput(),
-            #'options': forms.CheckboxSelectMultiple(choices = [])
+            #'options': forms.CheckboxSelectMultiple(choices=FAVORITE_COLORS_CHOICES)
         }
 
     def __init__(self, *args, **kwargs):
-        option_list = kwargs.pop('option_list', None)
+        options = kwargs.pop('options', None)
         super(ResponseMCForm, self).__init__(*args, **kwargs)
-        if 'option_list' is not None:
-            self.fields['options'].widget = forms.CheckboxSelectMultiple(choices=option_list)
+        if options is not None:
+            self.fields['options'].widget = forms.CheckboxSelectMultiple(choices=options)

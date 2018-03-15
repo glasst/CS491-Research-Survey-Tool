@@ -1,15 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, ResponseTE
+from .models import Survey, Question
 from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, SurveyForm, TakeSurveyForm
 from .forms import ResponseTEForm, ResponseMCForm, ResponseCBForm
 from django.urls import reverse, resolve
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
-
-from django import forms
 
 import json
 import uuid
@@ -297,11 +295,11 @@ def surveycompletion(request, qnum):
 
     print(request)
     # Check if participant submitted a response
-    q = Question.objects.filter(question_num = qnum, question_survey_Id=surveyid);
+    q = Question.objects.filter(question_num = qnum, question_survey_Id=surveyid)
     if not q:
         return HttpResponseRedirect('/survey-completion/done')
     else:
-        q = Question.objects.get(question_num = qnum, question_survey_Id=surveyid);
+        q = Question.objects.get(question_num = qnum, question_survey_Id=surveyid)
     if(request.method == 'POST'):
         print(q.question_num , "    ", q.question_type)
         if (q.question_type == 'MC'):
@@ -359,20 +357,20 @@ def surveycompletion(request, qnum):
             print("MC no post")
             options = q.get_options()
             print(options)
-            form = ResponseMCForm(option_list=options)
-            #print(form.response_text)
+            form = ResponseMCForm(**{'options': options,})
+            print(form)
         elif q.question_type == 'CB':
             print("CB no post")
             options = q.get_options()
             print(options)
-            form = ResponseCBForm(option_list=options)
+            form = ResponseCBForm(**{'options': options,})
         else:
             print("TE no post")
             form = ResponseTEForm()
 
 
     return render (request,
-        'survey-completion2.html',{'form': form, "question": q, 'type':q.question_type})
+        'survey-completion2.html',{'form': form, "question": q, 'type': q.question_type})
 
 '''
 IN PROGRESS

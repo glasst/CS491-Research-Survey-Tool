@@ -2,8 +2,8 @@
 {% load bootstrap4 %}
 {% block title %}{{ survey_title }} - taking survey{% endblock %}
 {% block content %}
-<h2 align="center">{{ survey_title }}</h2><br />
-<!--
+    <h2 align="center">{{ survey_title }}</h2><br/>
+    <!--
 <p>link for multiple forms on one page: https://rock-it.pl/multiple-forms-on-one-page-in-django/</p>
 
 <p>survey id: {{ surveyid }}</p>
@@ -13,22 +13,23 @@ survey: 	8a1993449c7143b098b47fac60e86ff4
 questions:
 -->
 
-<br>
-<br>
-<br>
-<br>
+    <br>
+    <br>
+    <br>
+    <br>
 
-<h3>{{question.question_num}}-{{question.title}} <h4>
-<h4>{{question.question_text}}</h4>
-<form method="POST" id="{{ surveyid }}">
-<div class="container">
+    <h3>{{ question.question_num }}-{{ question.title }}
+    <h4>
+    <h4>{{ question.question_text }}</h4>
+    <form method="POST" id="{{ surveyid }}">
+        <div class="container">
 
-<div class="container" style="border:1px solid #cecece; padding: 20px;">
-{% csrf_token %}
-{{ form }}
-<button class="btn btn-primary" type="submit">Submit response</button>
-</form>
+            <div class="container" style="border:1px solid #cecece; padding: 20px;">
+                {% csrf_token %}
+                {{ form }}
+                <button class="btn btn-primary" type="submit">Submit response</button>
+    </form>
 
-</div>
-</div>
+    </div>
+    </div>
 {% endblock %}
