@@ -116,9 +116,30 @@ FAVORITE_COLORS_CHOICES = (
 )
 
 
+# temp override to stop validation error when checking that selected option choice matches choices in form
+class ChoiceFieldNoValidation(forms.ChoiceField):
+    def valid_value(self, value):
+        """Check to see if the provided value is a valid choice."""
+        text_value = str(value)
+        for k, v in self.choices:
+            if isinstance(v, (list, tuple)):
+                # This is an optgroup, so look inside the group for options
+                for k2, v2 in v:
+                    if value == k2 or text_value == str(k2):
+                        return True
+            else:
+                if value == k or text_value == str(k):
+                    return True
+
+
+        #return False
+        return True
+
+
 class ResponseCBForm(forms.ModelForm):
-    options = forms.ChoiceField(choices=(('None', 'none'),),
+    options = ChoiceFieldNoValidation(choices=(('None', 'none'),),
                                 widget=forms.CheckboxSelectMultiple())
+
     class Meta:
         model = ResponseCB
         exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
@@ -131,14 +152,13 @@ class ResponseCBForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        option_list = kwargs.pop('options', None)
+        question = kwargs.pop('question', None)
         super(ResponseCBForm, self).__init__(*args, **kwargs)
-        if option_list is not None:
-            self.fields['options'].widget.choices = option_list
+        self.fields['options'].widget.choices = question.get_options()
 
 
 class ResponseMCForm(forms.ModelForm):
-    options = forms.ChoiceField(choices=(('None', 'none'),),
+    options = ChoiceFieldNoValidation(choices=(('None', 'none'),),
                                 widget=forms.RadioSelect)
 
     class Meta:
@@ -153,7 +173,9 @@ class ResponseMCForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        option_list = kwargs.pop('options', None)
+        question = kwargs.pop('question', None)
         super(ResponseMCForm, self).__init__(*args, **kwargs)
-        if option_list is not None:
-            self.fields['options'].widget.choices = option_list
+        self.fields['options'].widget.choices = question.get_options()
+
+    #def add_choices(self):
+    #    self.fields['options'].widget.choices = self.instance.get_choices()

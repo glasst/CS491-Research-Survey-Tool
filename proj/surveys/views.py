@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from .models import Survey, Question
+from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion
 from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, SurveyForm, TakeSurveyForm
 from .forms import ResponseTEForm, ResponseMCForm, ResponseCBForm
 from django.urls import reverse, resolve
@@ -272,7 +272,7 @@ def takesurvey(request):
         form = TakeSurveyForm(request.POST, user=request.user)
         if form.is_valid():
             request.session['survey_to_take'] = getattr(form.cleaned_data.get('survey_to_take'), 'survey_Id').hex
-            #return surveycompletion(request, 1)
+            # return surveycompletion(request, 1)
             return redirect(reverse('surveys:survey-completion', kwargs={'qnum':1}))
     else:
         form = TakeSurveyForm(user=request.user)
@@ -282,9 +282,9 @@ def takesurvey(request):
         {'form': form}
     )
 
-def done(request):
-    return render(request,'done.html')
 
+def done(request):
+    return render(request, 'done.html')
 
 
 @login_required
@@ -301,33 +301,37 @@ def surveycompletion(request, qnum):
         return HttpResponseRedirect('/survey-completion/done')
     else:
         q = Question.objects.get(question_num = qnum, question_survey_Id=surveyid)
-    if(request.method == 'POST'):
+
+    if request.method == 'POST':
         print(q.question_num , "    ", q.question_type)
-        if (q.question_type == 'MC'):
+        if q.question_type == 'MC':
             print("MC!!   ", q.question_text)
             if request.method == 'POST':
-                form = ResponseMCForm(request.POST)
+                # checks choices before adding choices from question q
+                # temp override (see ChoiceFieldNoValidation class in forms.py)
+                form = ResponseMCForm(request.POST, **{'question': q, })
                 if form.is_valid():
                     print("test")
                     print(form.cleaned_data.get('response_text'))
-                    f = form.save(commit = False)
-                    f.response_user_Id = User.objects.get(username
-                        = request.user.username)
-                    f.response_survey_Id =  Survey.objects.get(survey_Id = surveyid)
-                    f.response_question_Id = Question.objects.get(question_Id = q.question_Id)
+                    f = form.save(commit=False)
+                    f.response_user_Id = User.objects.get(username=request.user.username)
+                    f.response_survey_Id = Survey.objects.get(survey_Id = surveyid)
+                    f.response_question_Id = MCQuestion.objects.get(question_Id = q.question_Id)
                     f.save()
                 else:
                     print("form not valid")
+                    print(form.errors)
 
-        elif (q.question_type == 'CB'):
+        elif q.question_type == 'CB':
             print("CB")
             if request.method == 'POST':
-                form = ResponseCBForm(request.POST)
+                # checks choices before adding choices from question q
+                # temp override (see ChoiceFieldNoValidation class in forms.py)
+                form = ResponseCBForm(request.POST, **{'question': q, })
                 if form.is_valid():
                     print(form.cleaned_data)
                     f = form.save(commit = False)
-                    f.response_user_Id = User.objects.get(username
-                        = request.user.username)
+                    f.response_user_Id = User.objects.get(username=request.user.username)
                     f.response_survey_Id = Survey.objects.get(survey_Id = surveyid)
                     f.response_question_Id = Question.objects.get(question_Id = q.question_Id)
                     f.save()
@@ -335,36 +339,35 @@ def surveycompletion(request, qnum):
         else:
             print("TE")
             if request.method == 'POST':
-                form = ResponseTEForm()
+                form = ResponseTEForm(request.POST)
                 if form.is_valid():
-                    f = form.save(commit = False)
-                    f.response_user_Id = User.objects.get(username
-                        = request.user.username)
-                    f.response_survey_Id =  Survey.objects.get(survey_Id = surveyid)
-                    f.response_question_Id = Question.objects.get(question_Id = q.question_Id)
+                    f = form.save(commit=False)
+                    f.response_user_Id = User.objects.get(username=request.user.username)
+                    f.response_survey_Id = Survey.objects.get(survey_Id=surveyid)
+                    f.response_question_Id = Question.objects.get(question_Id=q.question_Id)
+                    data = form.cleaned_data['response_text']
+                    print("DATA \n" + data)
+                    f.response_text = data
                     f.save()
+                else:
+                    print("invalid form!\n" + str(form.errors))
 
-        checkq = Question.objects.filter(question_survey_Id = surveyid, question_num = qnum+1)
+        checkq = Question.objects.filter(question_survey_Id=surveyid, question_num=qnum+1)
         print("Reached checkq")
         # Check if there are more questions in survey
         if not checkq:
             return HttpResponseRedirect('/survey-completion/done')
         else:
             # Get next availabe question
-            return redirect(reverse('surveys:survey-completion', kwargs={'qnum':qnum+1}))
+            return redirect(reverse('surveys:survey-completion', kwargs={'qnum': qnum+1}))
+
     else:
-        print("my question type is " + q.question_type)
         if q.question_type == 'MC':
             print("MC no post")
-            options = q.get_options()
-            print(options)
-            form = ResponseMCForm(**{'options': options,})
-            print(form)
+            form = ResponseMCForm(**{'question': q,})
         elif q.question_type == 'CB':
             print("CB no post")
-            options = q.get_options()
-            print(options)
-            form = ResponseCBForm(**{'options': options,})
+            form = ResponseCBForm(**{'question': q,})
         else:
             print("TE no post")
             form = ResponseTEForm()
