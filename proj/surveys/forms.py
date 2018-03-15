@@ -118,10 +118,10 @@ FAVORITE_COLORS_CHOICES = (
 
 class ResponseCBForm(forms.ModelForm):
     options = forms.ChoiceField(choices=(('None', 'none'),),
-                                widget=forms.RadioSelect())
+                                widget=forms.CheckboxSelectMultiple())
     class Meta:
         model = ResponseCB
-        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id', ]
+        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
         widgets = {
           'response_Id': forms.HiddenInput(),
           'response_question_Id': forms.HiddenInput(),
@@ -131,15 +131,15 @@ class ResponseCBForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        options = kwargs.pop('options', None)
+        option_list = kwargs.pop('options', None)
         super(ResponseCBForm, self).__init__(*args, **kwargs)
-        if options is not None:
-            self.fields['options'].widget = forms.RadioSelect(choices=options)
+        if option_list is not None:
+            self.fields['options'].widget = forms.CheckboxSelectMultiple(choices=option_list)
 
 
 class ResponseMCForm(forms.ModelForm):
     options = forms.ChoiceField(choices=(('None', 'none'),),
-                                widget=forms.CheckboxSelectMultiple())
+                                widget=forms.RadioSelect)
 
     class Meta:
         model = ResponseMC
@@ -153,7 +153,7 @@ class ResponseMCForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        options = kwargs.pop('options', None)
+        option_list = kwargs.pop('options', None)
         super(ResponseMCForm, self).__init__(*args, **kwargs)
-        if options is not None:
-            self.fields['options'].widget = forms.CheckboxSelectMultiple(choices=options)
+        if option_list is not None:
+            self.fields['options'].widget.choices = option_list
