@@ -21,14 +21,15 @@
                             <div class="radio"><label><input type="radio" name="radio"> {{ q.option_4 }}</label></div>
                             <div class="radio"><label><input type="radio" name="radio"> {{ q.option_5 }}</label></div>
                         </form>
+                        {% if q.responsemc_set.all %}
+                            <h5>Responses</h5><br/>
+                            {% for response in q.responsemc_set.all %}
+                                {{ response.response_Id }}<br/>
+                            {% endfor %}
+                        {% else %}
+                            No mc responses
+                        {% endif %}
                     </div>
-                    {% if q.responsemc_set.all %}
-                        {% for response in q.responsemc_set.all %}
-                            {{ response.response_Id }}<br/>
-                        {% endfor %}
-                    {% else %}
-                        No mc responses
-                    {% endif %}
                 {% elif q.question_type == 'TE' %}
                     <div class="container" style="border:1px solid #cecece; padding: 20px;">
                         <form method="post" id="r{{ q.question_num }}">
@@ -37,15 +38,17 @@
                             <h5>{{ q.question_text }}</h5><br/>
                             <div class="form-group"><textarea class="form-control" rows="3"></textarea></div>
                         </form>
+                        {% if q.responsete_set.all %}
+                            <h5>Responses</h5><br/>
+                            {% for response in q.responsete_set.all %}
+                                <div class="container" style="border:1px solid #cecece; padding: 20px;">
+                                    {{ response.response_text }}<br/>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            No te responses
+                        {% endif %}
                     </div>
-                    {% if q.responsete_set.all %}
-                        {% for response in q.responsete_set.all %}
-                            {{ response.response_Id }}<br/>
-                            {{ response.response_text }}<br/>
-                        {% endfor %}
-                    {% else %}
-                        No te responses
-                    {% endif %}
                 {% else %}
                     <div class="container" style="border:1px solid #cecece; padding: 20px;">
                         <form method="post" id="r{{ q.question_num }}">
@@ -58,14 +61,15 @@
                             <div class="checkbox"><label><input type="checkbox"> {{ q.option_4 }}</label></div>
                             <div class="checkbox"><label><input type="checkbox"> {{ q.option_5 }}</label></div>
                         </form>
+                        {% if q.responsecb_set.all %}
+                            <h5>Responses</h5><br/>
+                            {% for response in q.responsecb_set.all %}
+                                {{ response.response_Id }}<br/>
+                            {% endfor %}
+                        {% else %}
+                            No te responses
+                        {% endif %}
                     </div>
-                    {% if q.responsecb_set.all %}
-                        {% for response in q.responsecb_set.all %}
-                            {{ response.response_Id }}<br/>
-                        {% endfor %}
-                    {% else %}
-                        No te responses
-                    {% endif %}
                 {% endif %}
             {% endfor %}
             <br/>
