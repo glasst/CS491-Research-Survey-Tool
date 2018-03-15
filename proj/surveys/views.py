@@ -52,6 +52,7 @@ def index(request):
                 s = form.save(commit=False)
                 s.survey_Id = uuid.uuid4()
                 s.save()
+                return redirect(reverse('surveys:editsurvey', args=(s.survey_Id,)))
 
     return render(
         request,
