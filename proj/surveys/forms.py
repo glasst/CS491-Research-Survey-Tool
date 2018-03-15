@@ -134,7 +134,7 @@ class ResponseCBForm(forms.ModelForm):
         option_list = kwargs.pop('options', None)
         super(ResponseCBForm, self).__init__(*args, **kwargs)
         if option_list is not None:
-            self.fields['options'].widget = forms.CheckboxSelectMultiple(choices=option_list)
+            self.fields['options'].widget.choices = option_list
 
 
 class ResponseMCForm(forms.ModelForm):
