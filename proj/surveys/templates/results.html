@@ -40,7 +40,7 @@
                     </div>
                     {% if q.responsete_set.all %}
                         {% for response in q.responsete_set.all %}
-                            {{ response.response_Id }}
+                            {{ response.response_Id }}<br/>
                             {{ response.response_text }}<br/>
                         {% endfor %}
                     {% else %}
