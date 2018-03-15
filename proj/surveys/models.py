@@ -116,9 +116,15 @@ class MCQuestion(Question):
                         (self.option_4, self.option_4),
                         (self.option_5, self.option_5),)
 
+    def get_responses(self):
+        return self.responsemc_set.all()
+
 
 class TEQuestion(Question):
     question_text = models.CharField(max_length=400)
+
+    def get_responses(self):
+        return self.responsete_set.all()
 
 
 class CBQuestion(Question):
@@ -136,6 +142,9 @@ class CBQuestion(Question):
                         (self.option_3, self.option_3),
                         (self.option_4, self.option_4),
                         (self.option_5, self.option_5),)
+
+    def get_responses(self):
+        return self.responsecb_set.all()
 
 
 class ResponseMC(models.Model):

@@ -19,6 +19,8 @@ urlpatterns = [
     path('edit/<uuid:survey_Id>/textentry', views.textentry, name='textentry'),
     path('edit/<uuid:survey_Id>/checkbox', views.checkbox, name='checkbox'),
 
+    path('results/<uuid:survey_Id>/', views.results, name='survey-results'),
+
     #path('survey-completion/done', views.done, name='done')
     #/surveys/index
     #path('index', views.index, name='index'),

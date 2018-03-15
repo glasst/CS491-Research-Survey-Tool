@@ -46,6 +46,10 @@ def index(request):
                 s.delete()
             except:
                 pass
+        elif 'results' in request.POST:
+            s = Survey.objects.get(survey_Id=request.POST['results'])
+            return redirect(reverse('surveys:survey-results',
+                                    args=(s.survey_Id,)))
         else:
             form = SurveyForm(request.POST)
             if form.is_valid():
@@ -373,7 +377,7 @@ def surveycompletion(request, survey_Id, qnum):
         if not checkq:
             return redirect(reverse('surveys:done', kwargs={'survey_Id': survey.survey_Id}))
         else:
-            # Get next availabe question
+            # Get next available question
             return redirect(reverse('surveys:survey-completion', kwargs={'qnum': qnum+1, 'survey_Id': survey_Id}))
 
     else:
@@ -391,6 +395,24 @@ def surveycompletion(request, survey_Id, qnum):
     return render (request,
         'survey-completion2.html',{'form': form, 'survey_Id': survey_Id,"question": q, 'type': q.question_type})
 
+
+@login_required
+def results(request, survey_Id):
+    if not survey_Id:
+        return HttpResponseRedirect('/surveys')
+
+    survey = get_object_or_404(Survey, survey_Id=survey_Id)
+
+    return render(
+        request,
+        'results.html',
+        context={
+            'survey_title': survey.title,
+            'survey_Id': survey_Id,
+            'questions': Question.objects.filter(question_survey_Id=survey_Id).order_by('question_num'),
+            'creator_Id': survey.creator_Id,
+        }
+    )
 '''
 IN PROGRESS
 def option(request, question_Id, type):
