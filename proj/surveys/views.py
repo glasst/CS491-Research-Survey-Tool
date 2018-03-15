@@ -312,7 +312,10 @@ def surveycompletion(request, qnum):
                 form = ResponseMCForm(request.POST, **{'question': q, })
                 if form.is_valid():
                     print("test")
-                    print(form.cleaned_data.get('response_text'))
+                    print(form.cleaned_data)
+                    selected_value = request.POST.get('options')
+                    print("you selected " + selected_value)
+                    # save selected value
                     f = form.save(commit=False)
                     f.response_user_Id = User.objects.get(username=request.user.username)
                     f.response_survey_Id = Survey.objects.get(survey_Id = surveyid)
@@ -330,6 +333,8 @@ def surveycompletion(request, qnum):
                 form = ResponseCBForm(request.POST, **{'question': q, })
                 if form.is_valid():
                     print(form.cleaned_data)
+                    selected_values = request.POST.getlist('options')
+                    # save selected values
                     f = form.save(commit = False)
                     f.response_user_Id = User.objects.get(username=request.user.username)
                     f.response_survey_Id = Survey.objects.get(survey_Id = surveyid)
