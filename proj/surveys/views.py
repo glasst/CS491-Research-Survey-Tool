@@ -286,7 +286,7 @@ def takesurvey(request):
     )
 
 
-def done(request):
+def done(request, survey_Id):
     return render(request, 'done.html')
 
 
@@ -299,11 +299,18 @@ def surveycompletion(request, survey_Id, qnum):
 
     print(request)
     # Check if participant submitted a response
+
+    #######
+    # is this section ever used?
     q = Question.objects.filter(question_num = qnum, question_survey_Id=survey_Id)
     if not q:
-        return HttpResponseRedirect('/survey-completion/done')
+        print("redirecting to done")
+        return redirect(reverse('surveys:done', kwargs={'survey_Id': survey.survey_Id}))
+        #return HttpResponseRedirect('/survey-completion/done')
     else:
         q = Question.objects.get(question_num = qnum, question_survey_Id=survey_Id)
+
+    #######
 
     if request.method == 'POST':
         print(q.question_num , "    ", q.question_type)
@@ -364,7 +371,7 @@ def surveycompletion(request, survey_Id, qnum):
         print("Reached checkq")
         # Check if there are more questions in survey
         if not checkq:
-            return HttpResponseRedirect('/survey-completion/done')
+            return redirect(reverse('surveys:done', kwargs={'survey_Id': survey.survey_Id}))
         else:
             # Get next availabe question
             return redirect(reverse('surveys:survey-completion', kwargs={'qnum': qnum+1, 'survey_Id': survey_Id}))
