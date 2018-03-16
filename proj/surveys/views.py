@@ -280,7 +280,7 @@ def takesurvey(request):
             survey = get_object_or_404(Survey, survey_Id=request.POST.get('survey_Id'))
             # return surveycompletion(request, 1)
             print(survey)
-            return redirect(reverse('surveys:survey-completion', kwargs={'qnum': 1, 'survey_Id': survey.survey_Id}))
+            return redirect(reverse('surveys:survey-main-page', kwargs={'survey_Id': survey.survey_Id}))
     else:
         form = TakeSurveyForm(user=request.user)
     return render(
@@ -292,6 +292,11 @@ def takesurvey(request):
 
 def done(request, survey_Id):
     return render(request, 'done.html')
+
+
+@login_required
+def survey_main_page(request, survey_Id):
+    return redirect(reverse('surveys:survey-completion', kwargs={'qnum': 1, 'survey_Id': survey_Id}))
 
 
 @login_required

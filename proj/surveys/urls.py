@@ -9,7 +9,9 @@ urlpatterns = [
     path('signup', views.signup, name='signup'),
 
     path('takesurvey/', views.takesurvey, name='takesurvey'),
-    #path('<uuid:survey_Id>/takesurvey/', views.takesurvey, name='takesurvey'),
+
+    # redirect to first question
+    path('<uuid:survey_Id>', views.survey_main_page, name='survey-main-page'),
     path('<uuid:survey_Id>/done', views.done, name='done'),
     path('<uuid:survey_Id>/<int:qnum>', views.surveycompletion, name='survey-completion'),
 
