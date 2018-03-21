@@ -301,23 +301,23 @@ def survey_main_page(request, survey_Id):
 
 @login_required
 def surveycompletion(request, survey_Id, qnum):
-    print(qnum, "!!!!!!")
+    #print(qnum, "!!!!!!")
     #survey_Id = request.session.get('survey_to_take')
     survey = Survey.objects.get(survey_Id=survey_Id)
     questions = Question.objects.filter(question_survey_Id=survey_Id)
 
-    print(request)
+    #print(request)
 
     # is this section ever used?
     #######
-    # Check if participant submitted a response
+    #Check if participant submitted a response
     q = Question.objects.filter(question_num = qnum, question_survey_Id=survey_Id)
-    if not q:
-        print("redirecting to done")
-        return redirect(reverse('surveys:done', kwargs={'survey_Id': survey.survey_Id}))
-        #return HttpResponseRedirect('/survey-completion/done')
-    else:
-        q = Question.objects.get(question_num = qnum, question_survey_Id=survey_Id)
+    # if not q:
+    #     print("redirecting to done")
+    #     return redirect(reverse('surveys:done', kwargs={'survey_Id': survey.survey_Id}))
+    #     #return HttpResponseRedirect('/survey-completion/done')
+
+    q = Question.objects.get(question_num = qnum, question_survey_Id=survey_Id)
 
     #######
 
@@ -339,6 +339,9 @@ def surveycompletion(request, survey_Id, qnum):
                     f.response_user_Id = User.objects.get(username=request.user.username)
                     f.response_survey_Id = Survey.objects.get(survey_Id = survey_Id)
                     f.response_question_Id = MCQuestion.objects.get(question_Id = q.question_Id)
+                    data = form.cleaned_data['options']
+
+                    f.response_text = data
                     f.save()
                 else:
                     print("form not valid")
@@ -358,6 +361,9 @@ def surveycompletion(request, survey_Id, qnum):
                     f.response_user_Id = User.objects.get(username=request.user.username)
                     f.response_survey_Id = Survey.objects.get(survey_Id = survey_Id)
                     f.response_question_Id = Question.objects.get(question_Id = q.question_Id)
+                    data = form.cleaned_data['options']
+
+                    f.response_text = data
                     f.save()
 
         else:
@@ -368,16 +374,16 @@ def surveycompletion(request, survey_Id, qnum):
                     f = form.save(commit=False)
                     f.response_user_Id = User.objects.get(username=request.user.username)
                     f.response_survey_Id = Survey.objects.get(survey_Id=survey_Id)
+                    f.response_survey_Id = survey
                     f.response_question_Id = Question.objects.get(question_Id=q.question_Id)
                     data = form.cleaned_data['response_text']
-                    print("DATA \n" + data)
+
                     f.response_text = data
                     f.save()
                 else:
                     print("invalid form!\n" + str(form.errors))
 
         checkq = Question.objects.filter(question_survey_Id=survey_Id, question_num=qnum+1)
-        print("Reached checkq")
         # Check if there are more questions in survey
         if not checkq:
             return redirect(reverse('surveys:done', kwargs={'survey_Id': survey.survey_Id}))
@@ -387,13 +393,13 @@ def surveycompletion(request, survey_Id, qnum):
 
     else:
         if q.question_type == 'MC':
-            print("MC no post")
+            #print("MC no post")
             form = ResponseMCForm(**{'question': q,})
         elif q.question_type == 'CB':
-            print("CB no post")
+            #print("CB no post")
             form = ResponseCBForm(**{'question': q,})
         else:
-            print("TE no post")
+            #print("TE no post")
             form = ResponseTEForm()
 
 

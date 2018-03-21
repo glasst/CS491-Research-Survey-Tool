@@ -24,10 +24,10 @@
                         {% if q.responsemc_set.all %}
                             <h5>Responses</h5><br/>
                             {% for response in q.responsemc_set.all %}
-                                {{ response.response_Id }}<br/>
+                            {{ response.response_Id }} &nbsp&nbsp {{response.response_text}}<br>
                             {% endfor %}
                         {% else %}
-                            No mc responses
+                            No MC responses
                         {% endif %}
                     </div>
                 {% elif q.question_type == 'TE' %}
@@ -46,7 +46,7 @@
                                 </div>
                             {% endfor %}
                         {% else %}
-                            No te responses
+                            No TE responses
                         {% endif %}
                     </div>
                 {% else %}
@@ -64,7 +64,7 @@
                         {% if q.responsecb_set.all %}
                             <h5>Responses</h5><br/>
                             {% for response in q.responsecb_set.all %}
-                                {{ response.response_Id }}<br/>
+                                {{ response.response_Id }} &nbsp&nbsp {{response.response_text}}<br>
                             {% endfor %}
                         {% else %}
                             No te responses

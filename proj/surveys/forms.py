@@ -130,8 +130,6 @@ class ChoiceFieldNoValidation(forms.ChoiceField):
             else:
                 if value == k or text_value == str(k):
                     return True
-
-
         #return False
         return True
 
@@ -140,15 +138,21 @@ class ResponseCBForm(forms.ModelForm):
     options = ChoiceFieldNoValidation(choices=(('None', 'none'),),
                                 widget=forms.CheckboxSelectMultiple())
 
+    # def __init__(self, *args, **kwargs):
+    #     question = kwargs.pop('question', None)
+    #     super(ResponseCBForm, self).__init__(*args, **kwargs)
+    #     self.fields['options'].widget.choices = question.get_options()
+
     class Meta:
         model = ResponseCB
-        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
+        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id', 'response_text']
         widgets = {
           'response_Id': forms.HiddenInput(),
           'response_question_Id': forms.HiddenInput(),
           'response_survey_Id': forms.HiddenInput(),
           'response_user_Id': forms.HiddenInput(),
-          #'options': forms.CheckboxSelectMultiple(choices=[])
+          'response_text': forms.HiddenInput(),
+          'options': forms.CheckboxSelectMultiple(choices=[])
         }
 
     def __init__(self, *args, **kwargs):
@@ -163,13 +167,14 @@ class ResponseMCForm(forms.ModelForm):
 
     class Meta:
         model = ResponseMC
-        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id']
+        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id', 'response_text']
         widgets = {
             'response_Id': forms.HiddenInput(),
             'response_question_Id': forms.HiddenInput(),
             'response_survey_Id': forms.HiddenInput(),
             'response_user_Id': forms.HiddenInput(),
-            #'options': forms.CheckboxSelectMultiple(choices=FAVORITE_COLORS_CHOICES)
+            'response_text': forms.HiddenInput(),
+            'options': forms.CheckboxSelectMultiple(choices=FAVORITE_COLORS_CHOICES)
         }
 
     def __init__(self, *args, **kwargs):

@@ -154,7 +154,7 @@ class ResponseMC(models.Model):
     # response_question_type = models.ForeignKey(MCQuestions, on_delete=models.PROTECT)
     response_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
     response_user_Id = models.ForeignKey(User, on_delete=models.CASCADE)
-    #response_text = models.CharField(max_length=400)
+    response_text = models.CharField(max_length=400)
 
     def get_choices(self):
         return self.response_question_Id.get_options()
@@ -176,7 +176,7 @@ class ResponseCB(models.Model):
     response_question_Id = models.ForeignKey(CBQuestion, on_delete=models.CASCADE)
     response_survey_Id = models.ForeignKey(Survey, on_delete=models.PROTECT)
     response_user_Id = models.ForeignKey(User, on_delete=models.PROTECT)
-    #response_text = models.CharField(max_length=400)
+    response_text = models.CharField(max_length=400)
 
     def get_choices(self):
         return self.response_question_Id.get_options()
