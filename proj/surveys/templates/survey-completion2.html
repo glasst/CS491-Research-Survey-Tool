@@ -26,7 +26,7 @@ questions:
 
             <div class="container" style="border:1px solid #cecece; padding: 20px;">
                 {% csrf_token %}
-                {{ form }}
+                {{form.as_p}}
                 <button class="btn btn-primary" type="submit">Submit response</button>
     </form>
 
