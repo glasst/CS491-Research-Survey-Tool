@@ -339,6 +339,7 @@ def surveycompletion(request, survey_Id, qnum):
                     print("you selected " + selected_value)
                     # save selected value
                     f = form.save(commit=False)
+                    f.response_Id = uuid.uuid4()
                     f.response_user_Id = User.objects.get(username=request.user.username)
                     f.response_survey_Id = Survey.objects.get(survey_Id = survey_Id)
                     f.response_question_Id = MCQuestion.objects.get(question_Id = q.question_Id)
@@ -361,6 +362,7 @@ def surveycompletion(request, survey_Id, qnum):
                     selected_values = request.POST.getlist('options')
                     # save selected values
                     f = form.save(commit = False)
+                    f.response_Id = uuid.uuid4()
                     f.response_user_Id = User.objects.get(username=request.user.username)
                     f.response_survey_Id = Survey.objects.get(survey_Id = survey_Id)
                     f.response_question_Id = Question.objects.get(question_Id = q.question_Id)
@@ -375,6 +377,7 @@ def surveycompletion(request, survey_Id, qnum):
                 form = ResponseTEForm(request.POST)
                 if form.is_valid():
                     f = form.save(commit=False)
+                    f.response_Id = uuid.uuid4()
                     f.response_user_Id = User.objects.get(username=request.user.username)
                     f.response_survey_Id = Survey.objects.get(survey_Id=survey_Id)
                     f.response_survey_Id = survey
