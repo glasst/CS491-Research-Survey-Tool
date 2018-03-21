@@ -105,16 +105,16 @@ class MCQuestion(Question):
     # num_options = models.PositiveSmallIntegerField(default=0, max_value = MAX_OPTIONS)
     option_1 = models.CharField(max_length=100)
     option_2 = models.CharField(max_length=100)
-    option_3 = models.CharField(max_length=100)
-    option_4 = models.CharField(max_length=100)
-    option_5 = models.CharField(max_length=100)
+    option_3 = models.CharField(max_length=100, blank=True, null=True)
+    option_4 = models.CharField(max_length=100, blank=True, null=True)
+    option_5 = models.CharField(max_length=100, blank=True, null=True)
 
     def get_options(self):
-        return ((self.option_1, self.option_1),
-                        (self.option_2, self.option_2),
-                        (self.option_3, self.option_3),
-                        (self.option_4, self.option_4),
-                        (self.option_5, self.option_5),)
+        options = ((self.option_1, self.option_1), (self.option_2, self.option_2))
+        if self.option_3: options.append((self.option_3, self.option_3))
+        if self.option_4: options.append((self.option_4, self.option_4))
+        if self.option_5: options.append((self.option_5, self.option_5))
+        return options
 
     def get_responses(self):
         return self.responsemc_set.all()
@@ -131,17 +131,17 @@ class CBQuestion(Question):
     question_text = models.CharField(max_length=400)
     option_1 = models.CharField(max_length=100)
     option_2 = models.CharField(max_length=100)
-    option_3 = models.CharField(max_length=100)
-    option_4 = models.CharField(max_length=100)
-    option_5 = models.CharField(max_length=100)
+    option_3 = models.CharField(max_length=100, blank=True, null=True)
+    option_4 = models.CharField(max_length=100, blank=True, null=True)
+    option_5 = models.CharField(max_length=100, blank=True, null=True)
     #num_options = models.PositiveSmallIntegerField(default=0, max_value=MAX_OPTIONS)
 
     def get_options(self):
-        return ((self.option_1, self.option_1),
-                        (self.option_2, self.option_2),
-                        (self.option_3, self.option_3),
-                        (self.option_4, self.option_4),
-                        (self.option_5, self.option_5),)
+        options = ((self.option_1, self.option_1), (self.option_2, self.option_2))
+        if self.option_3: options.append((self.option_3, self.option_3))
+        if self.option_4: options.append((self.option_4, self.option_4))
+        if self.option_5: options.append((self.option_5, self.option_5))
+        return options
 
     def get_responses(self):
         return self.responsecb_set.all()

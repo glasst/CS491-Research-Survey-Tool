@@ -17,9 +17,9 @@
                             <h5>{{ q.question_text }}</h5><br/>
                             <div class="radio"><label><input type="radio" name="radio"> {{ q.option_1 }}</label></div>
                             <div class="radio"><label><input type="radio" name="radio"> {{ q.option_2 }}</label></div>
-                            <div class="radio"><label><input type="radio" name="radio"> {{ q.option_3 }}</label></div>
-                            <div class="radio"><label><input type="radio" name="radio"> {{ q.option_4 }}</label></div>
-                            <div class="radio"><label><input type="radio" name="radio"> {{ q.option_5 }}</label></div>
+                            {% if q.option_3 %}<div class="radio"><label><input type="radio" name="radio"> {{ q.option_3 }}</label></div>{% endif %}
+                            {% if q.option_4 %}<div class="radio"><label><input type="radio" name="radio"> {{ q.option_4 }}</label></div>{% endif %}
+                            {% if q.option_5 %}<div class="radio"><label><input type="radio" name="radio"> {{ q.option_5 }}</label></div>{% endif %}
                         </form>
                         {% if q.responsemc_set.all %}
                             <h5>Responses</h5><br/>
@@ -57,9 +57,9 @@
                             <h5>{{ q.question_text }}</h5><br/>
                             <div class="checkbox"><label><input type="checkbox"> {{ q.option_1 }}</label></div>
                             <div class="checkbox"><label><input type="checkbox"> {{ q.option_2 }}</label></div>
-                            <div class="checkbox"><label><input type="checkbox"> {{ q.option_3 }}</label></div>
-                            <div class="checkbox"><label><input type="checkbox"> {{ q.option_4 }}</label></div>
-                            <div class="checkbox"><label><input type="checkbox"> {{ q.option_5 }}</label></div>
+                            {% if q.option_3 %}<div class="checkbox"><label><input type="checkbox"> {{ q.option_3 }}</label></div>{% endif %}
+                            {% if q.option_4 %}<div class="checkbox"><label><input type="checkbox"> {{ q.option_4 }}</label></div>{% endif %}
+                            {% if q.option_5 %}<div class="checkbox"><label><input type="checkbox"> {{ q.option_5 }}</label></div>{% endif %}
                         </form>
                         {% if q.responsecb_set.all %}
                             <h5>Responses</h5><br/>
