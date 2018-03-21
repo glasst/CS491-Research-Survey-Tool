@@ -28,7 +28,7 @@
                     {{ s.title }}
                 </button>
             </a>
-        </div>
+        </div>&nbsp&nbsp
         <div class="row">
             <form method="post" id="{{ s.survey_Id }}">
                 {% csrf_token %}
@@ -36,7 +36,7 @@
                 <button class="btn btn-primary" type="button"
                         onclick="conf('Delete survey? This cannot be undone.', '{{ s.survey_Id }}')">Delete
                 </button>
-            </form>
+            </form>&nbsp&nbsp
             <form method="post" id="{{ s.survey_Id }}">
                 {% csrf_token %}
                 <input type="hidden" name="results" value="{{ s.survey_Id }}"/>
