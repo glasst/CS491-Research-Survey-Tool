@@ -12,6 +12,7 @@ urlpatterns = [
 
     # redirect to first question
     path('<uuid:survey_Id>', views.survey_main_page, name='survey-main-page'),
+    path('<uuid:survey_Id>', views.survey_main_page, name='survey-main-page'),
     path('<uuid:survey_Id>/done', views.done, name='done'),
     path('<uuid:survey_Id>/<int:qnum>', views.surveycompletion, name='survey-completion'),
 
