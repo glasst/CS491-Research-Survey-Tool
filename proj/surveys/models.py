@@ -111,9 +111,10 @@ class MCQuestion(Question):
 
     def get_options(self):
         options = [(self.option_1, self.option_1), (self.option_2, self.option_2)]
-        if self.option_3: options += (self.option_3, self.option_3)
-        if self.option_4: options += (self.option_4, self.option_4)
-        if self.option_5: options += (self.option_5, self.option_5)
+        if self.option_3: options.append((self.option_3, self.option_3))
+        if self.option_4: options.append((self.option_4, self.option_4))
+        if self.option_5: options.append((self.option_5, self.option_5))
+        print(options)
         return tuple(options)
 
     def get_responses(self):

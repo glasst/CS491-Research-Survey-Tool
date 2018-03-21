@@ -305,22 +305,24 @@ def surveycompletion(request, survey_Id, qnum):
     #print(qnum, "!!!!!!")
     #survey_Id = request.session.get('survey_to_take')
     survey = Survey.objects.get(survey_Id=survey_Id)
-    questions = Question.objects.filter(question_survey_Id=survey_Id)
+    #questions = Question.objects.filter(question_survey_Id=survey_Id)
 
     #print(request)
 
     # is this section ever used?
     #######
     #Check if participant submitted a response
-    q = Question.objects.filter(question_num = qnum, question_survey_Id=survey_Id)
+    #q = Question.objects.filter(question_num = qnum, question_survey_Id=survey_Id)
     # if not q:
     #     print("redirecting to done")
     #     return redirect(reverse('surveys:done', kwargs={'survey_Id': survey.survey_Id}))
     #     #return HttpResponseRedirect('/survey-completion/done')
 
-    q = Question.objects.get(question_num = qnum, question_survey_Id=survey_Id)
+    #q = Question.objects.get(question_num = qnum, question_survey_Id=survey_Id)
 
+    q = get_object_or_404(Question, question_survey_Id = survey_Id, question_num=qnum)
     #######
+    subq = None
 
     if request.method == 'POST':
         print(q.question_num , "    ", q.question_type)
@@ -394,20 +396,18 @@ def surveycompletion(request, survey_Id, qnum):
 
     else:
         if q.question_type == 'MC':
-            #print("MC no post")
+            print("MC no post")
             form = ResponseMCForm(**{'question': q,})
         elif q.question_type == 'CB':
-            #print("CB no post")
+            print("CB no post")
             form = ResponseCBForm(**{'question': q,})
         else:
-            #print("TE no post")
+            print("TE no post")
             form = ResponseTEForm()
 
-    print(str(form))
-    print(survey_Id)
-    print(q)
+
     return render (request,
-        'survey-completion2.html',{'form': form, 'survey_Id': survey_Id,"question": q, 'type': q.question_type, 'survey_title': survey.title})
+        'survey-completion2.html',{'form': form, 'surveyid': survey_Id, "question": q, 'type': q.question_type, 'survey_title': survey.title},)
 
 
 @login_required
