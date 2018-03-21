@@ -37,6 +37,7 @@ def index(request):
     creator = User.objects.get(username=request.user.username)
     survey_list = Survey.objects.filter(creator_Id=creator)
     form = SurveyForm(initial={'creator_Id': request.user.pk})
+    uri = request.build_absolute_uri(reverse('surveys:home'))
 
     if request.method == 'POST':
         if 'remove' in request.POST:
@@ -61,7 +62,7 @@ def index(request):
     return render(
         request,
         'index.html',
-        context={'form': form, 'num_users': num_users, 'surveys': surveys, 'userID': creator})
+        context={'form': form, 'num_users': num_users, 'surveys': surveys, 'userID': creator, 'uri': uri[:-1]})
 
 # No longer using any login view functions
 def signup(request):
@@ -402,9 +403,11 @@ def surveycompletion(request, survey_Id, qnum):
             #print("TE no post")
             form = ResponseTEForm()
 
-
+    print(str(form))
+    print(survey_Id)
+    print(q)
     return render (request,
-        'survey-completion2.html',{'form': form, 'survey_Id': survey_Id,"question": q, 'type': q.question_type})
+        'survey-completion2.html',{'form': form, 'survey_Id': survey_Id,"question": q, 'type': q.question_type, 'survey_title': survey.title})
 
 
 @login_required

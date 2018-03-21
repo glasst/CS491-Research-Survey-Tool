@@ -10,6 +10,9 @@
                 document.getElementById(id).submit();
             }
         }
+        function copy(text) {
+            window.prompt("Survey link:", text);
+        }
     </script>
 
     <h2 align="center">Research Survey Tool</h2>
@@ -21,7 +24,7 @@
     {% endif %}
     {% for s in surveys %}
         <div class="row">
-        <div class="col-10">
+        <div class="col-8">
             <a href="{% url 'surveys:editsurvey' s.survey_Id %}">
                 <input type="hidden" name="edit" value="{{ s.survey_Id }}"/>
                 <button type="button" class="list-group-item list-group-item-action">
@@ -30,6 +33,11 @@
             </a>
         </div>&nbsp&nbsp
         <div class="row">
+            <form>
+            <button class="btn btn-primary" type="button"
+                    onclick="copy('{{ uri }}{% url 'surveys:survey-main-page' s.survey_Id %}')">Get link
+            </button>&nbsp&nbsp
+            </form>
             <form method="post" id="{{ s.survey_Id }}">
                 {% csrf_token %}
                 <input type="hidden" name="remove" value="{{ s.survey_Id }}"/>
