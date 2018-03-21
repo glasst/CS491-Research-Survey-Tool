@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion
-from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, SurveyForm, TakeSurveyForm
+from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, SurveyForm, TakeSurveyForm, OptionFormSet
 from .forms import ResponseTEForm, ResponseMCForm, ResponseCBForm
 from django.urls import reverse, resolve
 from django.contrib.auth.decorators import login_required
@@ -197,24 +197,42 @@ def newquestion(request):
 def multiplechoice(request, survey_Id):
     if request.method == 'POST':
         form = MCQuestionForm(request.POST)
-        if form.is_valid():
+        options = OptionFormSet(request.POST)
+        print("\n" + str(options.errors))
+        if form.is_valid() and options.is_valid():
             survey = get_object_or_404(Survey, survey_Id=survey_Id)
             q = form.save(commit=False)
-            q.question_Id = uuid.uuid4()
+            # q.question_Id = uuid.uuid4()
             q.question_type = 'MC'
             q.question_survey_Id = survey
             survey.num_questions += 1
             q.question_num = survey.num_questions
+
+            for option in options:
+                option_obj = option.save(commit=False)
+                option_obj.option_Id = uuid.uuid4()
+                option_obj.question_type = 'MC'
+                option_obj.mc_question_Id = q.question_Id
+                option_obj.save()
+
             q.save()
             survey.save()
             return redirect(reverse('surveys:editsurvey', args=(survey.survey_Id,)))
     else:
         form = MCQuestionForm(initial={'question_survey_Id': survey_Id})
-
+        options = OptionFormSet({
+            'form-TOTAL_FORMS': '1',
+            'form-INITIAL_FORMS': '1',
+            'form-MAX_NUM_FORMS': '',
+        })
+        print(options.is_valid())
+    print("\n" + str(options.errors))
     return render(
         request,
-        'multiplechoice.html',
-        context={'form': form},
+        'multiplechoice.html', context={
+            'form': form,
+            'formset': options,
+        },
     )
 
 

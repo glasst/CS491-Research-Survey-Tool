@@ -58,7 +58,7 @@ class Question(PolymorphicModel):
     question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question_type = models.CharField(max_length=2, choices=QUESTION_CHOICES)
     question_num = models.SmallIntegerField()
-    question_title = models.CharField(max_length=400)
+    #question_title = models.CharField(max_length=400)
 
     def __str__(self):
         return 'Question ID: %s, %s' % (self.question_Id, self.question_title)
@@ -103,18 +103,14 @@ class MCQuestion(Question):
     # question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_text = models.CharField(max_length=400)
     # num_options = models.PositiveSmallIntegerField(default=0, max_value = MAX_OPTIONS)
-    option_1 = models.CharField(max_length=100)
-    option_2 = models.CharField(max_length=100)
-    option_3 = models.CharField(max_length=100)
-    option_4 = models.CharField(max_length=100)
-    option_5 = models.CharField(max_length=100)
+    #option_1 = models.CharField(max_length=100)
+    #option_2 = models.CharField(max_length=100)
+    #option_3 = models.CharField(max_length=100)
+    #option_4 = models.CharField(max_length=100)
+    #option_5 = models.CharField(max_length=100)
 
     def get_options(self):
-        return ((self.option_1, self.option_1),
-                        (self.option_2, self.option_2),
-                        (self.option_3, self.option_3),
-                        (self.option_4, self.option_4),
-                        (self.option_5, self.option_5),)
+        return Option.objects.filter(mc_question_Id=self.question_Id).order_by('option_num')
 
     def get_responses(self):
         return self.responsemc_set.all()
@@ -190,12 +186,13 @@ OPTION_CHOICES = (
 class Option(models.Model):
     option_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     option_num = models.SmallIntegerField()
-    type_of_question = models.CharField(max_length=2, choices=OPTION_CHOICES)
+    question_type = models.CharField(max_length=2, choices=OPTION_CHOICES)
     mc_question_Id = models.ForeignKey(MCQuestion, null=True, blank=True, on_delete=models.CASCADE)
     cb_question_Id = models.ForeignKey(CBQuestion, null=True, blank=True, on_delete=models.CASCADE)
-    text = models.CharField(max_length=100)
+    text = models.CharField(max_length=100, blank=True)
 
     def save(self):
+        self.option_Id = uuid.uuid4()
         if type_of_question == 'CB':
             self.cb_question_Id.num_options += 1
             self.option_num = self.cb_question_Id.num_options

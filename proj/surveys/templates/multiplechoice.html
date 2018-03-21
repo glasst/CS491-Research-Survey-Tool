@@ -8,8 +8,15 @@
     <form action="" method="POST">
         {% csrf_token %}
     	{% bootstrap_form form %}
-        {% bootstrap_button "Add question" button_type="submit" button_class="btn-primary" %}
+        {% bootstrap_button "Add question" button_type="submit" name="add_question" button_class="btn-primary" %}
         <input type="hidden" name="question_survey_Id" value=survey_Id>
+    </form>
+    <form action="" method="POST">
+        {{ options.management_form }}
+        {% csrf_token %}
+        {% for o in options %}
+            {{ o }}
+        {% endfor %}
     </form>
 </div>
 
