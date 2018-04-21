@@ -2,7 +2,7 @@
 
 NAME="proj"                              # Django Project Name
 DJANGODIR=/usr/home/leea51/CS491-Research-Survey-Tool/proj #/home/$USER/myenv/myproject                        # Django Project Directory
-SOCKFILE=/home/leea51/myenv/myproject/run/gunicorn.sock     # Gunicorn Sock File
+SOCKFILE=/usr/home/leea51/CS491-Research-Survey-Tool/proj/run/gunicorn.sock     # Gunicorn Sock File
 USER=leea51                                                # Django Project Running under user vagrant
 GROUP=leea51                                                # Django Project Running under group vagrant
 NUM_WORKERS=3
@@ -23,7 +23,8 @@ test -d $RUNDIR || mkdir -p $RUNDIR
 
 # Start your Django Unicorn
 # Programs meant to be run under supervisor should not daemonize themselves (do not use --daemon)
-exec ../bin/gunicorn ${DJANGO_WSGI_MODULE}:application \
+
+exec /usr/home/leea51/.virtualenvs/venv/bin/gunicorn ${DJANGO_WSGI_MODULE}:application \
 --name $NAME \
 --workers $NUM_WORKERS \
 --user=$USER --group=$GROUP \
