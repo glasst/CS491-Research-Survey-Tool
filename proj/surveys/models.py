@@ -50,6 +50,7 @@ QUESTION_CHOICES = (
     ('CB', 'CheckBox'),
     ('MC', 'MultipleChoice'),
     ('TE', 'TextEntry'),
+    ('DD', 'Dropdown')
 )
 
 
@@ -120,6 +121,29 @@ class MCQuestion(Question):
     def get_responses(self):
         return self.responsemc_set.all()
 
+# Drop Down Question Model
+class DDQuestion(Question):
+    # question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
+    # question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
+    question_text = models.CharField(max_length=400)
+    # num_options = models.PositiveSmallIntegerField(default=0, max_value = MAX_OPTIONS)
+    option_1 = models.CharField(max_length=100)
+    option_2 = models.CharField(max_length=100)
+    option_3 = models.CharField(max_length=100, blank=True, null=True)
+    option_4 = models.CharField(max_length=100, blank=True, null=True)
+    option_5 = models.CharField(max_length=100, blank=True, null=True)
+
+    def get_options(self):
+        options = [(self.option_1, self.option_1), (self.option_2, self.option_2)]
+        if self.option_3: options.append((self.option_3, self.option_3))
+        if self.option_4: options.append((self.option_4, self.option_4))
+        if self.option_5: options.append((self.option_5, self.option_5))
+        print(options)
+        return tuple(options)
+
+    def get_responses(self):
+        return self.responsedd_set.all()
+
 
 class TEQuestion(Question):
     question_text = models.CharField(max_length=400)
@@ -160,6 +184,19 @@ class ResponseMC(models.Model):
 
     def get_choices(self):
         return self.response_question_Id.get_options()
+
+class ResponseDD(models.Model):
+    # increment number of questions in survey and set current question number
+    response_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
+    response_question_Id = models.ForeignKey(DDQuestion, on_delete=models.CASCADE)
+    response_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
+    response_user_Id = models.ForeignKey(User, on_delete=models.CASCADE)
+    response_text = models.CharField(max_length=400, null=True)
+
+    def get_choices(self):
+        return self.response_question_Id.get_options()
+
+
 
 
 class ResponseTE(models.Model):

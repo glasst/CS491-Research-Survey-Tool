@@ -1,8 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, ResponseTE, ResponseMC, ResponseCB, Option
-
-
+from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, DDQuestion, ResponseTE, ResponseMC, ResponseCB, ResponseDD, Option
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
@@ -28,7 +26,7 @@ class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
         exclude = ['question_num', 'question_type']
-        CHOICES = (('MC', 'multiplechoice'), ('TE', 'textentry'), ('CB', 'checkbox'),)
+        CHOICES = (('MC', 'multiplechoice'), ('TE', 'textentry'), ('CB', 'checkbox'), ('DD', 'dropdown'))
         widgets = {
             'question_survey_Id': forms.HiddenInput(),
             'question_Id': forms.HiddenInput(),
@@ -51,6 +49,19 @@ class MCQuestionForm(forms.ModelForm):
             'option_5': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
         }
 
+class DDQuestionForm(forms.ModelForm):
+    class Meta:
+        model = DDQuestion
+        exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type']
+        widgets = {
+            'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
+            'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
+            'option_1': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+            'option_2': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+            'option_3': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+            'option_4': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+            'option_5': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+        }
 
 class TEQuestionForm(forms.ModelForm):
     class Meta:
@@ -60,7 +71,6 @@ class TEQuestionForm(forms.ModelForm):
             'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
         }
-
 
 class CBQuestionForm(forms.ModelForm):
     class Meta:
@@ -180,6 +190,27 @@ class ResponseMCForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         question = kwargs.pop('question', None)
         super(ResponseMCForm, self).__init__(*args, **kwargs)
+        self.fields['options'].widget.choices = question.get_options()
+
+class ResponseDDForm(forms.ModelForm):
+    options = ChoiceFieldNoValidation(choices=(('None', 'none'),),
+                                widget=forms.Select)
+
+    class Meta:
+        model = ResponseDD
+        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id', 'response_text']
+        widgets = {
+            'response_Id': forms.HiddenInput(),
+            'response_question_Id': forms.HiddenInput(),
+            'response_survey_Id': forms.HiddenInput(),
+            'response_user_Id': forms.HiddenInput(),
+            'response_text': forms.HiddenInput(),
+            'options': forms.Select(choices=FAVORITE_COLORS_CHOICES)
+        }
+
+    def __init__(self, *args, **kwargs):
+        question = kwargs.pop('question', None)
+        super(ResponseDDForm, self).__init__(*args, **kwargs)
         self.fields['options'].widget.choices = question.get_options()
 
     #def add_choices(self):
