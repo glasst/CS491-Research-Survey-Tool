@@ -12,7 +12,7 @@ from django.contrib.auth import login, authenticate
 import json
 import uuid
 from json import JSONEncoder
-
+import ast
 
 class UUIDEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -420,14 +420,37 @@ def results(request, survey_Id):
 
     survey = get_object_or_404(Survey, survey_Id=survey_Id)
 
+    questions = Question.objects.filter(question_survey_Id=survey_Id).order_by('question_num')
+    metrics = []
+    i = 0
+    for q in questions:
+        metrics.append([])
+        if q.question_type == 'MC' or q.question_type == 'CB':
+            options = [opt[0] for opt in q.get_options()]
+            print(options)
+            for o in options: metrics[i].append(0)
+            if q.question_type == 'MC': responses = q.responsemc_set.all()
+            else: responses = q.responsecb_set.all()
+            for r in responses:
+                j = 0
+                for o in options:
+                    if q.question_type == 'CB':
+                        if o in ast.literal_eval(r.response_text): metrics[i][j] += 1
+                    else:
+                        if r.response_text == o: metrics[i][j] += 1
+                    j += 1
+
+        i += 1
+
     return render(
         request,
         'results.html',
         context={
             'survey_title': survey.title,
             'survey_Id': survey_Id,
-            'questions': Question.objects.filter(question_survey_Id=survey_Id).order_by('question_num'),
+            'questions': questions,
             'creator_Id': survey.creator_Id,
+            'metrics': zip(questions, metrics)
         }
     )
 '''
