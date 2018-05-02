@@ -8,6 +8,8 @@ from django.urls import reverse, resolve
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
+from graphos.sources.simple import SimpleDataSource
+from graphos.renderers.gchart import ColumnChart
 
 import json
 import uuid
@@ -422,12 +424,13 @@ def results(request, survey_Id):
 
     questions = Question.objects.filter(question_survey_Id=survey_Id).order_by('question_num')
     metrics = []
+    charts = []
     i = 0
     for q in questions:
         metrics.append([])
         if q.question_type == 'MC' or q.question_type == 'CB':
             options = [opt[0] for opt in q.get_options()]
-            print(options)
+            #print(options)
             for o in options: metrics[i].append(0)
             if q.question_type == 'MC': responses = q.responsemc_set.all()
             else: responses = q.responsecb_set.all()
@@ -439,7 +442,13 @@ def results(request, survey_Id):
                     else:
                         if r.response_text == o: metrics[i][j] += 1
                     j += 1
-
+            data = [['Option', '']]
+            for j, o in enumerate(options): data.append([o, metrics[i][j]])
+            #print(data)
+            charts.append(ColumnChart(SimpleDataSource(data=list(data)), height=400, width=800,
+                options={'title':'Responses', 'legend': 'none'}))
+        else:
+            charts.append(None)
         i += 1
 
     return render(
@@ -450,7 +459,7 @@ def results(request, survey_Id):
             'survey_Id': survey_Id,
             'questions': questions,
             'creator_Id': survey.creator_Id,
-            'metrics': zip(questions, metrics)
+            'metrics': zip(questions, metrics, charts)
         }
     )
 '''

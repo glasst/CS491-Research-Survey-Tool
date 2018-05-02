@@ -2,6 +2,10 @@
 {% load bootstrap4 %}
 {% block title %}{{ survey_title }} - results{% endblock %}
 {% block content %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    google.load("visualization", "1", {packages:["corechart"]});
+</script>
 
     {% if user == creator_Id %}
         <h3 align="center">{{ survey_title }}  - results</h3>
@@ -15,18 +19,9 @@
                             {% csrf_token %}
                             <h4>{{ q.0.question_title }}</h4><br/>
                             <h5>{{ q.0.question_text }}</h5><br/>
-                            <div class="radio"><label><input type="radio" name="radio"> {{ q.0.option_1 }}</label></div>
-                            <div class="radio"><label><input type="radio" name="radio"> {{ q.0.option_2 }}</label></div>
-                            {% if q.0.option_3 %}<div class="radio"><label><input type="radio" name="radio"> {{ q.0.option_3 }}</label></div>{% endif %}
-                            {% if q.0.option_4 %}<div class="radio"><label><input type="radio" name="radio"> {{ q.0.option_4 }}</label></div>{% endif %}
-                            {% if q.0.option_5 %}<div class="radio"><label><input type="radio" name="radio"> {{ q.0.option_5 }}</label></div>{% endif %}
                         </form>
                         {% if q.0.responsemc_set.all %}
-                            <br/><h5>Response Stats</h5><br/>
-                            {% for response in q.0.responsemc_set.all %}
-                                {{ response.response_Id }} &nbsp&nbsp {{response.response_text}}<br>
-                            {% endfor %}
-                            {{ q.1 }}
+                            {{ q.2.as_html }}
                         {% else %}
                             No MC responses
                         {% endif %}
@@ -37,7 +32,6 @@
                             {% csrf_token %}
                             <h4>{{ q.0.question_title }}</h4><br/>
                             <h5>{{ q.0.question_text }}</h5><br/>
-                            <div class="form-group"><textarea class="form-control" rows="3"></textarea></div>
                         </form>
                         {% if q.0.responsete_set.all %}
                             <h5>Responses</h5><br/>
@@ -56,18 +50,9 @@
                             {% csrf_token %}
                             <h4>{{ q.0.question_title }}</h4><br/>
                             <h5>{{ q.0.question_text }}</h5><br/>
-                            <div class="checkbox"><label><input type="checkbox"> {{ q.0.option_1 }}</label></div>
-                            <div class="checkbox"><label><input type="checkbox"> {{ q.0.option_2 }}</label></div>
-                            {% if q.0.option_3 %}<div class="checkbox"><label><input type="checkbox"> {{ q.0.option_3 }}</label></div>{% endif %}
-                            {% if q.0.option_4 %}<div class="checkbox"><label><input type="checkbox"> {{ q.0.option_4 }}</label></div>{% endif %}
-                            {% if q.0.option_5 %}<div class="checkbox"><label><input type="checkbox"> {{ q.0.option_5 }}</label></div>{% endif %}
                         </form>
                         {% if q.0.responsecb_set.all %}
-                            <br/><h5>Response Stats</h5><br/>
-                            {% for response in q.0.responsecb_set.all %}
-                                {{ response.response_Id }} &nbsp&nbsp {{response.response_text}}<br>
-                            {% endfor %}
-                            {{ q.1 }}
+                            {{ q.2.as_html }}
                         {% else %}
                             No CB responses
                         {% endif %}

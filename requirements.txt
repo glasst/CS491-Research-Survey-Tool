@@ -2,3 +2,4 @@ django
 django-bootstrap4
 django-bootstrap-themes
 django-polymorphic
+django-graphos
