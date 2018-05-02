@@ -50,7 +50,8 @@ QUESTION_CHOICES = (
     ('CB', 'CheckBox'),
     ('MC', 'MultipleChoice'),
     ('TE', 'TextEntry'),
-    ('DD', 'Dropdown')
+    ('DD', 'Dropdown'),
+    ('LK', 'Likert'),
 )
 
 
@@ -100,10 +101,7 @@ class Question(PolymorphicModel):
 
 
 class MCQuestion(Question):
-    # question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
-    # question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_text = models.CharField(max_length=400)
-    # num_options = models.PositiveSmallIntegerField(default=0, max_value = MAX_OPTIONS)
     option_1 = models.CharField(max_length=100)
     option_2 = models.CharField(max_length=100)
     option_3 = models.CharField(max_length=100, blank=True, null=True)
@@ -123,10 +121,7 @@ class MCQuestion(Question):
 
 # Drop Down Question Model
 class DDQuestion(Question):
-    # question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
-    # question_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     question_text = models.CharField(max_length=400)
-    # num_options = models.PositiveSmallIntegerField(default=0, max_value = MAX_OPTIONS)
     option_1 = models.CharField(max_length=100)
     option_2 = models.CharField(max_length=100)
     option_3 = models.CharField(max_length=100, blank=True, null=True)
@@ -150,6 +145,13 @@ class TEQuestion(Question):
 
     def get_responses(self):
         return self.responsete_set.all()
+
+
+class LKQuestion(Question):
+    question_text = models.CharField(max_length=400)
+
+    def get_responses(self):
+        return self.responselk_set.all()
 
 
 class CBQuestion(Question):

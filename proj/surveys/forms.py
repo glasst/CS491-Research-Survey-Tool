@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, DDQuestion, ResponseTE, ResponseMC, ResponseCB, ResponseDD, Option
+from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, DDQuestion, ResponseTE, ResponseMC, ResponseCB, ResponseDD, Option, LKQuestion
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
@@ -63,6 +63,15 @@ class DDQuestionForm(forms.ModelForm):
             'option_5': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
         }
 
+class LKQuestionForm(forms.ModelForm):
+    class Meta:
+        model = LKQuestion
+        exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type']
+        widgets = {
+            'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
+            'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
+        }
+
 class TEQuestionForm(forms.ModelForm):
     class Meta:
         model = TEQuestion
@@ -85,6 +94,7 @@ class CBQuestionForm(forms.ModelForm):
             'option_4': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
             'option_5': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
         }
+
 
 
 class TakeSurveyForm(forms.Form):

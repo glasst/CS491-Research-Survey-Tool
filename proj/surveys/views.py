@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, DDQuestion
-from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, DDQuestionForm, SurveyForm, TakeSurveyForm
+from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, DDQuestion, LKQuestion
+from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, DDQuestionForm, SurveyForm, TakeSurveyForm, LKQuestionForm
 from .forms import ResponseTEForm, ResponseMCForm, ResponseCBForm, ResponseDDForm
 from django.urls import reverse, resolve
 from django.contrib.auth.decorators import login_required
@@ -171,6 +171,7 @@ def newquestion(request):
         'TE': 'textentry.html',
         'CB': 'checkbox.html',
         'DD': 'dropdown.html',
+        'LK': 'likert.html',
     }
     nextpage = '/surveys/'
 
@@ -216,6 +217,30 @@ def multiplechoice(request, survey_Id):
     return render(
         request,
         'multiplechoice.html',
+        context={'form': form},
+    )
+
+@login_required
+def likert(request, survey_Id):
+    if request.method == 'POST':
+        form = LKQuestionForm(request.POST)
+        if form.is_valid():
+            survey = get_object_or_404(Survey, survey_Id=survey_Id)
+            q = form.save(commit=False)
+            q.question_Id = uuid.uuid4()
+            q.question_type = 'LK'
+            q.question_survey_Id = survey
+            survey.num_questions += 1
+            q.question_num = survey.num_questions
+            q.save()
+            survey.save()
+            return redirect(reverse('surveys:editsurvey', args=(survey.survey_Id,)))
+    else:
+        form = LKQuestionForm(initial={'question_survey_Id': survey_Id})
+
+    return render(
+        request,
+        'likert.html',
         context={'form': form},
     )
 
