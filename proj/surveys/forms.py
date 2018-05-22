@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, DDQuestion, ResponseTE, ResponseMC, ResponseCB, ResponseDD, Option, LKQuestion
+from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, DDQuestion, ResponseTE, ResponseMC, ResponseCB, ResponseDD, ResponseLK, Option, LKQuestion
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
@@ -66,7 +66,8 @@ class DDQuestionForm(forms.ModelForm):
 class LKQuestionForm(forms.ModelForm):
     class Meta:
         model = LKQuestion
-        exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type']
+        exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type',
+            "option_1", "option_2", "option_3", "option_4", "option_5"]
         widgets = {
             'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
@@ -201,6 +202,27 @@ class ResponseMCForm(forms.ModelForm):
         question = kwargs.pop('question', None)
         super(ResponseMCForm, self).__init__(*args, **kwargs)
         self.fields['options'].widget.choices = question.get_options()
+
+class ResponseLKForm(forms.ModelForm):
+    options = ChoiceFieldNoValidation(choices=(('None', 'none'),),
+                                widget=forms.RadioSelect())
+
+    class Meta:
+        model = ResponseLK
+        exclude = ['response_Id', 'response_question_Id', 'response_survey_Id', 'response_user_Id', 'response_text']
+        widgets = {
+            'response_Id': forms.HiddenInput(),
+            'response_question_Id': forms.HiddenInput(),
+            'response_survey_Id': forms.HiddenInput(),
+            'response_user_Id': forms.HiddenInput(),
+            'response_text': forms.HiddenInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        question = kwargs.pop('question', None)
+        super(ResponseLKForm, self).__init__(*args, **kwargs)
+        self.fields['options'].widget.choices = question.get_options()
+        self.fields['options'].widget.attrs.update(display = 'inline-block')
 
 class ResponseDDForm(forms.ModelForm):
     options = ChoiceFieldNoValidation(choices=(('None', 'none'),),

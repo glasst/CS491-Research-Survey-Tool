@@ -1,5 +1,5 @@
 <!doctype html>
-{% load staticfiles %}
+{% load static %}
 {% load bootstrap4 %}
 <html lang="en">
 <head>
@@ -13,6 +13,7 @@
 </head>
 
 <nav class="navbar navbar-expand-md navbar-dark bg-primary">
+    <img src="{% static "surveys/static/logo.png" %}" alt= " "/>
     <a class="navbar-brand" href="{% url 'surveys:home' %}">Surveys</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
