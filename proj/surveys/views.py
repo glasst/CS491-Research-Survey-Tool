@@ -518,12 +518,19 @@ def results(request, survey_Id):
     i = 0
     for q in questions:
         metrics.append([])
-        if q.question_type == 'MC' or q.question_type == 'CB':
+        if q.question_type == 'MC' or q.question_type == 'CB' or  q.question_type == 'DD' or  q.question_type == 'LK':
             options = [opt[0] for opt in q.get_options()]
             #print(options)
             for o in options: metrics[i].append(0)
-            if q.question_type == 'MC': responses = q.responsemc_set.all()
-            else: responses = q.responsecb_set.all()
+            if q.question_type == 'MC':
+                responses = q.responsemc_set.all()
+            elif q.question_type == 'DD':
+                responses = q.responsedd_set.all()
+            elif q.question_type == 'LK':
+                responses = q.responselk_set.all()
+            else: 
+                responses = q.responsecb_set.all()
+
             for r in responses:
                 j = 0
                 for o in options:
