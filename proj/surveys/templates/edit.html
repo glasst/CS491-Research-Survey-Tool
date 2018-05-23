@@ -25,7 +25,6 @@ function conf(str, id){
             <div class="container" style="border:1px solid #cecece; padding: 20px;">
                 <form method="post" id="r{{ q.question_num }}">
                     {% csrf_token %}
-                    <h4>{{ q.question_title }}</h4><br/>
                     <h5>{{ q.question_text }}</h5><br/>
                     <div class="radio"><label><input type="radio" name="radio"> {{ q.option_1 }}</label></div>
                     <div class="radio"><label><input type="radio" name="radio"> {{ q.option_2 }}</label></div>
@@ -42,7 +41,6 @@ function conf(str, id){
             <div class="container" style="border:1px solid #cecece; padding: 20px;">
                 <form method="post" id="r{{ q.question_num }}">
                     {% csrf_token %}
-                    <h4>{{ q.question_title }}</h4><br/>
                     <h5>{{ q.question_text }}</h5><br/>
                     <div class="form-group"><textarea class="form-control" rows="3"></textarea></div>
                     <br/>
@@ -56,7 +54,6 @@ function conf(str, id){
               <div class="container" style="border:1px solid #cecece; padding: 20px;">
                   <form method="post" id="r{{ q.question_num }}">
                       {% csrf_token %}
-                      <h4>{{ q.question_title }}</h4><br/>
                       <h5>{{ q.question_text }}</h5><br/>
                       <select>
                         <option value= {{ q.option_1 }}> {{ q.option_1 }}</option>
@@ -75,7 +72,6 @@ function conf(str, id){
         <div class="container" style="border:1px solid #cecece; padding: 20px;">
             <form method="post" id="r{{ q.question_num }}">
                 {% csrf_token %}
-                <h4>{{ q.question_title }}</h4><br/>
                 <h5>{{ q.question_text }}</h5><br/>
             <input type="radio" value="strong_agree">
             <label>Agree</label>
@@ -99,7 +95,6 @@ function conf(str, id){
             <div class="container" style="border:1px solid #cecece; padding: 20px;">
                 <form method="post" id="r{{ q.question_num }}">
                     {% csrf_token %}
-                    <h4>{{ q.question_title }}</h4><br/>
                     <h5>{{ q.question_text }}</h5><br/>
                     <div class="checkbox"><label><input type="checkbox"> {{ q.option_1 }}</label></div>
                     <div class="checkbox"><label><input type="checkbox"> {{ q.option_2 }}</label></div>

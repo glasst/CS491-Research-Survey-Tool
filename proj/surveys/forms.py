@@ -40,7 +40,7 @@ class MCQuestionForm(forms.ModelForm):
         model = MCQuestion
         exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type']
         widgets = {
-            'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
+            #'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
             'option_1': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
             'option_2': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
@@ -54,7 +54,7 @@ class DDQuestionForm(forms.ModelForm):
         model = DDQuestion
         exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type']
         widgets = {
-            'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
+            #'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
             'option_1': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
             'option_2': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
@@ -69,7 +69,7 @@ class LKQuestionForm(forms.ModelForm):
         exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type',
             "option_1", "option_2", "option_3", "option_4", "option_5"]
         widgets = {
-            'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
+            #'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
         }
 
@@ -78,7 +78,7 @@ class TEQuestionForm(forms.ModelForm):
         model = TEQuestion
         exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type']
         widgets = {
-            'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
+            #'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
         }
 
@@ -87,7 +87,7 @@ class CBQuestionForm(forms.ModelForm):
         model = CBQuestion
         exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type']
         widgets = {
-            'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
+            #'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
             'option_1': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
             'option_2': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
