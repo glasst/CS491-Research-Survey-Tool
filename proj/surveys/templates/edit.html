@@ -34,7 +34,7 @@ function conf(str, id){
                     {% if q.option_5 %}<div class="radio"><label><input type="radio" name="radio"> {{ q.option_5 }}</label></div>{% endif %}
                     <input type="hidden" name="remove" value="{{ q.question_Id }}"/>
                     <p class="text-right">
-                    <button type="button" class="btn btn-primary" onclick="conf('Remove question? This cannot be undone.', 'r{{ q.question_num }}')">Remove</button>
+                    <button type="button" class="btn btn-danger" onclick="conf('Remove question? This cannot be undone.', 'r{{ q.question_num }}')">Remove</button>
                     </p>
                 </form>
             </div>
@@ -48,7 +48,7 @@ function conf(str, id){
                     <br/>
                     <input type="hidden" name="remove" value="{{ q.question_Id }}"/>
                     <p class="text-right">
-                    <button type="button" class="btn btn-primary" onclick="conf('Remove question? This cannot be undone.', 'r{{ q.question_num }}')">Remove</button>
+                    <button type="button" class="btn btn-danger" onclick="conf('Remove question? This cannot be undone.', 'r{{ q.question_num }}')">Remove</button>
                     </p>
                 </form>
             </div>
@@ -67,7 +67,7 @@ function conf(str, id){
                       </select>
             <input type="hidden" name="remove" value="{{ q.question_Id }}"/>
                       <p class="text-right">
-                      <button type="button" class="btn btn-primary" onclick="conf('Remove question? This cannot be undone.', 'r{{ q.question_num }}')">Remove</button>
+                      <button type="button" class="btn btn-danger" onclick="conf('Remove question? This cannot be undone.', 'r{{ q.question_num }}')">Remove</button>
                       </p>
                   </form>
               </div>
@@ -91,7 +91,7 @@ function conf(str, id){
 
             <input type="hidden"value="{{ q.question_Id }}"/>
                 <p class="text-right">
-                <button type="button" class="btn btn-primary" onclick="conf('Remove question? This cannot be undone.', 'r{{ q.question_num }}')">Remove</button>
+                <button type="button" class="btn btn-danger" onclick="conf('Remove question? This cannot be undone.', 'r{{ q.question_num }}')">Remove</button>
                 </p>
             </form>
         </div>
@@ -108,7 +108,7 @@ function conf(str, id){
                     {% if q.option_5 %}<div class="checkbox"><label><input type="checkbox"> {{ q.option_5 }}</label></div>{% endif %}
                     <input type="hidden" name="remove" value="{{ q.question_Id }}"/>
                     <p class="text-right">
-                    <button type="button" class="btn btn-primary" onclick="conf('Remove question? This cannot be undone.', 'r{{ q.question_num }}')">Remove</button>
+                    <button type="button" class="btn btn-danger" onclick="conf('Remove question? This cannot be undone.', 'r{{ q.question_num }}')">Remove</button>
                     </p>
                 </form>
             </div>

@@ -41,7 +41,7 @@
             <form method="post" id="{{ s.survey_Id }}">
                 {% csrf_token %}
                 <input type="hidden" name="remove" value="{{ s.survey_Id }}"/>
-                <button class="btn btn-primary" type="button"
+                <button class="btn btn-danger" type="button"
                         onclick="conf('Delete survey? This cannot be undone.', '{{ s.survey_Id }}')">Delete
                 </button>
             </form>&nbsp&nbsp
