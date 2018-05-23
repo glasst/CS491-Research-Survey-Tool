@@ -1,10 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-
 from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, DDQuestion, ResponseTE, ResponseMC, ResponseCB, ResponseDD, ResponseLK, Option, LKQuestion
-
-from .models import MAX_OPTIONS
-
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
@@ -44,13 +40,13 @@ class MCQuestionForm(forms.ModelForm):
         model = MCQuestion
         exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type']
         widgets = {
-            #'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
+            'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
-            #'option_1': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
-            #'option_2': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
-            #'option_3': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
-            #'option_4': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
-            #'option_5': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+            'option_1': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+            'option_2': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+            'option_3': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+            'option_4': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+            'option_5': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
         }
 
 class DDQuestionForm(forms.ModelForm):
@@ -88,21 +84,17 @@ class TEQuestionForm(forms.ModelForm):
 
 class CBQuestionForm(forms.ModelForm):
     class Meta:
-        model = RangeQuestion
+        model = CBQuestion
         exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type']
         widgets = {
-            'rating': RangeInput(attrs={'max': })
+            'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
+            'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
+            'option_1': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+            'option_2': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+            'option_3': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+            'option_4': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+            'option_5': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
         }
-
-
-# https://jqueryui.com/slider/
-# class RangeQuestionForm(forms.ModelForm):
-#     class Meta:
-#         model = KitReviewPropertyRating
-#         fields = ('id', 'prop', 'rating')
-#         widgets = {
-#             'rating': RangeInput(attrs={'max': MAX_RATING})
-# }
 
 
 
@@ -112,6 +104,17 @@ class TakeSurveyForm(forms.Form):
         super(TakeSurveyForm, self).__init__(*args, **kwargs)
         self.fields['survey_Id'] = forms.ModelChoiceField(
             queryset=Survey.objects.filter(creator_Id__username=self.user))
+
+
+class OptionForm(forms.ModelForm):
+    class Meta:
+        model = Option
+        exclude = ['option_Id', 'option_num', 'type_of_question']
+        widgets = {
+            'mc_question_Id': forms.HiddenInput(),
+            'cb_question_Id': forms.HiddenInput(),
+            'text': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+        }
 
 
 class ResponseTEForm(forms.ModelForm):
@@ -148,7 +151,7 @@ class ChoiceFieldNoValidation(forms.ChoiceField):
             else:
                 if value == k or text_value == str(k):
                     return True
-
+        #return False
         return True
 
 
@@ -181,7 +184,7 @@ class ResponseCBForm(forms.ModelForm):
 
 class ResponseMCForm(forms.ModelForm):
     options = ChoiceFieldNoValidation(choices=(('None', 'none'),),
-                                      widget=forms.RadioSelect)
+                                widget=forms.RadioSelect)
 
     class Meta:
         model = ResponseMC
@@ -199,7 +202,6 @@ class ResponseMCForm(forms.ModelForm):
         question = kwargs.pop('question', None)
         super(ResponseMCForm, self).__init__(*args, **kwargs)
         self.fields['options'].widget.choices = question.get_options()
-
 
 class ResponseLKForm(forms.ModelForm):
     options = ChoiceFieldNoValidation(choices=(('None', 'none'),),
@@ -222,7 +224,6 @@ class ResponseLKForm(forms.ModelForm):
         self.fields['options'].widget.choices = question.get_options()
         self.fields['options'].widget.attrs.update(display = 'inline-block')
 
-
 class ResponseDDForm(forms.ModelForm):
     options = ChoiceFieldNoValidation(choices=(('None', 'none'),),
                                 widget=forms.Select)
@@ -244,24 +245,5 @@ class ResponseDDForm(forms.ModelForm):
         super(ResponseDDForm, self).__init__(*args, **kwargs)
         self.fields['options'].widget.choices = question.get_options()
 
-
-class OptionForm(forms.ModelForm):
-    class Meta:
-        model = Option
-        exclude = ['option_Id', 'option_num', 'question_type', 'mc_question_Id', 'cb_question_Id']
-        widgets = {
-            # 'mc_question_Id': forms.HiddenInput(),
-            # 'cb_question_Id': forms.HiddenInput(),
-            'option_Id': forms.HiddenInput(),
-            'text': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
-        }
-
-
-OptionFormSet = forms.modelformset_factory(
-    Option,
-    form=OptionForm,
-    min_num=1,
-    validate_min=True,
-    max_num=MAX_OPTIONS,
-    validate_max=True,
-)
+    #def add_choices(self):
+    #    self.fields['options'].widget.choices = self.instance.get_choices()

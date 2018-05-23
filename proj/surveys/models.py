@@ -192,11 +192,11 @@ class CBQuestion(Question):
         return self.responsecb_set.all()
 
 
-class RangeQuestion(Question, NumberInput):
-    question_text = models.CharField(max_length=400)
-    input_type = 'range'
-    start = models.IntegerField()
-    end = models.IntegerField()
+# class RangeQuestion(Question, NumberInput):
+#     question_text = models.CharField(max_length=400)
+#     input_type = 'range'
+#     start = models.IntegerField()
+#     end = models.IntegerField()
 
 
 class ResponseMC(models.Model):
@@ -210,6 +210,7 @@ class ResponseMC(models.Model):
 
     def get_choices(self):
         return self.response_question_Id.get_options()
+
 
 class ResponseDD(models.Model):
     # increment number of questions in survey and set current question number
@@ -261,15 +262,15 @@ OPTION_CHOICES = (
 )
 
 
-class ResponseRange(models.Model):
-    response_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
-    response_question_Id = models.ForeignKey(MCQuestion, on_delete=models.CASCADE)
-    response_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
-    response_user_Id = models.ForeignKey(User, on_delete=models.CASCADE)
-    value = models.FloatField()
-
-    def get_choices(self):
-        return self.response_question_Id.get_options()
+# class ResponseRange(models.Model):
+#     response_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
+#     response_question_Id = models.ForeignKey(MCQuestion, on_delete=models.CASCADE)
+#     response_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
+#     response_user_Id = models.ForeignKey(User, on_delete=models.CASCADE)
+#     value = models.FloatField()
+#
+#     def get_choices(self):
+#         return self.response_question_Id.get_options()
 
 
 class Option(models.Model):
