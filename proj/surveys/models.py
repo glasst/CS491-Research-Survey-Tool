@@ -256,11 +256,6 @@ class ResponseCB(models.Model):
     def get_choices(self):
         return self.response_question_Id.get_options()
 
-OPTION_CHOICES = (
-    ('CB', 'CheckBox'),
-    ('MC', 'MultipleChoice'),
-)
-
 
 # class ResponseRange(models.Model):
 #     response_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
@@ -273,6 +268,12 @@ OPTION_CHOICES = (
 #         return self.response_question_Id.get_options()
 
 
+OPTION_CHOICES = (
+    ('CB', 'CheckBox'),
+    ('MC', 'MultipleChoice'),
+)
+
+
 class Option(models.Model):
     option_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
     option_num = models.SmallIntegerField()
@@ -283,7 +284,7 @@ class Option(models.Model):
 
     def save(self):
         self.option_Id = uuid.uuid4()
-        if type_of_question == 'CB':
+        if self.question_type == 'CB':
             self.cb_question_Id.num_options += 1
             self.option_num = self.cb_question_Id.num_options
         else:
@@ -292,24 +293,24 @@ class Option(models.Model):
         super(Option, self).save()
 
     def delete(self):
-        if type_of_question == 'CB':
+        if self.question_type == 'CB':
             self.cb_question_Id.num_options -= 1
         else:
             self.mc_question_Id.num_options -= 1
         super(Option, self).delete()
 
     # def make_cb_option(self):
-    #     type_of_question = 'CB'
+    #     question_type = 'CB'
     #     self.save()
     #
     # def make_mc_option(self):
-    #     type_of_question = 'MC'
+    #     question_type = 'MC'
     #     self.save()
 
     # def save(self, type):
     #     self.add_to_opt_num()
     #     if type == 'CB':
-    #         type_of_question = 'CB'
+    #         question_type = 'CB'
     #     else:
-    #         type_of_question = 'MC'
+    #         question_type = 'MC'
     #     super(Option, self).save()
