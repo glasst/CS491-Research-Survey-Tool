@@ -21,6 +21,9 @@ urlpatterns = [
     path('edit/<uuid:survey_Id>/multiplechoice', views.multiplechoice, name='multiplechoice'),
     path('edit/<uuid:survey_Id>/textentry', views.textentry, name='textentry'),
     path('edit/<uuid:survey_Id>/checkbox', views.checkbox, name='checkbox'),
+    path('edit/<uuid:survey_Id>/dropdown', views.dropdown, name='dropdown'),
+    path('edit/<uuid:survey_Id>/likert', views.likert, name='likert'),
+
 
     path('results/<uuid:survey_Id>/', views.results, name='survey-results'),
 

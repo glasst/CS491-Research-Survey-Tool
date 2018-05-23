@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %}Likert Scale Creation{% endblock %}
+{% block content %}
+
+<h1 align="center">Likert Question</h1>
+<div class="container" style="border:1px solid #cecece; padding:20px;">
+    <form action="" method="POST">
+        {% csrf_token %}
+    	{% bootstrap_form form %}
+        {% bootstrap_button "Add question" button_type="submit" button_class="btn-primary" %}
+        <input type="hidden" name="question_survey_Id" value=survey_Id>
+    </form>
+</div>
+
+{% endblock %}

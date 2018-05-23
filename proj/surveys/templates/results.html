@@ -26,6 +26,32 @@
                             No MC responses
                         {% endif %}
                     </div>
+              {% elif q.0.question_type == 'DD' %}
+                  <div class="container" style="border:1px solid #cecece; padding: 20px;">
+                      <form method="post" id="r{{ q.0.question_num }}">
+                          {% csrf_token %}
+                          <h4>{{ q.0.question_title }}</h4><br/>
+                          <h5>{{ q.0.question_text }}</h5><br/>
+                      </form>
+                      {% if q.0.responsedd_set.all %}
+                          {{ q.2.as_html }}
+                      {% else %}
+                          No MC responses
+                      {% endif %}
+                  </div>
+              {% elif q.0.question_type == 'LK' %}
+                  <div class="container" style="border:1px solid #cecece; padding: 20px;">
+                      <form method="post" id="r{{ q.0.question_num }}">
+                          {% csrf_token %}
+                          <h4>{{ q.0.question_title }}</h4><br/>
+                          <h5>{{ q.0.question_text }}</h5><br/>
+                      </form>
+                      {% if q.0.responselk_set.all %}
+                          {{ q.2.as_html }}
+                      {% else %}
+                          No LK responses
+                      {% endif %}
+                  </div>
                 {% elif q.0.question_type == 'TE' %}
                     <div class="container" style="border:1px solid #cecece; padding: 20px;">
                         <form method="post" id="r{{ q.0.question_num }}">

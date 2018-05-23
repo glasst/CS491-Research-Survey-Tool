@@ -2,6 +2,7 @@
 {% load bootstrap4 %}
 {% block title %}{{ survey_title }} - editing survey{% endblock %}
 {% block content %}
+
 <script type="text/javascript">
 function conf(str, id){
     c = window.confirm(str);
@@ -51,6 +52,49 @@ function conf(str, id){
                     </p>
                 </form>
             </div>
+            {% elif q.question_type == 'DD' %}
+              <div class="container" style="border:1px solid #cecece; padding: 20px;">
+                  <form method="post" id="r{{ q.question_num }}">
+                      {% csrf_token %}
+                      <h4>{{ q.question_title }}</h4><br/>
+                      <h5>{{ q.question_text }}</h5><br/>
+                      <select>
+                        <option value= {{ q.option_1 }}> {{ q.option_1 }}</option>
+                        <option value= {{ q.option_2 }}> {{ q.option_2 }}</option>
+                        {% if q.option_3 %} <option value= {{ q.option_3 }}> {{ q.option_3 }}</option>{% endif %}
+                        {% if q.option_4 %} <option value= {{ q.option_4 }}> {{ q.option_4 }}</option>{% endif %}
+                        {% if q.option_5 %} <option value= {{ q.option_5 }}> {{ q.option_5 }}</option>{% endif %}
+                      </select>
+            <input type="hidden" name="remove" value="{{ q.question_Id }}"/>
+                      <p class="text-right">
+                      <button type="button" class="btn btn-primary" onclick="conf('Remove question? This cannot be undone.', 'r{{ q.question_num }}')">Remove</button>
+                      </p>
+                  </form>
+              </div>
+        {% elif q.question_type == 'LK'%}
+        <div class="container" style="border:1px solid #cecece; padding: 20px;">
+            <form method="post" id="r{{ q.question_num }}">
+                {% csrf_token %}
+                <h4>{{ q.question_title }}</h4><br/>
+                <h5>{{ q.question_text }}</h5><br/>
+            <input type="radio" value="strong_agree">
+            <label>Agree</label>
+
+            <input type="radio" value="strong_agree">
+            <label>Neutral</label>
+
+            <input type="radio"value="disagree">
+            <label>Disagree</label>
+
+            <input type="radio"value="strong_agree">
+            <label>Strongly Disagree</label>
+
+            <input type="hidden"value="{{ q.question_Id }}"/>
+                <p class="text-right">
+                <button type="button" class="btn btn-primary" onclick="conf('Remove question? This cannot be undone.', 'r{{ q.question_num }}')">Remove</button>
+                </p>
+            </form>
+        </div>
         {% else %}
             <div class="container" style="border:1px solid #cecece; padding: 20px;">
                 <form method="post" id="r{{ q.question_num }}">
@@ -80,6 +124,12 @@ function conf(str, id){
         </a>
         <a href="{% url 'surveys:checkbox' survey_Id %}">
             {% bootstrap_button "Add CB question" button_type="link" button_class="btn-primary" %}
+        </a>
+        <a href="{% url 'surveys:dropdown' survey_Id %}">
+            {% bootstrap_button "Add DD question" button_type="link" button_class="btn-primary" %}
+        </a>
+        <a href="{% url 'surveys:likert' survey_Id %}">
+            {% bootstrap_button "Add LK question" button_type="link" button_class="btn-primary" %}
         </a>
         <br/><br/>
         <a href="{% url 'surveys:index' %}">

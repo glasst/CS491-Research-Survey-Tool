@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion
-from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, SurveyForm, TakeSurveyForm, OptionFormSet
-from .forms import ResponseTEForm, ResponseMCForm, ResponseCBForm
+
+from .models import Survey, Question, MCQuestion, TEQuestion, CBQuestion, DDQuestion, LKQuestion
+from .forms import QuestionForm, MCQuestionForm, TEQuestionForm, CBQuestionForm, DDQuestionForm, SurveyForm, TakeSurveyForm, LKQuestionForm
+from .forms import ResponseTEForm, ResponseMCForm, ResponseCBForm, ResponseDDForm, ResponseLKForm
+
 from django.urls import reverse, resolve
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -172,6 +174,8 @@ def newquestion(request):
         'MC': 'multiplechoice.html',
         'TE': 'textentry.html',
         'CB': 'checkbox.html',
+        'DD': 'dropdown.html',
+        'LK': 'likert.html',
     }
     nextpage = '/surveys/'
 
@@ -236,6 +240,59 @@ def multiplechoice(request, survey_Id):
             'form': form,
             'formset': options,
         },
+    )
+
+@login_required
+def likert(request, survey_Id):
+    if request.method == 'POST':
+        form = LKQuestionForm(request.POST)
+        if form.is_valid():
+            survey = get_object_or_404(Survey, survey_Id=survey_Id)
+            q = form.save(commit=False)
+            q.question_Id = uuid.uuid4()
+            q.question_type = 'LK'
+            q.question_survey_Id = survey
+            q.option_1 = "strongly disagree"
+            q.option_2 = "disagree"
+            q.option_3 = "neutral"
+            q.option_4 = "agree"
+            q.option_5 = "strongly agree"
+            survey.num_questions += 1
+            q.question_num = survey.num_questions
+            q.save()
+            survey.save()
+            return redirect(reverse('surveys:editsurvey', args=(survey.survey_Id,)))
+    else:
+        form = LKQuestionForm(initial={'question_survey_Id': survey_Id})
+
+    return render(
+        request,
+        'likert.html',
+        context={'form': form},
+    )
+
+@login_required
+def dropdown(request, survey_Id):
+    if request.method == 'POST':
+        form = DDQuestionForm(request.POST)
+        if form.is_valid():
+            survey = get_object_or_404(Survey, survey_Id=survey_Id)
+            q = form.save(commit=False)
+            q.question_Id = uuid.uuid4()
+            q.question_type = 'DD'
+            q.question_survey_Id = survey
+            survey.num_questions += 1
+            q.question_num = survey.num_questions
+            q.save()
+            survey.save()
+            return redirect(reverse('surveys:editsurvey', args=(survey.survey_Id,)))
+    else:
+        form = DDQuestionForm(initial={'question_survey_Id': survey_Id})
+
+    return render(
+        request,
+        'dropdown.html',
+        context={'form': form},
     )
 
 
@@ -317,33 +374,16 @@ def done(request, survey_Id):
 
 @login_required
 def survey_main_page(request, survey_Id):
+
     return redirect(reverse('surveys:survey-completion', kwargs={'qnum': 1, 'survey_Id': survey_Id}))
 
 
 @login_required
 def surveycompletion(request, survey_Id, qnum):
-    #print(qnum, "!!!!!!")
-    #survey_Id = request.session.get('survey_to_take')
     survey = Survey.objects.get(survey_Id=survey_Id)
-    #questions = Question.objects.filter(question_survey_Id=survey_Id)
 
-    #print(request)
-
-    # is this section ever used?
-    #######
-    #Check if participant submitted a response
-    #q = Question.objects.filter(question_num = qnum, question_survey_Id=survey_Id)
-    # if not q:
-    #     print("redirecting to done")
-    #     return redirect(reverse('surveys:done', kwargs={'survey_Id': survey.survey_Id}))
-    #     #return HttpResponseRedirect('/survey-completion/done')
-
-    #q = Question.objects.get(question_num = qnum, question_survey_Id=survey_Id)
 
     q = get_object_or_404(Question, question_survey_Id = survey_Id, question_num=qnum)
-    #######
-    subq = None
-
     if request.method == 'POST':
         print(q.question_num , "    ", q.question_type)
         if q.question_type == 'MC':
@@ -353,7 +393,6 @@ def surveycompletion(request, survey_Id, qnum):
                 # temp override (see ChoiceFieldNoValidation class in forms.py)
                 form = ResponseMCForm(request.POST, **{'question': q, })
                 if form.is_valid():
-                    print("test")
                     print(form.cleaned_data)
                     selected_value = request.POST.get('options')
                     print("you selected " + selected_value)
@@ -365,6 +404,50 @@ def surveycompletion(request, survey_Id, qnum):
                     f.response_question_Id = MCQuestion.objects.get(question_Id = q.question_Id)
                     data = form.cleaned_data['options']
 
+                    f.response_text = data
+                    f.save()
+                else:
+                    print("form not valid")
+                    print(form.errors)
+
+        elif q.question_type == 'DD':
+            if request.method == 'POST':
+                # checks choices before adding choices from question q
+                # temp override (see ChoiceFieldNoValidation class in forms.py)
+                form = ResponseDDForm(request.POST, **{'question': q, })
+                if form.is_valid():
+                    print(form.cleaned_data)
+                    selected_value = request.POST.get('options')
+                    print("you selected " + selected_value)
+                    # save selected value
+                    f = form.save(commit=False)
+                    f.response_Id = uuid.uuid4()
+                    f.response_user_Id = User.objects.get(username=request.user.username)
+                    f.response_question_Id = DDQuestion.objects.get(question_Id = q.question_Id)
+                    f.response_survey_Id = Survey.objects.get(survey_Id = survey_Id)
+                    data = form.cleaned_data['options']
+                    f.response_text = data
+                    f.save()
+                else:
+                    print("form not valid")
+                    print(form.errors)
+
+        elif q.question_type == 'LK':
+            if request.method == 'POST':
+                # checks choices before adding choices from question q
+                # temp override (see ChoiceFieldNoValidation class in forms.py)
+                form = ResponseLKForm(request.POST, **{'question': q, })
+                if form.is_valid():
+                    print(form.cleaned_data)
+                    selected_value = request.POST.get('options')
+                    print("you selected " + selected_value)
+                    # save selected value
+                    f = form.save(commit=False)
+                    f.response_Id = uuid.uuid4()
+                    f.response_user_Id = User.objects.get(username=request.user.username)
+                    f.response_question_Id = LKQuestion.objects.get(question_Id = q.question_Id)
+                    f.response_survey_Id = Survey.objects.get(survey_Id = survey_Id)
+                    data = form.cleaned_data['options']
                     f.response_text = data
                     f.save()
                 else:
@@ -390,6 +473,9 @@ def surveycompletion(request, survey_Id, qnum):
 
                     f.response_text = data
                     f.save()
+                else:
+                    print("form not valid")
+                    print(form.errors)
 
         else:
             print("TE")
@@ -424,6 +510,12 @@ def surveycompletion(request, survey_Id, qnum):
         elif q.question_type == 'CB':
             print("CB no post")
             form = ResponseCBForm(**{'question': q,})
+        elif q.question_type == 'DD':
+            print("DD no post")
+            form = ResponseDDForm(**{'question': q,})
+        elif q.question_type == 'LK':
+            print("LK no post")
+            form = ResponseLKForm(**{'question': q,})
         else:
             print("TE no post")
             form = ResponseTEForm()
@@ -446,12 +538,19 @@ def results(request, survey_Id):
     i = 0
     for q in questions:
         metrics.append([])
-        if q.question_type == 'MC' or q.question_type == 'CB':
+        if q.question_type == 'MC' or q.question_type == 'CB' or  q.question_type == 'DD' or  q.question_type == 'LK':
             options = [opt[0] for opt in q.get_options()]
             #print(options)
             for o in options: metrics[i].append(0)
-            if q.question_type == 'MC': responses = q.responsemc_set.all()
-            else: responses = q.responsecb_set.all()
+            if q.question_type == 'MC':
+                responses = q.responsemc_set.all()
+            elif q.question_type == 'DD':
+                responses = q.responsedd_set.all()
+            elif q.question_type == 'LK':
+                responses = q.responselk_set.all()
+            else: 
+                responses = q.responsecb_set.all()
+
             for r in responses:
                 j = 0
                 for o in options:
