@@ -1,4 +1,4 @@
-git chefrom django.db import models
+from django.db import models
 from django.db.models import F
 from django.contrib.auth.models import User
 from polymorphic.models import PolymorphicModel
@@ -7,6 +7,8 @@ from django.dispatch import receiver
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 import uuid
+
+from django.forms.widgets import NumberInput
 
 import json
 from uuid import UUID
@@ -190,6 +192,13 @@ class CBQuestion(Question):
         return self.responsecb_set.all()
 
 
+class RangeQuestion(Question, NumberInput):
+    question_text = models.CharField(max_length=400)
+    input_type = 'range'
+    start = models.IntegerField()
+    end = models.IntegerField()
+
+
 class ResponseMC(models.Model):
     # increment number of questions in survey and set current question number
     response_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
@@ -250,6 +259,17 @@ OPTION_CHOICES = (
     ('CB', 'CheckBox'),
     ('MC', 'MultipleChoice'),
 )
+
+
+class ResponseRange(models.Model):
+    response_Id = models.UUIDField(primary_key=True, default=uuid.UUID(int=uuid.uuid4().int))
+    response_question_Id = models.ForeignKey(MCQuestion, on_delete=models.CASCADE)
+    response_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
+    response_user_Id = models.ForeignKey(User, on_delete=models.CASCADE)
+    value = models.FloatField()
+
+    def get_choices(self):
+        return self.response_question_Id.get_options()
 
 
 class Option(models.Model):

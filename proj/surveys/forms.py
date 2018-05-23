@@ -88,17 +88,21 @@ class TEQuestionForm(forms.ModelForm):
 
 class CBQuestionForm(forms.ModelForm):
     class Meta:
-        model = CBQuestion
+        model = RangeQuestion
         exclude = ['question_num', 'question_Id', 'question_survey_Id', 'question_type']
         widgets = {
-            'question_title': forms.Textarea(attrs={'cols': 50, 'rows': 1}),
-            'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
-            'option_1': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
-            'option_2': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
-            'option_3': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
-            'option_4': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
-            'option_5': forms.Textarea(attrs={'cols': 10, 'rows': 2}),
+            'rating': RangeInput(attrs={'max': })
         }
+
+
+# https://jqueryui.com/slider/
+# class RangeQuestionForm(forms.ModelForm):
+#     class Meta:
+#         model = KitReviewPropertyRating
+#         fields = ('id', 'prop', 'rating')
+#         widgets = {
+#             'rating': RangeInput(attrs={'max': MAX_RATING})
+# }
 
 
 
