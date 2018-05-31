@@ -25,11 +25,11 @@ class UUIDEncoder(json.JSONEncoder):
 
 
 # Create your views here.
-def home(request):
-    return render(
-        request,
-        'home.html',
-        context={})
+#def home(request):
+#    return render(
+#        request,
+#        'home.html',
+#        context={})
 
 
 @login_required
@@ -39,7 +39,8 @@ def index(request):
     creator = User.objects.get(username=request.user.username)
     survey_list = Survey.objects.filter(creator_Id=creator)
     form = SurveyForm(initial={'creator_Id': request.user.pk})
-    uri = request.build_absolute_uri(reverse('surveys:home'))
+    #uri = request.build_absolute_uri(reverse('surveys:home'))
+    uri = request.build_absolute_uri(reverse('surveys:index'))
 
     if request.method == 'POST':
         if 'remove' in request.POST:
