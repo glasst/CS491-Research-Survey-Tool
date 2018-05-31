@@ -3,29 +3,42 @@
 {% block title %}{{ survey_title }} - editing survey{% endblock %}
 {% block content %}
 
-<script type="text/javascript">
-function conf(str, id){
-    c = window.confirm(str);
-    if (c == true){
-        document.getElementById(id).submit();
-    }
-}
-</script>
+    <script type="text/javascript">
+        function conf(str, id) {
+            c = window.confirm(str);
+            if (c == true) {
+                document.getElementById(id).submit();
+            }
+        }
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+
 <h3 align="center">{{ survey_title }}</h3>
 <br/>
 <div class="container">
     {% for q in questions %}
         <br/>
-        <form class="form-inline" method="POST">{% csrf_token %}
-        <h4><input type="text" class="form-control mb-2 mr-sm-2" name="new_index" value="{{ q.question_num }}"></input>
-        <input type="hidden" name="survey" value="{{ survey_Id }}"></input>
-        <input type="hidden" name="reorder" value="{{ q.question_Id }}"></input>
-        <button class="btn btn-primary mb-2 mr-sm-2" type="submit">Reorder</button></h4></form>
+        {% if questions.count > 1 %}
+            <form class="form-inline" method="POST">{% csrf_token %}
+                <h4><input type="text" class="form-control mb-2 mr-sm-2" name="new_index"
+                           value="{{ q.question_num }}">
+                    <input type="hidden" name="survey" value="{{ survey_Id }}">
+                    <input type="hidden" name="reorder" value="{{ q.question_Id }}">
+
+                    <button class="btn btn-primary mb-2 mr-sm-2" type="submit">Reorder</button>
+                </h4>
+            </form>
+        {% endif %}
+
         {% if q.question_type == 'MC' %}
             <div class="container" style="border:1px solid #cecece; padding: 20px;">
                 <form method="post" id="r{{ q.question_num }}">
                     {% csrf_token %}
-                    <h4>{{ q.question_title }}</h4><br/>
                     <h5>{{ q.question_text }}</h5><br/>
                     <div class="radio"><label><input type="radio" name="radio"> {{ q.option_1 }}</label></div>
                     <div class="radio"><label><input type="radio" name="radio"> {{ q.option_2 }}</label></div>
@@ -42,7 +55,6 @@ function conf(str, id){
             <div class="container" style="border:1px solid #cecece; padding: 20px;">
                 <form method="post" id="r{{ q.question_num }}">
                     {% csrf_token %}
-                    <h4>{{ q.question_title }}</h4><br/>
                     <h5>{{ q.question_text }}</h5><br/>
                     <div class="form-group"><textarea class="form-control" rows="3"></textarea></div>
                     <br/>
@@ -56,7 +68,6 @@ function conf(str, id){
               <div class="container" style="border:1px solid #cecece; padding: 20px;">
                   <form method="post" id="r{{ q.question_num }}">
                       {% csrf_token %}
-                      <h4>{{ q.question_title }}</h4><br/>
                       <h5>{{ q.question_text }}</h5><br/>
                       <select>
                         <option value= {{ q.option_1 }}> {{ q.option_1 }}</option>
@@ -75,7 +86,6 @@ function conf(str, id){
         <div class="container" style="border:1px solid #cecece; padding: 20px;">
             <form method="post" id="r{{ q.question_num }}">
                 {% csrf_token %}
-                <h4>{{ q.question_title }}</h4><br/>
                 <h5>{{ q.question_text }}</h5><br/>
             <input type="radio" value="strong_agree">
             <label>Agree</label>
@@ -99,7 +109,6 @@ function conf(str, id){
             <div class="container" style="border:1px solid #cecece; padding: 20px;">
                 <form method="post" id="r{{ q.question_num }}">
                     {% csrf_token %}
-                    <h4>{{ q.question_title }}</h4><br/>
                     <h5>{{ q.question_text }}</h5><br/>
                     <div class="checkbox"><label><input type="checkbox"> {{ q.option_1 }}</label></div>
                     <div class="checkbox"><label><input type="checkbox"> {{ q.option_2 }}</label></div>
@@ -117,23 +126,43 @@ function conf(str, id){
     <br/>
     <div class="container">
         <a href="{% url 'surveys:multiplechoice' survey_Id %}">
-            {% bootstrap_button "Add MC question" button_type="link" button_class="btn-primary" %}
+            <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+                    title="Add Multiple Choice Question">
+              Add Multiple Choice
+            </button>
+{#            {% bootstrap_button "Add Multiple Choice question" button_type="link" button_class="btn-primary" %}#}
         </a>
         <a href="{% url 'surveys:textentry' survey_Id %}">
-            {% bootstrap_button "Add TE question" button_type="link" button_class="btn-primary" %}
+            <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+                    title="Add Text Entry Question">
+                Add Text Entry
+            </button>
+{#            {% bootstrap_button "Add TE question" button_type="link" button_class="btn-primary" %}#}
         </a>
         <a href="{% url 'surveys:checkbox' survey_Id %}">
-            {% bootstrap_button "Add CB question" button_type="link" button_class="btn-primary" %}
+                        <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+                    title="Add Checkbox Question">
+                Add Checkbox
+            </button>
+{#            {% bootstrap_button "Add CB question" button_type="link" button_class="btn-primary" %}#}
         </a>
         <a href="{% url 'surveys:dropdown' survey_Id %}">
-            {% bootstrap_button "Add DD question" button_type="link" button_class="btn-primary" %}
+                        <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+                    title="Add Dropdown Question">
+                Add Dropdown
+            </button>
+{#            {% bootstrap_button "Add DD question" button_type="link" button_class="btn-primary" %}#}
         </a>
         <a href="{% url 'surveys:likert' survey_Id %}">
-            {% bootstrap_button "Add LK question" button_type="link" button_class="btn-primary" %}
+                        <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+                    title="Add Likert Scale Question">
+                Add Likert
+            </button>
+{#            {% bootstrap_button "Add LK question" button_type="link" button_class="btn-primary" %}#}
         </a>
         <br/><br/>
         <a href="{% url 'surveys:index' %}">
-            {% bootstrap_button "Back" button_type="link" button_class="btn-primary" %}
+            {% bootstrap_button "Home" button_type="link" button_class="btn-primary" %}
         </a>
     </div>
 </div>

@@ -60,10 +60,10 @@ class Question(PolymorphicModel):
     question_survey_Id = models.ForeignKey(Survey, on_delete=models.CASCADE)
     question_type = models.CharField(max_length=2, choices=QUESTION_CHOICES)
     question_num = models.SmallIntegerField()
-    question_title = models.CharField(max_length=400)
+    #question_title = models.CharField(max_length=400)
 
-    def __str__(self):
-        return 'Question ID: %s, %s' % (self.question_Id, self.question_title)
+    # def __str__(self):
+    #     return 'Question ID: %s, %s' % (self.question_Id, self.question_title)
 
     # def save(self):
     #
