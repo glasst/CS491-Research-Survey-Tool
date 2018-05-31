@@ -23,11 +23,18 @@
 <div class="container">
     {% for q in questions %}
         <br/>
-        <form class="form-inline" method="POST">{% csrf_token %}
-        <h4><input type="text" class="form-control mb-2 mr-sm-2" name="new_index" value="{{ q.question_num }}"></input>
-        <input type="hidden" name="survey" value="{{ survey_Id }}"></input>
-        <input type="hidden" name="reorder" value="{{ q.question_Id }}"></input>
-        <button class="btn btn-primary mb-2 mr-sm-2" type="submit">Reorder</button></h4></form>
+        {% if questions.count > 1 %}
+            <form class="form-inline" method="POST">{% csrf_token %}
+                <h4><input type="text" class="form-control mb-2 mr-sm-2" name="new_index"
+                           value="{{ q.question_num }}">
+                    <input type="hidden" name="survey" value="{{ survey_Id }}">
+                    <input type="hidden" name="reorder" value="{{ q.question_Id }}">
+
+                    <button class="btn btn-primary mb-2 mr-sm-2" type="submit">Reorder</button>
+                </h4>
+            </form>
+        {% endif %}
+
         {% if q.question_type == 'MC' %}
             <div class="container" style="border:1px solid #cecece; padding: 20px;">
                 <form method="post" id="r{{ q.question_num }}">
