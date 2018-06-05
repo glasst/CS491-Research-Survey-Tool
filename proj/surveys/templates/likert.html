@@ -5,13 +5,33 @@
 
 <h1 align="center">Likert Question</h1>
 <p>Likert questions will be displayed with 5 options, ranging from "strongly agree" to "strongly disagree." Format your question accordingly, or you may use the Multiple Choice question type to customize a Likert style question.</p>
+<div class="container" style="border:1px solid #cecece; padding: 20px;">
+    Preview: Question text appears here
+    <form method="post" id="r{{ q.question_num }}">
+        {% csrf_token %}
+        <h5>{{ q.question_text }}</h5><br/>
+    <input type="radio" value="strong_agree">
+    <label>Strongly Agree</label>
+    <input type="radio" value="strong_agree">
+    <label>Agree</label>
+
+    <input type="radio" value="strong_agree">
+    <label>Neutral</label>
+
+    <input type="radio"value="disagree">
+    <label>Disagree</label>
+
+    <input type="radio"value="strong_agree">
+    <label>Strongly Disagree</label>
+    </form>
+</div>
 <div class="container" style="border:1px solid #cecece; padding:20px;">
     <form action="" method="POST">
         {% csrf_token %}
     	{% bootstrap_form form %}
         {% bootstrap_button "Add question" button_type="submit" button_class="btn-primary" %}
         <input type="hidden" name="question_survey_Id" value=survey_Id>
-    </form>
+      </form>
 </div>
 
 {% endblock %}

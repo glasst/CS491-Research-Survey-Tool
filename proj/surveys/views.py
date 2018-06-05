@@ -55,6 +55,9 @@ def index(request):
             s = Survey.objects.get(survey_Id=request.POST['results'])
             return redirect(reverse('surveys:survey-results',
                                     args=(s.survey_Id,)))
+        elif 'take' in request.POST:
+            s = Survey.objects.get(survey_Id=request.POST['take'])
+            return redirect(reverse('surveys:survey-main-page', kwargs={'survey_Id': s.survey_Id}))
         else:
             form = SurveyForm(request.POST)
             if form.is_valid():
@@ -231,6 +234,8 @@ def multiplechoice(request, survey_Id):
 @login_required
 def likert(request, survey_Id):
     if request.method == 'POST':
+        print("TEST\n")
+        print(request.POST)
         form = LKQuestionForm(request.POST)
         if form.is_valid():
             survey = get_object_or_404(Survey, survey_Id=survey_Id)
@@ -536,7 +541,7 @@ def results(request, survey_Id):
                 responses = q.responsedd_set.all()
             elif q.question_type == 'LK':
                 responses = q.responselk_set.all()
-            else: 
+            else:
                 responses = q.responsecb_set.all()
 
             for r in responses:

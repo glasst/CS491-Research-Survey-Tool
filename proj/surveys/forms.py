@@ -72,6 +72,7 @@ class LKQuestionForm(forms.ModelForm):
                    "option_3", "option_4", "option_5"]
         widgets = {
             'question_text': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
+            'scale': forms.RadioSelect(choices=('4', '5'))
         }
 
 

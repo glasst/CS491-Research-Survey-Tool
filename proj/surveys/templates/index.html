@@ -51,6 +51,13 @@
                 <button class="btn btn-primary" type="link"
                         href="{% url 'surveys:survey-results' s.survey_Id %}">Results
                 </button>
+            </form>&nbsp&nbsp
+            <form method="post" id="{{ s.survey_Id }}">
+                {% csrf_token %}
+                <input type="hidden" name="take" value="{{ s.survey_Id }}"/>
+                <button class="btn btn-primary" type="link"
+                        href="{% url 'surveys:survey-results' s.survey_Id %}">Take Survey
+                </button>
             </form>
         </div>
         </div>
@@ -70,4 +77,3 @@
     {% bootstrap_button "Take survey" button_type="link" href="takesurvey" button_class="btn-primary" %}
 
 {% endblock %}
-
